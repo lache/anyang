@@ -12,7 +12,9 @@
 *.la
 *.a
 /deploy/client
+/deploy/server
 
 obj
 bin
 publish
+/deploy/*.manifest

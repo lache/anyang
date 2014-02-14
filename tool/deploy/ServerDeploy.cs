@@ -18,7 +18,7 @@ namespace deploy
         protected override void ExecuteInternal(string history)
         {
             Log(Color.Yellow, " * Build Start.");
-            var buildResult = BuildProject(@"..\Server.sln", "Release|Any CPU");
+            var buildResult = BuildProject(@"..\server\Server.sln", "Release|Any CPU");
 
             Log(Color.Cyan, 4, buildResult.Stdout.Trim());
             Log(Color.Yellow, " * Build Ok.");
@@ -29,9 +29,6 @@ namespace deploy
                 CopyFiles(pair[0], pair[1]);
             }
             Log(Color.Yellow, " * Copy Ok.");
-
-            ModifyXml(@"server\Config.xml", "/Config/Data/@directory", "data");
-            Log(Color.Yellow, " * Edit Config.");
 
             MakeHash("server");
 

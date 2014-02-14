@@ -1,4 +1,2 @@
-..\new_server\Server\bin\Release\*.dll,server\
-..\new_server\Server\bin\Release\Server.exe,server\
-..\new_server\Server\bin\Release\Config.xml,server\
-..\resources\data\mmo-data.xml,server\data\
+..\server\bin\Release\*.dll,server\
+..\server\bin\Release\Server.exe,server\
