@@ -12,7 +12,7 @@ namespace launcher
     {
         public static string ServerPath
         {
-            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "mmo", "server"); }
+            get { return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "anyang", "server"); }
         }
 
         public static string ServerExecutablePath

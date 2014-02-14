@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Redmine.Net.Api;
 using Redmine.Net.Api.Types;
+using System.Net;
 
 namespace deploy
 {
@@ -146,13 +147,6 @@ namespace deploy
             return result.ToString();
         }
 
-        protected static ProcessResult UploadFile(string filePath)
-        {
-            const string scpPath = @"tools\pscp.exe";
-            const string baseDir = @"mmo.pe.kr:/home/dist/www/patch/";
-            return ExecuteProcess(scpPath, string.Format(@"-scp -r -l dist -pw akraksems {0} {1}", filePath, baseDir), "Cannot upload file: " + filePath);
-        }
-
         protected static ProcessResult ExecuteProcessRedirect(string fileName, string argument, string errorMessage = "")
         {
             using (var process = new Process())
@@ -256,6 +250,59 @@ h2. {2} 배포 [{0}]
             {
                 node.Value = newValue;
                 doc.Save(xmlPath);
+            }
+        }
+
+        protected static ProcessResult Zip(string sourceDirectory, string outputFile)
+        {
+            const string scpPath = @"tools\7z.exe";
+            return ExecuteProcess(scpPath, string.Format(@"a -r {0} {1}", outputFile, sourceDirectory), "Cannot zip file: " + outputFile);
+        }
+
+        protected static string PostFile(string file)
+        {
+            const string url = "http://dist.mmo.pe.kr/patch_a/";
+            var boundary = "----------------------------" + DateTime.Now.Ticks.ToString("x");
+            var httpWebRequest = (HttpWebRequest) WebRequest.Create(url);
+            httpWebRequest.ContentType = "multipart/form-data; boundary=" + boundary;
+            httpWebRequest.Method = "POST";
+            httpWebRequest.KeepAlive = true;
+            httpWebRequest.Credentials = CredentialCache.DefaultCredentials;
+            using (var memStream = new MemoryStream())
+            {
+                var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
+                var formdataTemplate = "\r\n--" + boundary + "\r\nContent-Disposition:  form-data; name=\"{0}\";\r\n\r\n{1}";
+                var headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\n Content-Type: application/octet-stream\r\n\r\n";
+                memStream.Write(boundaryBytes, 0, boundaryBytes.Length);
+
+                var header = string.Format(headerTemplate, "target", file);
+                var headerbytes = Encoding.UTF8.GetBytes(header);
+                memStream.Write(headerbytes, 0, headerbytes.Length);
+
+                using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
+                {
+                    var buffer = new byte[4096];
+                    var bytesRead = 0;
+                    while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
+                    {
+                        memStream.Write(buffer, 0, bytesRead);
+                    }
+                    memStream.Write(boundaryBytes, 0, boundaryBytes.Length);
+                }
+
+                httpWebRequest.ContentLength = memStream.Length;
+                using (var requestStream = httpWebRequest.GetRequestStream())
+                {
+                    var tempBuffer = memStream.ToArray();
+                    requestStream.Write(tempBuffer, 0, tempBuffer.Length);
+                }
+            }
+
+            var webResponse = httpWebRequest.GetResponse();
+            using (var stream = webResponse.GetResponseStream())
+            using (var reader = new StreamReader(stream))
+            {
+                return reader.ReadToEnd();
             }
         }
     }

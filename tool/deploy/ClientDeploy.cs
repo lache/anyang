@@ -9,7 +9,7 @@ namespace deploy
         protected override void ExecuteInternal(string history)
         {
             Log(Color.Yellow, " * Build Start.");
-            var buildResult = BuildProject(@"..\client.sln", "Release|Win32");
+            var buildResult = BuildProject(Path.Combine("..", "client", "build", "cocos2d-win32.vc2012.sln"), "Release|Win32");
 
             Log(Color.Cyan, 4, buildResult.Stdout.Trim());
             Log(Color.Yellow, " * Build Ok.");
@@ -23,10 +23,15 @@ namespace deploy
 
             MakeHash("client");
 
-            Log(Color.Yellow, " * Upload Start.");
-            var uploadResult = UploadFile("client");
+            Log(Color.Yellow, " * Zip Client.");
+            var zipResult = Zip("client", "client.zip");
+            Log(Color.Cyan, 4, zipResult.Stdout.Trim());
+            Log(Color.Yellow, " * Zip Ok.");
 
-            Log(Color.Cyan, 4, uploadResult.Stdout.Trim());
+            Log(Color.Yellow, " * Upload Start.");
+            var uploadResult = PostFile("client.zip");
+
+            Log(Color.Cyan, 4, uploadResult.Trim());
             Log(Color.Yellow, " * Upload Ok.");
 
             Log(Color.Yellow, " * Write History.");

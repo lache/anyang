@@ -11,3 +11,8 @@
 *.lai
 *.la
 *.a
+/deploy/client
+
+obj
+bin
+publish

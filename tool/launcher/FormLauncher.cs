@@ -9,20 +9,11 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Microsoft.Win32;
-using Server.Core.Messaging;
-using Server.Core.Util;
-using Server.Extension;
-using Server.Extension.Handler;
-using Server.Message.Pylon;
 
 namespace launcher
 {
     public partial class FormLauncher : Form
     {
-        private readonly MessageSession _session = MessageSessionManager.Instance.CreateSession();
-
-        private FormInterChat _interChatForm;
-
         public FormLauncher()
         {
             InitializeComponent();
@@ -30,47 +21,9 @@ namespace launcher
 
         private void FormLauncher_Load(object sender, EventArgs e)
         {
-            Task.Factory.StartNew(ConnectAndUpdateServerList);
             Task.Factory.StartNew(PatchClient).ContinueWith(_ => PatchServer());
 
             LoadAccountNameFromRegistry();
-        }
-
-        private void ConnectAndUpdateServerList()
-        {
-            DispatchHandler.Instance.AddHandler<ServersMsg>(ProcessServersMsg);
-            DispatchHandler.Instance.AddHandler<InterChatCommandMsg>(ProcessInterChatCommandMsg);
-
-            try
-            {
-#if DEBUG
-                _session.Connect("127.0.0.1", Configuration.PylonPort);
-#else
-                _session.Connect(Configuration.PylonHost, Configuration.PylonPort);
-#endif
-                _session.StartReceive();
-
-                _session.Send(new RequestServerMsg());
-                UpdateUi(() => timerRefresh.Enabled = true);
-            }
-            catch (Exception exception)
-            {
-                UpdateUi(() =>
-                    {
-                        ShowError("Cannot connect to xelina: {0}", exception.Message);
-
-                        textAccountName.Enabled = false;
-                        listViewServers.Enabled = false;
-                        buttonInterChat.Enabled = false;
-                        buttonStartGame.Enabled = false;
-                    });
-            }
-        }
-
-        private void ProcessServersMsg(ServersMsg msg)
-        {
-            ClientLauncher.Instance.Servers = msg.ServerList;
-            UpdateServerList();
         }
 
         private void UpdateServerList()
@@ -79,13 +32,14 @@ namespace launcher
                 Invoke(new MethodInvoker(UpdateServerList));
             else
             {
-                var servers = ClientLauncher.Instance.Servers;
                 listViewServers.Items.Clear();
+                /*
                 foreach (var each in servers)
                     listViewServers.Items.Add(each.Name);
 
                 if (listViewServers.Items.Count > 0)
                     listViewServers.Items[0].Selected = true;
+                 */
             }
         }
 
@@ -108,7 +62,6 @@ namespace launcher
 
                     textAccountName.Enabled = false;
                     listViewServers.Enabled = false;
-                    buttonInterChat.Enabled = false;
                     buttonStartGame.Enabled = false;
                     timerRefresh.Enabled = false;
                 });
@@ -138,7 +91,7 @@ namespace launcher
 
         private void PatchBinary(string patchPath, string localPath)
         {
-            var baseUrl = "http://dist.mmo.pe.kr/patch/" + patchPath;
+            var baseUrl = "http://dist.mmo.pe.kr/patch_a/" + patchPath;
             CreateDirectory(new DirectoryInfo(localPath));
 
             using (var webClient = new WebClient())
@@ -217,6 +170,7 @@ namespace launcher
 
         private void buttonStartGame_Click(object sender, EventArgs e)
         {
+            /*
             var userName = textAccountName.Text.Trim();
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -236,11 +190,12 @@ namespace launcher
             }
 
             var serverIndex = serverIndices[0];
+             */
             try
             {
                 timerRefresh.Enabled = false;
 
-                ClientLauncher.Instance.Execute(serverIndex, userName);
+                ClientLauncher.Instance.Execute();
 
                 SaveAccountNameToRegistry();
                 Close();
@@ -263,69 +218,9 @@ namespace launcher
             }
         }
 
-        private void buttonInterChat_Click(object sender, EventArgs e)
-        {
-            var userName = textAccountName.Text.Trim();
-            if (string.IsNullOrWhiteSpace(userName))
-            {
-                ShowError("Invalid username");
-                textAccountName.SelectAll();
-                textAccountName.Focus();
-                return;
-            }
-
-            if (_interChatForm != null)
-            {
-                _interChatForm.Dispose();
-                _interChatForm = null;
-                GC.Collect();
-            }
-
-            // 첫 패킷의 유실을 막기 위해 일단 패킷 핸들러부터 먼저 만든다.
-            _interChatForm = new FormInterChat(_session, userName);
-            _interChatForm.Closed += (obj, args) => Close();
-
-            _session.Send(new InterChatLoginMsg { Name = userName });
-        }
-
-        private void ProcessInterChatCommandMsg(InterChatCommandMsg msg)
-        {
-            switch ((InterChatCommandType)msg.TypeCode)
-            {
-                case InterChatCommandType.CheckUserName:
-                    if (msg.Content.As<bool>())
-                    {
-                        StartInterChat();
-                    }
-                    else
-                    {
-                        ShowError("Duplicated name: " + textAccountName.Text);
-                        UpdateUi(() =>
-                            {
-                                textAccountName.SelectAll();
-                                textAccountName.Focus();
-                            });
-                    }
-                    break;
-            }
-        }
-
-        private void StartInterChat()
-        {
-            UpdateUi(() =>
-                {
-                    _interChatForm.Show();
-                    Hide();
-
-                    timerRefresh.Enabled = false;
-                });
-
-            SaveAccountNameToRegistry();
-        }
-
         private void LoadAccountNameFromRegistry()
         {
-            using (var regKey = Registry.CurrentUser.CreateSubKey("InterChat"))
+            using (var regKey = Registry.CurrentUser.CreateSubKey("Anyang"))
             {
                 if (regKey != null)
                 {
@@ -342,7 +237,7 @@ namespace launcher
         {
             try
             {
-                using (var regKey = Registry.CurrentUser.CreateSubKey("InterChat"))
+                using (var regKey = Registry.CurrentUser.CreateSubKey("Anyang"))
                 {
                     if (regKey != null)
                         regKey.SetValue("userName", textAccountName.Text);
@@ -359,7 +254,6 @@ namespace launcher
         {
             try
             {
-                _session.Send(new RequestServerMsg());
             }
 // ReSharper disable EmptyGeneralCatchClause
             catch (Exception)

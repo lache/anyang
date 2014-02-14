@@ -18,7 +18,7 @@ namespace deploy
         protected override void ExecuteInternal(string history)
         {
             Log(Color.Yellow, " * Build Start.");
-            var buildResult = BuildProject(@"..\new_server\Server.sln", "Release|Any CPU");
+            var buildResult = BuildProject(@"..\Server.sln", "Release|Any CPU");
 
             Log(Color.Cyan, 4, buildResult.Stdout.Trim());
             Log(Color.Yellow, " * Build Ok.");
@@ -35,10 +35,15 @@ namespace deploy
 
             MakeHash("server");
 
-            Log(Color.Yellow, " * Upload Start.");
-            var uploadResult = UploadFile("server");
+            Log(Color.Yellow, " * Zip Server.");
+            var zipResult = Zip("server", "server.zip");
+            Log(Color.Cyan, 4, zipResult.Stdout.Trim());
+            Log(Color.Yellow, " * Zip Ok.");
 
-            Log(Color.Cyan, 4, uploadResult.Stdout.Trim());
+            Log(Color.Yellow, " * Upload Start.");
+            var uploadResult = PostFile("server.zip");
+
+            Log(Color.Cyan, 4, uploadResult.Trim());
             Log(Color.Yellow, " * Upload Ok.");
 
             Log(Color.Yellow, " * Write History.");

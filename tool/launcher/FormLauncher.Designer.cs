@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.webBrowser = new System.Windows.Forms.WebBrowser();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.buttonInterChat = new System.Windows.Forms.Button();
             this.listViewServers = new System.Windows.Forms.ListView();
             this.columnServer = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.imageList = new System.Windows.Forms.ImageList(this.components);
@@ -51,7 +50,7 @@
             this.webBrowser.ScrollBarsEnabled = false;
             this.webBrowser.Size = new System.Drawing.Size(677, 448);
             this.webBrowser.TabIndex = 5;
-            this.webBrowser.Url = new System.Uri("http://launcher.mmo.pe.kr/", System.UriKind.Absolute);
+            this.webBrowser.Url = new System.Uri("", System.UriKind.Relative);
             // 
             // progressBar
             // 
@@ -59,16 +58,6 @@
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(677, 22);
             this.progressBar.TabIndex = 6;
-            // 
-            // buttonInterChat
-            // 
-            this.buttonInterChat.Location = new System.Drawing.Point(704, 451);
-            this.buttonInterChat.Name = "buttonInterChat";
-            this.buttonInterChat.Size = new System.Drawing.Size(164, 37);
-            this.buttonInterChat.TabIndex = 4;
-            this.buttonInterChat.Text = "Inter &Chat";
-            this.buttonInterChat.UseVisualStyleBackColor = true;
-            this.buttonInterChat.Click += new System.EventHandler(this.buttonInterChat_Click);
             // 
             // listViewServers
             // 
@@ -78,7 +67,7 @@
             this.listViewServers.Location = new System.Drawing.Point(704, 114);
             this.listViewServers.MultiSelect = false;
             this.listViewServers.Name = "listViewServers";
-            this.listViewServers.Size = new System.Drawing.Size(164, 245);
+            this.listViewServers.Size = new System.Drawing.Size(164, 288);
             this.listViewServers.SmallImageList = this.imageList;
             this.listViewServers.TabIndex = 1;
             this.listViewServers.UseCompatibleStateImageBehavior = false;
@@ -98,7 +87,7 @@
             // buttonStartGame
             // 
             this.buttonStartGame.Enabled = false;
-            this.buttonStartGame.Location = new System.Drawing.Point(704, 365);
+            this.buttonStartGame.Location = new System.Drawing.Point(704, 408);
             this.buttonStartGame.Name = "buttonStartGame";
             this.buttonStartGame.Size = new System.Drawing.Size(164, 37);
             this.buttonStartGame.TabIndex = 2;
@@ -126,7 +115,7 @@
             // buttonStartServer
             // 
             this.buttonStartServer.Enabled = false;
-            this.buttonStartServer.Location = new System.Drawing.Point(704, 408);
+            this.buttonStartServer.Location = new System.Drawing.Point(704, 451);
             this.buttonStartServer.Name = "buttonStartServer";
             this.buttonStartServer.Size = new System.Drawing.Size(164, 37);
             this.buttonStartServer.TabIndex = 3;
@@ -149,7 +138,6 @@
             this.Controls.Add(this.listViewServers);
             this.Controls.Add(this.buttonStartServer);
             this.Controls.Add(this.buttonStartGame);
-            this.Controls.Add(this.buttonInterChat);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.webBrowser);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -168,7 +156,6 @@
 
         private System.Windows.Forms.WebBrowser webBrowser;
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.Button buttonInterChat;
         private System.Windows.Forms.ListView listViewServers;
         private System.Windows.Forms.ColumnHeader columnServer;
         private System.Windows.Forms.ImageList imageList;
