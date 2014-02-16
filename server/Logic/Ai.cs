@@ -44,11 +44,12 @@ namespace Server.Logic
         public Command GetAction()
         {
             // 아래의 코드는 테스트 코드
+            var dest = new Position { X = 0, Y = 0 };
             return new Command {
-                Action = ActionSet.AS_NONE,
-                Params = new ActionMoveParam { 
-                    Direction = PathWay.EAST,
-                    Destination = new Position { X = 0, Y = 0, }
+                Action = ActionSet.AS_MOVE,
+                Params = new ActionMoveParam {
+                    Direction = _actor.FindWay(dest),
+                    Destination = dest,
                 },
             };
         }

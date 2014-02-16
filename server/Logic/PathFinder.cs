@@ -13,9 +13,10 @@ namespace Server.Logic
         PFM_DFS = 300,      // DFS
         PFM_DIJKSTRA = 400, // Dijkstra
     }
- 
+    
     enum PathWay
     {
+        STAY = 0,
         EAST = 100,
         WEST = 200,
         SOUTH = 300,
@@ -30,9 +31,14 @@ namespace Server.Logic
 
     static class PathFinder
     {
-        static IEnumerable<PathWay> FindWay(this Actor actor, Position dest, PathFinderMethod method = PathFinderMethod.PFM_ASTAR)
+        public static PathWay FindWay(this Actor actor, Position dest, PathFinderMethod method = PathFinderMethod.PFM_ASTAR)
         {
-            yield break;
+            return actor.FindWays(dest, method).First();
+        }
+
+        public static IEnumerable<PathWay> FindWays(this Actor actor, Position dest, PathFinderMethod method = PathFinderMethod.PFM_ASTAR)
+        {
+            yield return PathWay.STAY;
         }
     }
 }
