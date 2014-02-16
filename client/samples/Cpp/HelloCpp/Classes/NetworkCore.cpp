@@ -10,12 +10,13 @@
 #include <thread>
 
 #define ASIO_STANDALONE
-#include "include/asio.hpp"
-#include "include/msg_session.h"
-#include "include/msg_session_ref.h"
-#include "NetworkCore.h"
+#include "asio.hpp"
 
+#include "msg_session.h"
+#include "msg_session_ref.h"
 #include "game_msg.h"
+
+#include "NetworkCore.h"
 
 asio::io_service io_svc;
 typedef std::shared_ptr<msg_session> msg_session_ref;

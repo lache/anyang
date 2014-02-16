@@ -7,13 +7,7 @@
 
 using asio::ip::tcp;
 
-#ifdef MSGEN_EXPORTS
-#define MSGEN_API __declspec(dllexport)
-#else
-#define MSGEN_API __declspec(dllimport)
-#endif
-
-class MSGEN_API msg_session
+class msg_session
         : public std::enable_shared_from_this<msg_session> {
 public:
     msg_session(asio::io_service& io_service);
