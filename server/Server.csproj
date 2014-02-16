@@ -46,7 +46,7 @@
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\Network.cs" />
     <Compile Include="Logic\Actor.cs" />
-    <Compile Include="Logic\User.cs" />
+    <Compile Include="Logic\Player.cs" />
     <Compile Include="Logic\World.cs" />
     <Compile Include="Messages.cs">
       <AutoGen>True</AutoGen>
