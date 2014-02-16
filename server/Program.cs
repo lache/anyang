@@ -13,19 +13,20 @@ namespace Server
 {
     class Program
     {
+        private readonly Persistence _persistence = new Persistence();
         private readonly Network _network = new Network();
         private readonly Coroutine _coro = new Coroutine();
         private readonly World _world;
 
         public Program()
         {
-            _world = new World(_coro);
+            _world = new World(_coro, _persistence);
         }
 
         public void Run()
         {
             _network.OnConnect += network_OnConnect;
-            _network.OnDisconnect += _network_OnDisconnect;
+            _network.OnDisconnect += network_OnDisconnect;
 
             Logger.Write("start nerwork");
             _network.StartServer(40004);
@@ -40,13 +41,13 @@ namespace Server
         void network_OnConnect(Session session)
         {
             // 네트워크로 연결된 Actor는 Player이므로 User 객체를 만들어준다.
-            var actor = new Player(_world, _coro, session);
+            var actor = new Player(_world, session);
             session.Source = actor;
             _coro.AddEntry(actor.CoroEntry);
             _coro.AddEntry(actor.CoroDispatchEntry);
         }
 
-        void _network_OnDisconnect(Session session)
+        void network_OnDisconnect(Session session)
         {
             var actor = session.Source as Actor;
             if (actor != null)

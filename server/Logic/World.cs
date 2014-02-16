@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,10 +13,12 @@ namespace Server.Logic
     class World
     {
         private readonly Coroutine _coro;
+        private readonly Persistence _persistence;
 
-        public World(Coroutine coro)
+        public World(Coroutine coro, Persistence persistence)
         {
             _coro = coro;
+            _persistence = persistence;
         }
 
         public IEnumerable<int> CoroEntry()
@@ -26,5 +29,8 @@ namespace Server.Logic
                 yield return 1000;
             }
         }
+
+        public Coroutine Coro { get { return _coro; } }
+        public Persistence Persist { get { return _persistence; } }
     }
 }

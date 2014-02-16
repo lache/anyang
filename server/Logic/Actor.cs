@@ -13,13 +13,11 @@ namespace Server.Logic
     // Coroutine을 통해 추가 작업을 수행하거나, World를 통해 정보를 질의할 수 있다.
     class Actor
     {
-        protected readonly Coroutine _coro;
         protected readonly World _world;
 
-        public Actor(World world, Coroutine coro)
+        public Actor(World world)
         {
             _world = world;
-            _coro = coro;
         }
 
         // 객체 생성 시 불리는 Coroutine 진입 함수.
@@ -41,8 +39,8 @@ namespace Server.Logic
         Random _random = new Random(DateTime.Now.Millisecond);
         Ai _ai;
 
-        public AiActor(World world, Coroutine coro, Ai ai)
-            : base(world, coro)
+        public AiActor(World world, Ai ai)
+            : base(world)
         {
             _ai = ai;
         }
@@ -79,8 +77,8 @@ namespace Server.Logic
     class NetworkActor : Actor
     {
         protected readonly Session _session;
-        public NetworkActor(World world, Coroutine coro, Session session)
-            : base(world, coro)
+        public NetworkActor(World world, Session session)
+            : base(world)
         {
             _session = session;
             PrepareDispatchMap();

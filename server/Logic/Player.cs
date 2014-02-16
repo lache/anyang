@@ -10,8 +10,8 @@ namespace Server.Logic
 {
     class Player : NetworkActor
     {
-        public Player(World world, Coroutine coro, Session session)
-            : base(world, coro, session)
+        public Player(World world, Session session)
+            : base(world, session)
         {
         }
 
