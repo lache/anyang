@@ -40,6 +40,9 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="TiledSharp">
+      <HintPath>.\TiledSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Core\AsyncSocket.cs" />
@@ -60,6 +63,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\resources\map\default_1.tmx">
+      <Link>Data\default_1.tmx</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="Messages.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
