@@ -263,6 +263,9 @@ h2. {2} 배포 [{0}]
         protected static ProcessResult Zip(string sourceDirectory, string outputFile)
         {
             const string scpPath = @"tools\7z.exe";
+            if (File.Exists(outputFile))
+                File.Delete(outputFile);
+
             return ExecuteProcess(scpPath, string.Format(@"a -r {0} {1}", outputFile, sourceDirectory), "Cannot zip file: " + outputFile);
         }
 
