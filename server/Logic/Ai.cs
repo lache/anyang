@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Logic
 {
-    public enum ActionSet
+    enum ActionSet
     {
         AS_NONE = 1000, // do nothing
         AS_MOVE = 2000, // move to anywhere
@@ -14,11 +14,17 @@ namespace Server.Logic
         AS_TUNE_TAX_RATIO = 4000, // tune tax ratio
     }
 
-    public interface ActionParam
+    interface ActionParam
     {
     }
 
-    public class Command
+    class ActionMoveParam : ActionParam
+    {
+        public PathWay Direction;
+        public Position Destination;
+    }
+
+    class Command
     {
         public ActionSet Action;
         public ActionParam Params;
@@ -37,7 +43,14 @@ namespace Server.Logic
 
         public Command GetAction()
         {
-            return new Command { Action = ActionSet.AS_NONE };
+            // 아래의 코드는 테스트 코드
+            return new Command {
+                Action = ActionSet.AS_NONE,
+                Params = new ActionMoveParam { 
+                    Direction = PathWay.EAST,
+                    Destination = new Position { X = 0, Y = 0, }
+                },
+            };
         }
 
     }
