@@ -28,7 +28,6 @@ namespace Server.Logic
     {
         protected readonly World _world;
         Actor _actor;
-        Random _random = new Random(DateTime.Now.Millisecond);
 
         Ai(World world, Actor actor)
         {
@@ -36,26 +35,10 @@ namespace Server.Logic
             _actor = actor;
         }
 
-        private Command GetAction()
+        public Command GetAction()
         {
             return new Command { Action = ActionSet.AS_NONE };
         }
 
-        public IEnumerable<int> CoroAiEntry()
-        {
-            while (_actor.IsAlive())
-            {
-                // 정보를 모으고 - 현재 어떤 정보가 필요한지 확인 불가
-
-                // 판단을 한 다음 - QLearning을 한번 적용해볼까?
-
-                // 액션을 취한다 - 여튼 명령을 내려보자
-                _actor.DoItNow(GetAction());
-
-                yield return _random.Next(1000, 5000);
-            }
-
-            yield break;
-        }
     }
 }

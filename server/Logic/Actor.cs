@@ -34,15 +34,43 @@ namespace Server.Logic
         {
             yield break;
         }
+    }
 
-        internal bool IsAlive()
+    class AiActor : Actor
+    {
+        Random _random = new Random(DateTime.Now.Millisecond);
+        Ai _ai;
+
+        public AiActor(World world, Coroutine coro, Ai ai)
+            : base(world, coro)
         {
-            throw new NotImplementedException();
+            _ai = ai;
         }
 
-        internal void DoItNow(Command command)
+        bool IsAlive()
         {
-            throw new NotImplementedException();
+            return false;
+        }
+
+        void DoItNow(Command command)
+        {
+        }
+
+        public IEnumerable<int> CoroAiEntry()
+        {
+            while (IsAlive())
+            {
+                // 정보를 모으고 AI 에게 주입 - 현재 어떤 정보가 필요한지 확인 불가
+
+                // 판단을 한 다음 - QLearning을 한번 적용해볼까?
+
+                // 액션을 취한다 - 여튼 명령을 내려보자
+                DoItNow(_ai.GetAction());
+
+                yield return _random.Next(1000, 5000);
+            }
+
+            yield break;
         }
     }
 
