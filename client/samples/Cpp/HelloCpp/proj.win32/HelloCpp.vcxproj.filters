@@ -55,5 +55,8 @@
     <ClInclude Include="..\Classes\system_msg.h">
       <Filter>win32</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\utf8.h">
+      <Filter>win32</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

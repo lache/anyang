@@ -1,7 +1,8 @@
-#include "HelloWorldScene.h"
+﻿#include "HelloWorldScene.h"
 #include "AppMacros.h"
 #include "CCEventListenerTouch.h"
 #include "NetworkCore.h"
+#include "utf8.h"
 
 USING_NS_CC;
 
@@ -113,8 +114,9 @@ bool HelloWorld::init()
     // add a label shows "Hello World"
     // create and initialize a label
     
-    auto label = LabelTTF::create("Hello World", "Arial", TITLE_FONT_SIZE);
-    
+    //auto label = LabelTTF::create("안녕하세요 세계여", "Arial", TITLE_FONT_SIZE);
+	auto label = LabelTTF::create(to_utf8(L"안녕하세요 세계여"), "Arial", TITLE_FONT_SIZE);
+	label->setColor(Color3B::BLUE);
     // position the label on the center of the screen
     label->setPosition(Point(origin.x + visibleSize.width/2,
                             origin.y + visibleSize.height - label->getContentSize().height));

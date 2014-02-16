@@ -145,6 +145,7 @@
     <ClInclude Include="..\Classes\pylon_msg.h" />
     <ClInclude Include="..\Classes\resource_msg.h" />
     <ClInclude Include="..\Classes\system_msg.h" />
+    <ClInclude Include="..\Classes\utf8.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>
   <ItemGroup>
