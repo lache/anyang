@@ -27,6 +27,11 @@ namespace Server.Logic
     {
         public int X = 0;
         public int Y = 0;
+
+        public override int GetHashCode()
+        {
+            return (int)(Math.Sqrt(int.MaxValue) * X + Y);
+        }
     }
 
     static class PathFinder
@@ -38,6 +43,19 @@ namespace Server.Logic
 
         public static IEnumerable<PathWay> FindWays(this Actor actor, Position dest, PathFinderMethod method = PathFinderMethod.PFM_ASTAR)
         {
+            // currently, just A* is implemented
+            switch(method)
+            {
+                case PathFinderMethod.PFM_ASTAR:
+                case PathFinderMethod.PFM_BFS:
+                case PathFinderMethod.PFM_DFS:
+                case PathFinderMethod.PFM_DIJKSTRA:
+
+                    var colsedSet = new HashSet<Position>();
+                    var openSet = new HashSet<Position>();
+
+                    break;
+            }
             yield return PathWay.STAY;
         }
     }
