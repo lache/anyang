@@ -19,3 +19,4 @@ bin
 publish
 /deploy/*.manifest
 /server/*.suo
+client/samples/Lua/HelloLua/Resources/*.lua
