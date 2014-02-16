@@ -75,15 +75,22 @@ namespace deploy
 
         protected static ProcessResult BuildProject(string solutionPath, string configuration)
         {
-            const string defaultDevenvPath = @"C:\Program Files (x86)\Microsoft Visual Studio 11.0\Common7\IDE\devenv.com";
+            const string defaultDevenvPath = @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\devenv.com";
+            const string expressDevenvPath = @"C:\Program Files (x86)\Microsoft Visual Studio 12.0\Common7\IDE\WDExpress.exe";
             var devenvPath = defaultDevenvPath;
-            var devenvPathInEnv = Environment.GetEnvironmentVariable("VS110COMNTOOLS");
+            var devenvPathInEnv = Environment.GetEnvironmentVariable("VS120COMNTOOLS");
             if (!string.IsNullOrWhiteSpace(devenvPathInEnv))
                 devenvPath = Path.GetFullPath(Path.Combine(devenvPathInEnv, "..", "IDE", "devenv.com"));
 
             if (!File.Exists(devenvPath))
-                throw new InvalidOperationException("Cannot find VS110 devenv.com");
+            {
+                devenvPath = expressDevenvPath;
+                if (!string.IsNullOrWhiteSpace(devenvPathInEnv))
+                    devenvPath = Path.GetFullPath(Path.Combine(devenvPathInEnv, "..", "IDE", "WDExpress.exe"));
 
+                if (!File.Exists(devenvPath))
+                    throw new InvalidOperationException("Cannot find VS120 devenv.com");
+            }
             return ExecuteProcess(devenvPath, string.Format(@"{0} /build ""{1}""", solutionPath, configuration), "Build Error");
         }
 
@@ -256,6 +263,9 @@ h2. {2} 배포 [{0}]
         protected static ProcessResult Zip(string sourceDirectory, string outputFile)
         {
             const string scpPath = @"tools\7z.exe";
+            if (File.Exists(outputFile))
+                File.Delete(outputFile);
+
             return ExecuteProcess(scpPath, string.Format(@"a -r {0} {1}", outputFile, sourceDirectory), "Cannot zip file: " + outputFile);
         }
 
