@@ -23,7 +23,6 @@ namespace Server.Logic
             // TODO: 월드의 중앙 AI를 구현한다.
             while (true)
             {
-                Logger.Write("1s");
                 yield return 1000;
             }
         }

@@ -1,4 +1,5 @@
 ﻿using Server.Core;
+using Server.Message;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,5 +14,11 @@ namespace Server.Logic
             : base(world, coro, session)
         {
         }
+
+        void OnEnterWorld(EnterWorldMsg msg)
+        {
+            Logger.Write(msg.Name);
+        }
+
     }
 }
