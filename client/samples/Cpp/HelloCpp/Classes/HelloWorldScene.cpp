@@ -75,11 +75,12 @@ bool HelloWorld::init()
 	// add the sprite as a child to this layer
 	this->addChild(sprite);
 
-	auto player = Sprite::create("images/player.png");
+	auto gameObject = Sprite::create("images/player.png");
 
-	player->setPosition(Point(visibleSize / 2) + origin);
+	gameObject->setPosition(Point(visibleSize / 2) + origin);
+	gameObject->setScale(0.25f);
 
-	addChild(player);
+	addChild(gameObject);
 
 	AnConnect();
     

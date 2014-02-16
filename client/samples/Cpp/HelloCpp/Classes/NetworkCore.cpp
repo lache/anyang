@@ -15,6 +15,8 @@
 #include "include/msg_session_ref.h"
 #include "NetworkCore.h"
 
+#include "game_msg.h"
+
 asio::io_service io_svc;
 typedef std::shared_ptr<msg_session> msg_session_ref;
 msg_session_ref session;
@@ -35,6 +37,9 @@ int AnConnect()
 		session->connect(iterator);
 
 		io_svc_thread = new std::thread(std::bind(static_cast<size_t(asio::io_service::*)()>(&asio::io_service::run), &io_svc));
+
+		msg::enter_world_msg msg("gb");
+		session->write(msg);
 	}
 	catch (...)
 	{
