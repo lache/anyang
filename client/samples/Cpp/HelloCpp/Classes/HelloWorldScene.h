@@ -17,6 +17,8 @@ public:
     
     // implement the "static node()" method manually
     CREATE_FUNC(HelloWorld);
+
+	void update(float dt);
 };
 
 #endif // __HELLOWORLD_SCENE_H__

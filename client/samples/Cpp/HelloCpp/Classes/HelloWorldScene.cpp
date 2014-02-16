@@ -83,6 +83,8 @@ bool HelloWorld::init()
 	addChild(gameObject);
 
 	AnConnect();
+
+	scheduleUpdate();
     
     return true;
 }
@@ -94,4 +96,9 @@ void HelloWorld::menuCloseCallback(Object* sender)
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
+}
+
+void HelloWorld::update(float dt)
+{
+	AnPollNetworkIoService();
 }
