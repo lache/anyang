@@ -48,6 +48,7 @@
     <Compile Include="Core\Network.cs" />
     <Compile Include="Logic\Actor.cs" />
     <Compile Include="Logic\Ai.cs" />
+    <Compile Include="Logic\PathFinder.cs" />
     <Compile Include="Logic\Persistence.cs" />
     <Compile Include="Logic\Player.cs" />
     <Compile Include="Logic\World.cs" />
