@@ -9,7 +9,7 @@ namespace deploy
         protected override void ExecuteInternal(string history)
         {
             Log(Color.Yellow, " * Build Start.");
-            var buildResult = BuildProject(Path.Combine("..", "client", "build", "cocos2d-win32.vc2012.sln"), "Release|Win32");
+            var buildResult = BuildProject(Path.Combine("..", "client", "build", "cocos2d-win32.vc2013.sln"), "Release|Win32");
 
             Log(Color.Cyan, 4, buildResult.Stdout.Trim());
             Log(Color.Yellow, " * Build Ok.");
