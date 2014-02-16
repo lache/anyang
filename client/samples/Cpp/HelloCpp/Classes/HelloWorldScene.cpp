@@ -1,7 +1,7 @@
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
-
 #include "CCEventListenerTouch.h"
+#include "NetworkCore.h"
 
 USING_NS_CC;
 
@@ -72,8 +72,16 @@ bool HelloWorld::init()
     // position the sprite on the center of the screen
     sprite->setPosition(Point(visibleSize / 2) + origin);
 
-    // add the sprite as a child to this layer
-    this->addChild(sprite);
+	// add the sprite as a child to this layer
+	this->addChild(sprite);
+
+	auto player = Sprite::create("images/player.png");
+
+	player->setPosition(Point(visibleSize / 2) + origin);
+
+	addChild(player);
+
+	AnConnect();
     
     return true;
 }

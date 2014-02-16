@@ -1,6 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libAudio", "..\cocos\audio\proj.win32\CocosDenshion.vcxproj", "{F8EDD7FA-9A51-4E80-BAEB-860825D2EAC6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libcocos2d", "..\cocos\2d\cocos2d.vcxproj", "{98A51BA8-FC3A-415B-AC8F-8C7BD464E93E}"
@@ -66,6 +68,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libJSBindingForGui", "..\cocos\scripting\javascript\bindings\gui\libJSBindingForGui.vcxproj", "{9A844C88-97E8-4E2D-B09A-E138C67D338B}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "libJSBindingForSpine", "..\cocos\scripting\javascript\bindings\spine\libJSBindingForSpine.vcxproj", "{E78CDC6B-F37D-48D2-AD91-1DB549497E32}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "msg", "..\msg\msg.vcxproj", "{C4E63E1E-601A-45F4-B7DA-3EB90C0CEA21}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -201,6 +205,10 @@ Global
 		{E78CDC6B-F37D-48D2-AD91-1DB549497E32}.Debug|Win32.Build.0 = Debug|Win32
 		{E78CDC6B-F37D-48D2-AD91-1DB549497E32}.Release|Win32.ActiveCfg = Release|Win32
 		{E78CDC6B-F37D-48D2-AD91-1DB549497E32}.Release|Win32.Build.0 = Release|Win32
+		{C4E63E1E-601A-45F4-B7DA-3EB90C0CEA21}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C4E63E1E-601A-45F4-B7DA-3EB90C0CEA21}.Debug|Win32.Build.0 = Debug|Win32
+		{C4E63E1E-601A-45F4-B7DA-3EB90C0CEA21}.Release|Win32.ActiveCfg = Release|Win32
+		{C4E63E1E-601A-45F4-B7DA-3EB90C0CEA21}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
