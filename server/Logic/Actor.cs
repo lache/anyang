@@ -34,6 +34,16 @@ namespace Server.Logic
         {
             yield break;
         }
+
+        internal bool IsAlive()
+        {
+            throw new NotImplementedException();
+        }
+
+        internal void DoItNow(Command command)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     // Network 연결에 의해 Message 기반으로 수행될 Actor이다.

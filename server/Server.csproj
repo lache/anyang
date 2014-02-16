@@ -46,6 +46,8 @@
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\Network.cs" />
     <Compile Include="Logic\Actor.cs" />
+    <Compile Include="Logic\Ai.cs" />
+    <Compile Include="Logic\Npc.cs" />
     <Compile Include="Logic\Player.cs" />
     <Compile Include="Logic\World.cs" />
     <Compile Include="Messages.cs">
