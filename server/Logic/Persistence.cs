@@ -72,7 +72,8 @@ namespace Server.Logic
             }
 
             // Serial이 겹치지 않도록 처리해준다.
-            _idSerial = _dataMap.Select(e => e.Key).Max();
+            if (_dataMap.Count > 0)
+                _idSerial = _dataMap.Select(e => e.Key).Max();
         }
 
         public T Find<T>(Func<T, bool> predicate) where T : PersistenceData
