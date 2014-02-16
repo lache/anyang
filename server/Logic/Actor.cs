@@ -81,7 +81,7 @@ namespace Server.Logic
                 foreach (var message in _session.MessageQueue.Flush())
                 {
                     var messageType = message.GetType();
-                    if (_dispatchMap.ContainsKey(messageType))
+                    if (!_dispatchMap.ContainsKey(messageType))
                         continue;
                     _dispatchMap[messageType].Invoke(this, new object[] { message });
                 }
