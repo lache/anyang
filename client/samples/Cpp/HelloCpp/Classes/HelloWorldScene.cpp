@@ -5,6 +5,62 @@
 
 USING_NS_CC;
 
+static bool keyleft;
+static bool keyright;
+static bool keyup;
+static bool keydown;
+static bool keyplus;
+static bool keyminus;
+
+void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
+{
+	switch (kc)
+	{
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		keyleft = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		keyright = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+		keyup = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		keydown = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_KP_PLUS:
+		keyplus = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_KP_MINUS:
+		keyminus = true;
+		break;
+	}
+}
+
+void DefaultOnKeyReleased(EventKeyboard::KeyCode kc, Event* evt)
+{
+	switch (kc)
+	{
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		keyleft = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		keyright = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+		keyup = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		keydown = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_KP_PLUS:
+		keyplus = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_KP_MINUS:
+		keyminus = false;
+		break;
+	}
+}
 
 Scene* HelloWorld::scene()
 {
@@ -17,7 +73,7 @@ Scene* HelloWorld::scene()
     // add layer as a child to scene
     scene->addChild(layer);
 
-    // return the scene
+	// return the scene
     return scene;
 }
 
@@ -85,7 +141,12 @@ bool HelloWorld::init()
 	AnConnect();
 
 	scheduleUpdate();
-    
+
+	auto listener = EventListenerKeyboard::create();
+	listener->onKeyPressed = std::bind(&DefaultOnKeyPressed, std::placeholders::_1, std::placeholders::_2);
+	listener->onKeyReleased = std::bind(&DefaultOnKeyReleased, std::placeholders::_1, std::placeholders::_2);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
     return true;
 }
 
@@ -101,4 +162,36 @@ void HelloWorld::menuCloseCallback(Object* sender)
 void HelloWorld::update(float dt)
 {
 	AnPollNetworkIoService();
+
+	Point layerPos = getPosition();
+	static float moveSpeed = -5.0f;
+	if (keyright)
+	{
+		layerPos.x += moveSpeed;
+	}
+	if (keyleft)
+	{
+		layerPos.x -= moveSpeed;
+	}
+	if (keyup)
+	{
+		layerPos.y += moveSpeed;
+	}
+	if (keydown)
+	{
+		layerPos.y -= moveSpeed;
+	}
+	setPosition(layerPos);
+
+	static float scaleSpeed = 0.01f;
+	float layerScale = getScale();
+	if (keyplus)
+	{
+		layerScale += scaleSpeed;
+	}
+	if (keyminus)
+	{
+		layerScale -= scaleSpeed;
+	}
+	setScale(layerScale);
 }
