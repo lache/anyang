@@ -122,16 +122,10 @@ bool HelloWorld::init()
                             origin.y + visibleSize.height - label->getContentSize().height));
 
     // add the label as a child to this layer
-    this->addChild(label, 1);
+	this->addChild(label, 1);
 
-    // add "HelloWorld" splash screen"
-    auto sprite = Sprite::create("HelloWorld.png");
-
-    // position the sprite on the center of the screen
-    sprite->setPosition(Point(visibleSize / 2) + origin);
-
-	// add the sprite as a child to this layer
-	this->addChild(sprite);
+	CCTMXTiledMap *map = CCTMXTiledMap::create("..\\..\\..\\..\\..\\resources\\map\\default_1.tmx");
+	addChild(map, -1);
 
 	auto gameObject = Sprite::create("images/player.png");
 
