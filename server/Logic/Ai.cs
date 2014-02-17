@@ -45,11 +45,12 @@ namespace Server.Logic
         {
             // 아래의 코드는 테스트 코드
             var dest = new Position { X = 0, Y = 0 };
+            var moveTo = _actor.FindWay(dest);
             return new Command {
                 Action = ActionSet.AS_MOVE,
                 Params = new ActionMoveParam {
-                    Direction = _actor.FindWay(dest),
-                    Destination = dest,
+                    Direction = _actor.Location.ToDirection(moveTo),
+                    Destination = moveTo,
                 },
             };
         }

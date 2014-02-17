@@ -14,10 +14,16 @@ namespace Server.Logic
     class Actor
     {
         protected readonly World _world;
+        public Position Location = new Position { X = 0, Y = 0 };
 
         public Actor(World world)
         {
             _world = world;
+        }
+
+        public bool CanMove(Position pos)
+        {
+            return _world.CanMove(pos.X, pos.Y);
         }
 
         // 객체 생성 시 불리는 Coroutine 진입 함수.
