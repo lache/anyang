@@ -1,4 +1,4 @@
-﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+﻿<#@ template debug="false" hostspecific="true" language="C#" #>
 <#@ assembly name="System.Core" #>
 <#@ assembly name="System.Xml" #>
 <#@ assembly name="System.Xml.Linq" #>
@@ -31,7 +31,7 @@ startBracket();
     }
 
 <#
-var msgXmlFile = Path.Combine("..", "resources", "data", "msg.xml");
+var msgXmlFile = this.Host.ResolvePath(Path.Combine("..", "resources", "data", "msg.xml"));
 var msgXml = XElement.Load(msgXmlFile);
 var postfix = ToCamelCase(msgXml.Attribute("postfix").Value);
 
@@ -92,12 +92,12 @@ foreach (var groupNode in msgXml.Elements("group"))
             }
         }
 
-        if (members.Count(e => e.Item1 == MemberType.ListRef) > 0)
+        if (members.Count(e => e.Item1 != MemberType.Primitive) > 0)
         {
             writeCode("");
             writeCode(string.Format("public {0}()", messageClassName));
             startBracket();
-            foreach (var pair in members.Where(e => e.Item1 == MemberType.ListRef))
+            foreach (var pair in members.Where(e => e.Item1 != MemberType.Primitive))
             {
                 writeCode(string.Format("{0} = new {1}();", pair.Item2, pair.Item3));
             }

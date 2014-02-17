@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -62,6 +63,7 @@ namespace Server.Logic
 
         public IEnumerable<int> CoroAiEntry()
         {
+            _world.Actors.Add(this);
             while (IsAlive())
             {
                 // 정보를 모으고 AI 에게 주입 - 현재 어떤 정보가 필요한지 확인 불가
@@ -73,8 +75,7 @@ namespace Server.Logic
 
                 yield return _random.Next(1000, 5000);
             }
-
-            yield break;
+            _world.Actors.Remove(this);
         }
     }
 
@@ -88,6 +89,11 @@ namespace Server.Logic
         {
             _session = session;
             PrepareDispatchMap();
+        }
+
+        public void SendToNetwork(IMessage message)
+        {
+            _session.Send(message);
         }
 
         public override IEnumerable<int> CoroEntry()

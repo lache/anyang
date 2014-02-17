@@ -18,6 +18,8 @@ namespace Server.Logic
         private readonly TiledSharp.TmxMap _map;
         private readonly bool[,] _obstacles;
 
+        public readonly List<Actor> Actors = new List<Actor>();
+
         public World(Coroutine coro, Persistence persistence)
         {
             _coro = coro;

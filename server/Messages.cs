@@ -49,6 +49,13 @@ namespace Server.Message
         public UpdatePositionMsg UpdatePosition { get; set; }
         public UpdateHpMsg UpdateHp { get; set; }
         
+        public SpawnMsg()
+        {
+            CharacterResource = new CharacterResourceMsg();
+            UpdatePosition = new UpdatePositionMsg();
+            UpdateHp = new UpdateHpMsg();
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);

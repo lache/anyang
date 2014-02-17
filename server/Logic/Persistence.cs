@@ -18,7 +18,7 @@ namespace Server.Logic
     class PersistenceData
     {
         [DataMember]
-        public long PersistenceId { get; set; }
+        public int ObjectId { get; set; }
     }
 
     // PersistenceData를 상속 받은 객체들을 xml 파일로 관리해준다.
@@ -28,8 +28,8 @@ namespace Server.Logic
         private const string DataDirectory = "Persist";
 
         private readonly Dictionary<Type, DataContractSerializer> _serMap = new Dictionary<Type, DataContractSerializer>();
-        private readonly Dictionary<long /* objectId */, PersistenceData> _dataMap = new Dictionary<long, PersistenceData>();
-        private long _idSerial;
+        private readonly Dictionary<int /* objectId */, PersistenceData> _dataMap = new Dictionary<int, PersistenceData>();
+        private int _idSerial;
 
         public Persistence()
         {
@@ -67,7 +67,7 @@ namespace Server.Logic
                 {
                     var ser = loadSerMap[typename];
                     var data = (PersistenceData)ser.ReadObject(reader);
-                    _dataMap.Add(data.PersistenceId, data);
+                    _dataMap.Add(data.ObjectId, data);
                 }
             }
 
@@ -100,20 +100,20 @@ namespace Server.Logic
                 throw new InvalidOperationException("obj_should_inherit_PersistenceData");
 
             // PersistenceId가 없는 새 객체일 경우 새로 발급한다.
-            if (obj.PersistenceId == 0)
+            if (obj.ObjectId == 0)
             {
-                obj.PersistenceId = ++_idSerial;
+                obj.ObjectId = ++_idSerial;
             }
 
             // 파일을 추가하고, 메모리에도 넣어둔다.
-            var path = Path.Combine(DataDirectory, string.Format("{0}_{1}.xml", objType.Name, obj.PersistenceId));
+            var path = Path.Combine(DataDirectory, string.Format("{0}_{1}.xml", objType.Name, obj.ObjectId));
             using (var stream = new FileStream(path, FileMode.Create))
             using (var writer = XmlWriter.Create(stream, new XmlWriterSettings { Indent = true }))
             {
                 var ser = _serMap[objType];
                 ser.WriteObject(writer, obj);
             }
-            _dataMap.Add(obj.PersistenceId, obj);
+            _dataMap.Add(obj.ObjectId, obj);
         }
 
         public void Delete(PersistenceData obj)
@@ -121,16 +121,16 @@ namespace Server.Logic
             if (obj == null)
                 return;
 
-            if (obj.PersistenceId == 0)
+            if (obj.ObjectId == 0)
                 return;
 
             // 파일을 삭제하고, 메모리에서도 제거한다.
             var objType = obj.GetType();
-            var path = Path.Combine(DataDirectory, string.Format("{0}_{1}.xml", objType.Name, obj.PersistenceId));
+            var path = Path.Combine(DataDirectory, string.Format("{0}_{1}.xml", objType.Name, obj.ObjectId));
             if (File.Exists(path))
                 File.Delete(path);
 
-            _dataMap.Remove(obj.PersistenceId);
+            _dataMap.Remove(obj.ObjectId);
         }
     }
 }
