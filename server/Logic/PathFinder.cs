@@ -26,10 +26,15 @@ namespace Server.Logic
         NORTH = 400,
     }
 
-    class Position
+    class Position : IComparable<Position>, IEquatable<Position>
     {
         public int X = 0;
         public int Y = 0;
+
+        public int CompareTo(Position pos)
+        {
+            return X != pos.X ? X - pos.X : Y - pos.Y;
+        }
 
         public override int GetHashCode()
         {
@@ -39,6 +44,21 @@ namespace Server.Logic
         public Position Clone()
         {
             return new Position {X = this.X, Y = this.Y};
+        }
+
+        public static bool operator == (Position pos1, Position pos2)
+        {
+            return pos1.X == pos2.X && pos1.Y == pos2.Y;
+        }
+        
+        public static bool operator != (Position pos1, Position pos2)
+        {
+            return !(pos1 == pos2);
+        }
+
+        public bool Equals(Position pos)
+        {
+            return X == pos.X && Y == pos.Y;
         }
 
         public Position MoveToWay(PathWay way)
@@ -72,6 +92,11 @@ namespace Server.Logic
                 yield return MoveToWay(way);
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format("X: {0}, Y: {1}", X, Y);
+        }
     }
 
     static class PathHelper
@@ -96,6 +121,22 @@ namespace Server.Logic
                 return PathWay.NORTH;
 
             return PathWay.STAY;
+        }
+
+        public static double ToClientDirection(this PathWay way)
+        {
+            switch (way)
+            {
+                case PathWay.NORTH:
+                    return 0.0;
+                case PathWay.EAST:
+                    return 90.0;
+                case PathWay.SOUTH:
+                    return 180.0;
+                case PathWay.WEST:
+                    return 270.0;
+            }
+            return 0.0;
         }
     }
 
@@ -130,20 +171,21 @@ namespace Server.Logic
                         if (current.Key == dest)
                         {
                             // construct way to dest
-                            var wayStak = new Stack<Position>();
+                            var wayStack = new Stack<Position>();
                             var curPos = dest;
                             while (navigated.ContainsKey(curPos))
                             {
-                                wayStak.Push(curPos);
+                                wayStack.Push(curPos);
                                 curPos = navigated[curPos];
                             }
 
-                            while (wayStak.Count > 0)
-                                yield return wayStak.Pop();
+                            while (wayStack.Count > 0)
+                                yield return wayStack.Pop();
                             yield break;
                         }
 
                         openSet.Remove(current.Key);
+                        heuriScore.Remove(current.Key);
                         closedSet.Add(current.Key);
                         foreach (var newLoc in current.Key.PossibleMoves(true))
                         {
