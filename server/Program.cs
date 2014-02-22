@@ -1,4 +1,5 @@
-﻿using Server.Core;
+﻿using Server.Forms;
+using Server.Core;
 using Server.Logic;
 using Server.Message;
 using System;
@@ -6,21 +7,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using System.Xml.Linq;
 using System.Xml.XPath;
+using System.Runtime.InteropServices;
 
 namespace Server
 {
+    class ProgramOptions
+    {
+        public bool Debug { get; set; }
+    }
+
     class Program
     {
         private readonly Persistence _persistence = new Persistence();
         private readonly Network _network = new Network();
         private readonly Coroutine _coro = new Coroutine();
         private readonly World _world;
+        private readonly ProgramOptions _options;
 
-        public Program()
+        public Program(ProgramOptions options)
         {
             _world = new World(_coro, _persistence);
+            _options = options;
         }
 
         public void Run()
@@ -35,7 +45,14 @@ namespace Server
             Logger.Write("start logic");
             _coro.AddEntry(_world.CoroEntry);
             _coro.AddEntry(CoroUpdateRealtime);
-            _coro.Run();
+
+            if (!_options.Debug)
+                _coro.Run();
+            else
+            {
+                _coro.Start();
+                Application.Run(new FormAiViewer());
+            }
         }
 
         IEnumerable<int> CoroUpdateRealtime()
@@ -67,9 +84,19 @@ namespace Server
             }
         }
 
+        [DllImport("kernel32")]
+        static extern bool AllocConsole();
+
         static void Main(string[] args)
         {
-            new Program().Run();
+            AllocConsole();
+
+            var options = new ProgramOptions();
+            foreach (var arg in args)
+            {
+                if (string.Equals(arg, "--debug")) options.Debug = true;
+            }
+            new Program(options).Run();
         }
     }
 }
