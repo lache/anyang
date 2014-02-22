@@ -34,7 +34,18 @@ namespace Server
             // 서버 로직의 시작점은 World이다.
             Logger.Write("start logic");
             _coro.AddEntry(_world.CoroEntry);
+            _coro.AddEntry(CoroUpdateRealtime);
             _coro.Run();
+        }
+
+        IEnumerable<int> CoroUpdateRealtime()
+        {
+            while (true)
+            {
+                // 매 32ms마다 Realtime을 갱신해준다.
+                Realtime.Update();
+                yield return 32;
+            }
         }
 
         // 네트워크 세션과 Actor를 연결해준다.

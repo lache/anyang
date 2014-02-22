@@ -47,6 +47,8 @@
   <ItemGroup>
     <Compile Include="Core\AsyncSocket.cs" />
     <Compile Include="Core\Coroutine.cs" />
+    <Compile Include="Core\Realtime.cs" />
+    <Compile Include="Logic\Extrapolator.cs" />
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\Network.cs" />
     <Compile Include="Logic\Actor.cs" />

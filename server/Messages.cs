@@ -97,6 +97,7 @@ namespace Server.Message
         public double Y { get; set; }
         public double Dir { get; set; }
         public double Speed { get; set; }
+        public double Time { get; set; }
         
         public void WriteTo(BinaryWriter writer)
         {
@@ -106,6 +107,7 @@ namespace Server.Message
             writer.Write(Y);
             writer.Write(Dir);
             writer.Write(Speed);
+            writer.Write(Time);
         }
         
         public void ReadFrom(BinaryReader reader)
@@ -115,6 +117,7 @@ namespace Server.Message
             Y = reader.ReadDouble();
             Dir = reader.ReadDouble();
             Speed = reader.ReadDouble();
+            Time = reader.ReadDouble();
         }
     }
     
@@ -126,6 +129,7 @@ namespace Server.Message
         public double Y { get; set; }
         public double Dir { get; set; }
         public double Speed { get; set; }
+        public double Time { get; set; }
         public bool InstanceMove { get; set; }
         
         public void WriteTo(BinaryWriter writer)
@@ -136,6 +140,7 @@ namespace Server.Message
             writer.Write(Y);
             writer.Write(Dir);
             writer.Write(Speed);
+            writer.Write(Time);
             writer.Write(InstanceMove);
         }
         
@@ -146,6 +151,7 @@ namespace Server.Message
             Y = reader.ReadDouble();
             Dir = reader.ReadDouble();
             Speed = reader.ReadDouble();
+            Time = reader.ReadDouble();
             InstanceMove = reader.ReadBoolean();
         }
     }

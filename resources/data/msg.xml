@@ -20,6 +20,7 @@
       <field type="double" name="y" attribute="pos.y"/>
       <field type="double" name="dir" attribute="motion.dir"/>
       <field type="double" name="speed" attribute="motion.speed"/>
+      <field type="double" name="time"/>
     </msg>
     <!-- 클라이언트가 움직였다는 상황을 다른 클라이언트들에게 알려줄 때 -->
     <msg name="update_position" from="server" to="client">
@@ -28,6 +29,7 @@
       <field type="double" name="y" attribute="pos.y"/>
       <field type="double" name="dir" attribute="motion.dir"/>
       <field type="double" name="speed" attribute="motion.speed"/>
+      <field type="double" name="time"/>
       <field type="bool" name="instance_move"/>
     </msg>
     <!-- 클라이언트가 로그아웃 했다는 것을 다른 클라이언트들에게 알려줄 때 -->
