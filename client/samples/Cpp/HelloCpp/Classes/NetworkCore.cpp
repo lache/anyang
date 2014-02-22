@@ -30,8 +30,17 @@ int AnConnect()
 	
 	try
 	{
+		std::string cmdLine = GetCommandLineA();
+		std::istringstream iss(cmdLine);
+		std::string exeName;
+		std::string serverName;
+		std::string playerName;
+		getline(iss, exeName, ' ');
+		getline(iss, serverName, ' ');
+		getline(iss, playerName, ' ');
+
 		tcp::resolver resolver(io_svc);
-		tcp::resolver::query query("localhost", "40004");
+		tcp::resolver::query query(serverName.length() > 0 ? serverName : "localhost", "40004");
 		tcp::resolver::iterator iterator = resolver.resolve(query);
 
 		session.reset(new msg_session(io_svc));
@@ -46,7 +55,7 @@ int AnConnect()
 		//io_svc_thread = new std::thread(std::bind(static_cast<size_t(asio::io_service::*)()>(&asio::io_service::run), &io_svc));
 		//
 
-		msg::enter_world_msg msg("gb");
+		msg::enter_world_msg msg(playerName.length() > 0 ? playerName : "anyang");
 		session->write(msg);
 	}
 	catch (...)
