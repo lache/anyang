@@ -95,7 +95,7 @@ namespace Server.Logic
                 {
                     Id = msg.Id, X = msg.X, Y = msg.Y, Speed = msg.Speed, Dir = msg.Dir, Time = msg.Time
                 };
-            foreach (var actor in _world.Actors.OfType<NetworkActor>())
+            foreach (var actor in _world.GetActors<NetworkActor>(this))
                 actor.SendToNetwork(updatePos);
         }
 
