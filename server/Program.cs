@@ -73,6 +73,26 @@ namespace Server
             session.Source = actor;
             _coro.AddEntry(actor.CoroEntry);
             _coro.AddEntry(actor.CoroDispatchEntry);
+
+            var npcData = new NpcData {
+                Name = "John",
+                WorldId = 1,
+                X = 10,
+                Y = 10,
+                Dir = 0,
+                Speed = 0,
+                ResourceId = 1,
+                MaxHp = 100,
+                Hp = 100,
+            };
+            var roamingPosList = new List<Position> {
+                new Position{ X = 0, Y = 0 },
+                new Position{ X = 10, Y = 0 },
+                new Position{ X = 10, Y = 10 },
+                new Position{ X = 0, Y = 10 },
+            };
+            var roamingNpc = new RoamingNpc(_world, null, npcData, roamingPosList);
+            _coro.AddEntry(roamingNpc.CoroEntry);
         }
 
         void network_OnDisconnect(Session session)

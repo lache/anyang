@@ -52,13 +52,18 @@ namespace Server.Logic
             _ai = ai;
         }
 
-        bool IsAlive()
+        public virtual bool IsAlive()
         {
             return false;
         }
 
         void DoItNow(Command command)
         {
+        }
+
+        public int NextRandom(int min, int max)
+        {
+            return _random.Next(min, max);
         }
 
         public IEnumerable<int> CoroAiEntry()
@@ -73,7 +78,7 @@ namespace Server.Logic
                 // 액션을 취한다 - 여튼 명령을 내려보자
                 DoItNow(_ai.GetAction());
 
-                yield return _random.Next(1000, 5000);
+                yield return NextRandom(1000, 5000);
             }
             _world.Actors.Remove(this);
         }
