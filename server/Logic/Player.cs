@@ -34,7 +34,9 @@ namespace Server.Logic
 
     class Player : NetworkActor
     {
+        private readonly Extrapolator _polator = new Extrapolator();
         private PlayerData _data = new PlayerData { Name = "nonamed" };
+
         public Player(World world, Session session)
             : base(world, session)
         {
@@ -49,6 +51,8 @@ namespace Server.Logic
                 _world.Persist.Store(_data);
             }
             _world.Actors.Add(this);
+            _polator.Reset(0, 0, new Vector2 { X = _data.X, Y = _data.Y });
+
             Logger.Write("{0} is logged.", msg.Name);
 
             // WorldInfo의 Spawn 패킷에는 자기 자신에 대한 정보를 보내지 않는다.
@@ -85,8 +89,14 @@ namespace Server.Logic
             _data.Dir = msg.Dir;
             _data.Speed = msg.Speed;
 
+            _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
+
+            var updatePos = new UpdatePositionMsg
+                {
+                    Id = msg.Id, X = msg.X, Y = msg.Y, Speed = msg.Speed, Dir = msg.Dir, Time = msg.Time
+                };
             foreach (var actor in _world.Actors.OfType<NetworkActor>())
-                actor.SendToNetwork(msg);
+                actor.SendToNetwork(updatePos);
         }
 
         public override IEnumerable<int> CoroDispose()
