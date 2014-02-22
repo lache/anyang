@@ -51,12 +51,14 @@ namespace Server.Logic
             _world.Actors.Add(this);
             Logger.Write("{0} is logged.", msg.Name);
 
+            // WorldInfo의 Spawn 패킷에는 자기 자신에 대한 정보를 보내지 않는다.
             var infoMsg = new WorldInfoMsg { Id = _data.ObjectId, WorldId = _data.WorldId };
-            infoMsg.SpawnList.AddRange(_world.Actors.OfType<Player>().Select(e => e.ToSpawnMsg()));
+            infoMsg.SpawnList.AddRange(_world.GetActors<Player>(this).Select(e => e.ToSpawnMsg()));
             SendToNetwork(infoMsg);
 
+            // 시야에 의한 Spawn 패킷을 전파할 때에는 자기 자신까지 포함해서 전달한다.
             var myMsg = ToSpawnMsg();
-            foreach (var other in _world.Actors.OfType<NetworkActor>())
+            foreach (var other in _world.GetActors<NetworkActor>())
                 other.SendToNetwork(myMsg);
         }
 

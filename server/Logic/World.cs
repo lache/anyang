@@ -36,6 +36,25 @@ namespace Server.Logic
             }
         }
 
+        #region Actor getter
+
+        public IEnumerable<T> GetActors<T>() where T : Actor
+        {
+            return Actors.OfType<T>();
+        }
+
+        public IEnumerable<T> GetActors<T>(Actor exceptActor) where T : Actor
+        {
+            return GetActors<T>().Where(e => e != exceptActor);
+        }
+
+        public IEnumerable<T> GetActors<T>(IEnumerable<T> exceptActors) where T : Actor
+        {
+            return GetActors<T>().Except(exceptActors);
+        }
+
+        #endregion
+
         public IEnumerable<int> CoroEntry()
         {
             // TODO: 월드의 중앙 AI를 구현한다.
