@@ -63,11 +63,15 @@ MSG_HANDLER(despawn)
 {
 	AnDebugOutput("DESPAWN: objectId=%d",
 		msg.id);
+
+	AnDespawnGameObject(msg.id);
 }
 
 MSG_HANDLER(update_position)
 {
 	AnDebugOutput("UPDATE_POSITION: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d\n", msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move);
+
+	AnUpdateObjectPosition(msg.id, msg.x, msg.y);
 }
 
 MSG_HANDLER(character_resource)

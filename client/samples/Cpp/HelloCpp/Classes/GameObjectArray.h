@@ -15,5 +15,6 @@ int AnSpawnGameObject(int objectId, double x, double y);
 int AnDespawnGameObject(int objectId);
 const GameObjectMap& AnGetGameObjectMap();
 int AnMoveObject(int objectId, double x, double y);
+int AnUpdateObjectPosition(int objectId, double x, double y);
 void AnSetPlayerObjectId(int objectId);
 int AnGetPlayerObjectId();

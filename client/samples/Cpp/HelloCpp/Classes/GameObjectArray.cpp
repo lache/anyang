@@ -84,6 +84,23 @@ int AnMoveObject(int objectId, double x, double y)
 	}
 }
 
+int AnUpdateObjectPosition(int objectId, double x, double y)
+{
+	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
+	{
+		if (GGameObjectMap[objectId].sprite)
+		{
+			GGameObjectMap[objectId].sprite->setPosition(Point(x, y));
+		}
+
+		return objectId;
+	}
+	else
+	{
+		return INVALID_GAME_OBJECT_ID;
+	}
+}
+
 void AnSetPlayerObjectId(int objectId)
 {
 	GPlayerObjectId = objectId;

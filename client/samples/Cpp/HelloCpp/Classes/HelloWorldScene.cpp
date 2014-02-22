@@ -74,10 +74,16 @@ void DefaultOnMouseUp(Event* evt)
 
 		//p = Director::getInstance()->convertToGL(p);
 
-		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y);
-
 		auto visibleSize = Director::getInstance()->getVisibleSize();
 		auto origin = Director::getInstance()->getVisibleOrigin();
+
+		auto w = 900;
+		auto h = 640;
+
+
+		
+		
+		AnMoveObject(AnGetPlayerObjectId(), p.x/2, p.y/2);
 	}
 }
 
