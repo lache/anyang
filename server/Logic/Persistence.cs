@@ -113,7 +113,12 @@ namespace Server.Logic
                 var ser = _serMap[objType];
                 ser.WriteObject(writer, obj);
             }
-            _dataMap.Add(obj.ObjectId, obj);
+
+            // 메모리에 이미 caching된 객체라면 다시 넣어줄 필요가 없다.
+            if (!_dataMap.ContainsKey(obj.ObjectId))
+            {
+                _dataMap.Add(obj.ObjectId, obj);
+            }
         }
 
         public void Delete(PersistenceData obj)
