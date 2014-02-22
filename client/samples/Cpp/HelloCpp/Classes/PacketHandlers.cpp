@@ -30,9 +30,6 @@ void AnDebugOutput(const char* format, ...)
 	_vsnprintf(buffer, max_length, format, vaList);
 	va_end(vaList);
 
-	if (buffer[strlen(buffer) - 1] == '\n')
-		buffer[strlen(buffer) - 1] = '\0';
-
 #ifdef WIN32
 	OutputDebugStringA(buffer);
 #endif
