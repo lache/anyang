@@ -3,6 +3,7 @@
 #include "CCEventListenerTouch.h"
 #include "NetworkCore.h"
 #include "utf8.h"
+#include "GameObjectArray.h"
 
 USING_NS_CC;
 
@@ -61,6 +62,28 @@ void DefaultOnKeyReleased(EventKeyboard::KeyCode kc, Event* evt)
 		keyminus = false;
 		break;
 	}
+}
+
+void DefaultOnMouseUp(Event* evt)
+{
+	auto e = (EventMouse*)evt;
+
+	if (e->getMouseButton() == 0)
+	{
+		auto p = Point(e->getCursorX(), e->getCursorY());
+
+		//p = Director::getInstance()->convertToGL(p);
+
+		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y);
+
+		auto visibleSize = Director::getInstance()->getVisibleSize();
+		auto origin = Director::getInstance()->getVisibleOrigin();
+	}
+}
+
+void DefaultOnTouchEnded(Touch* t, Event* evt)
+{
+	AnMoveObject(AnGetPlayerObjectId(), t->getLocation().x, t->getLocation().y);
 }
 
 Scene* HelloWorld::scene()
@@ -127,22 +150,32 @@ bool HelloWorld::init()
 	CCTMXTiledMap *map = CCTMXTiledMap::create("..\\..\\..\\..\\..\\resources\\map\\default_1.tmx");
 	addChild(map, -1);
 
-	auto gameObject = Sprite::create("images/player.png");
-
+	/*auto gameObject = Sprite::create("images/player.png");
 	gameObject->setPosition(Point(visibleSize / 2) + origin);
 	gameObject->setScale(0.25f);
+	addChild(gameObject);*/
 
-	addChild(gameObject);
+	AnSetBaseLayer(this);
 
 	AnConnect();
 
 	scheduleUpdate();
 
+	//setTouchMode(Touch::DispatchMode::ONE_BY_ONE);// 싱글터치
+	//setTouchEnabled(true); // getter : isTouchEnabled()
+	
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = std::bind(&DefaultOnKeyPressed, std::placeholders::_1, std::placeholders::_2);
 	listener->onKeyReleased = std::bind(&DefaultOnKeyReleased, std::placeholders::_1, std::placeholders::_2);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
+	auto mouseListener = EventListenerMouse::create();
+	mouseListener->onMouseUp = std::bind(&DefaultOnMouseUp, std::placeholders::_1);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
+	auto touchListener = EventListenerTouchOneByOne::create();
+	touchListener->onTouchEnded = std::bind(&DefaultOnTouchEnded, std::placeholders::_1, std::placeholders::_2);
+	//_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
     return true;
 }
 

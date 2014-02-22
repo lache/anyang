@@ -70,3 +70,9 @@ void AnPollNetworkIoService()
 {
 	io_svc.poll();
 }
+
+void AnSendMove(int objectId, double x, double y)
+{
+	msg::move_msg msg(objectId, x, y, 0, 0, 0);
+	session->write(msg);
+}
