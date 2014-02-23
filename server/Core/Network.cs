@@ -57,7 +57,14 @@ namespace Server.Core
 
             var lengthBytes = BitConverter.GetBytes(bytes.Length);
             Array.Copy(lengthBytes, bytes, lengthBytes.Length);
-            _socket.Send(bytes);
+            try
+            {
+                _socket.Send(bytes);
+            }
+            catch (Exception e)
+            {
+                Logger.Write(e);
+            }
         }
 
         public async Task<IMessage> Receive()
