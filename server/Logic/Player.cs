@@ -99,6 +99,12 @@ namespace Server.Logic
                 actor.SendToNetwork(updatePos);
         }
 
+        void OnChat(ChatMsg msg)
+        {
+            foreach (var actor in _world.GetActors<NetworkActor>())
+                actor.SendToNetwork(msg);
+        }
+
         public override IEnumerable<int> CoroDispose()
         {
             yield return 1000;
