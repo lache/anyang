@@ -23,7 +23,7 @@ private:
 inline exclusive_run_t::exclusive_run_t(flag_ptr_t _flag)
     : flag(_flag), acquired(false)
 {
-    acquired = flag->test_and_set();
+    acquired = flag->test_and_set() == false;
 }
 
 inline exclusive_run_t::~exclusive_run_t()
