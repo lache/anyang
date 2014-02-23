@@ -56,6 +56,11 @@ namespace Server.Logic
             return !(pos1 == pos2);
         }
 
+        public override bool Equals(object obj)
+        {
+            return obj is Position ? Equals((Position)obj) : base.Equals(obj);
+        }
+
         public bool Equals(Position pos)
         {
             return X == pos.X && Y == pos.Y;
