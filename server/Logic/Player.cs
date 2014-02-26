@@ -95,8 +95,14 @@ namespace Server.Logic
                 {
                     Id = msg.Id, X = msg.X, Y = msg.Y, Speed = msg.Speed, Dir = msg.Dir, Time = msg.Time
                 };
-            foreach (var actor in _world.GetActors<NetworkActor>(this))
+            foreach (var actor in _world.GetActors<NetworkActor>())
                 actor.SendToNetwork(updatePos);
+        }
+
+        void OnChat(ChatMsg msg)
+        {
+            foreach (var actor in _world.GetActors<NetworkActor>())
+                actor.SendToNetwork(msg);
         }
 
         public override IEnumerable<int> CoroDispose()
