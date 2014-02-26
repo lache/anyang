@@ -26,24 +26,16 @@ namespace Server.Logic
         NORTH = 400,
     }
 
-    class Position : IComparable<Position>, IEquatable<Position>
+    class Position : IComparable<Position>
     {
         public int X = 0;
         public int Y = 0;
+        public int W = 0;
 
-        public int CompareTo(Position pos)
-        {
-            return X != pos.X ? X - pos.X : Y - pos.Y;
-        }
-
-        public override int GetHashCode()
-        {
-            return (int)(Math.Sqrt(int.MaxValue) * X + Y);
-        }
 
         public Position Clone()
         {
-            return new Position {X = this.X, Y = this.Y};
+            return new Position {X = this.X, Y = this.Y, W = this.W};
         }
 
         public static bool operator == (Position pos1, Position pos2)
@@ -56,9 +48,21 @@ namespace Server.Logic
             return !(pos1 == pos2);
         }
 
-        public bool Equals(Position pos)
+        public override int GetHashCode()
         {
+            var value = ((int)(Math.Sqrt(int.MaxValue))) * X + Y;
+            return value;
+        }
+
+        public override bool Equals(object obj)
+        {
+            var pos = obj as Position;
             return X == pos.X && Y == pos.Y;
+        }
+
+        public int CompareTo(Position pos)
+        {
+            return W - pos.W;
         }
 
         public Position MoveToWay(PathWay way)
@@ -155,20 +159,23 @@ namespace Server.Logic
                 case PathFinderMethod.PFM_ASTAR:
 
                     var closedSet = new HashSet<Position>();
-                    var openSet = new HashSet<Position>();
+                    var openSet = new List<Position>();
                     var navigated = new Dictionary<Position, Position>();
 
                     var pathScore = new Dictionary<Position, int>();
-                    var heuriScore = new SortedDictionary<Position, int>();
+                    var heuriScore = new Dictionary<Position, int>();
 
                     var actorLoc = actor.Location.Clone();
+                    actorLoc.W = dest.ManhattanDistance(actorLoc);
+                    heuriScore.Add(actorLoc, actorLoc.W);
                     openSet.Add(actorLoc);
                     pathScore.Add(actorLoc, 0);
-                    heuriScore.Add(actorLoc, dest.ManhattanDistance(actorLoc));
                     while (openSet.Count > 0)
                     {
-                        var current = heuriScore.First();
-                        if (current.Key == dest)
+                        openSet = openSet.OrderBy(e => e.W).ToList();
+                        var current = openSet.ElementAt(0);
+                        openSet.RemoveAt(0);
+                        if (current == dest)
                         {
                             // construct way to dest
                             var wayStack = new Stack<Position>();
@@ -184,19 +191,19 @@ namespace Server.Logic
                             yield break;
                         }
 
-                        openSet.Remove(current.Key);
-                        heuriScore.Remove(current.Key);
-                        closedSet.Add(current.Key);
-                        foreach (var newLoc in current.Key.PossibleMoves(true))
+                        closedSet.Add(current);
+                        foreach (var newLoc in current.PossibleMoves(true))
                         {
                             if (closedSet.Contains(newLoc) || (!actor.CanMove(newLoc)))
                                 continue;
 
-                            var trueScore = pathScore[current.Key] + 1;
-                            if ((!openSet.Contains(newLoc)) || (trueScore < heuriScore[newLoc]))
+                            var trueScore = pathScore[current] + 1;
+                            var estHeuriScroe = heuriScore[current] + current.ManhattanDistance(newLoc);
+                            var newToDestScore = newLoc.ManhattanDistance(dest);
+                            if (!openSet.Contains(newLoc) || estHeuriScroe < newToDestScore)
                             {
                                 navigated.Remove(newLoc);
-                                navigated.Add(newLoc, current.Key);
+                                navigated.Add(newLoc, current);
 
                                 pathScore.Remove(newLoc);
                                 pathScore.Add(newLoc, trueScore);
@@ -204,6 +211,8 @@ namespace Server.Logic
                                 heuriScore.Remove(newLoc);
                                 heuriScore.Add(newLoc, pathScore[newLoc] + dest.ManhattanDistance(newLoc));
 
+                                openSet.Remove(newLoc);
+                                newLoc.W = heuriScore[newLoc];
                                 openSet.Add(newLoc);
                             }
                         }

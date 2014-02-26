@@ -77,8 +77,8 @@ namespace Server
             var npcData = new NpcData {
                 Name = "John",
                 WorldId = 1,
-                X = 10,
-                Y = 10,
+                X = 0,
+                Y = 12,
                 Dir = 0,
                 Speed = 0,
                 ResourceId = 1,
@@ -86,10 +86,8 @@ namespace Server
                 Hp = 100,
             };
             var roamingPosList = new List<Position> {
-                new Position{ X = 0, Y = 0 },
-                new Position{ X = 10, Y = 0 },
-                new Position{ X = 10, Y = 10 },
-                new Position{ X = 0, Y = 10 },
+                new Position{ X = 0, Y = 29},
+                new Position{ X = 0, Y = 12},
             };
             var roamingNpc = new RoamingNpc(_world, null, npcData, roamingPosList);
             _coro.AddEntry(roamingNpc.CoroEntry);
