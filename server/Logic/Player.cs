@@ -92,9 +92,8 @@ namespace Server.Logic
 
         void OnMove(MoveMsg msg)
         {
-            _polator.AddSample(msg.Time, Realtime.Now, 
-                new Vector2 { X = msg.X, Y = msg.Y },
-                new Vector2 { X = msg.Speed * Math.Cos(msg.Dir), Y = msg.Speed * Math.Sin(msg.Dir) });
+            Logger.Write("C {0}, {1}, {2}, {3}", msg.Time, Realtime.Now, msg.X, msg.Y);
+            _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
         }
 
         void OnChat(ChatMsg msg)
@@ -119,15 +118,22 @@ namespace Server.Logic
 
         private IEnumerable<int> CoroUpdatePos()
         {
+            int count = 0;
             while (_logged)
             {
                 Vector2 pos, velocity;
-                _polator.ReadPosition(Realtime.Now, out pos, out velocity);
+                var result = _polator.ReadPosition(Realtime.Now, out pos, out velocity);
 
                 MovePosition(pos.X, pos.Y, _data.Dir, _data.Speed);
 
-                const int sendCount = 20;
+                const int sendCount = 1;
                 yield return 1000 / sendCount;
+
+                if (++count % sendCount == 0)
+                {
+                    Logger.Write("S {0}, {1} = {2}", pos.X, pos.Y, result);
+                    // Logger.Write(Realtime.Now);
+                }
             }
         }
     }

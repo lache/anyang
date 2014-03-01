@@ -68,7 +68,7 @@ namespace Server.Logic
             _aimTime = curTime + _updateTime;
             double dt = _aimTime - packetTime;
             _snapTime = curTime;
-            _aimPos = (pos + vel) * dt;
+            _aimPos = pos + (vel * dt);
 
             if (Math.Abs(_aimTime - _snapTime) < 1e-4)
             {
@@ -77,7 +77,7 @@ namespace Server.Logic
             else
             {
                 double dt2 = 1.0 / (_aimTime - _snapTime);
-                _snapVel = (_aimPos - _snapPos) * dt2;
+                _snapVel = _aimPos - (_snapPos * dt2);
             }
             return true;
         }
@@ -99,7 +99,7 @@ namespace Server.Logic
             _latency = _updateTime;
             _aimTime = curTime + _updateTime;
             _snapVel = vel;
-            _aimPos = (_snapPos + _snapVel) * _updateTime;
+            _aimPos = _snapPos + (_snapVel * _updateTime);
         }
 
         public bool ReadPosition(double forTime, out Vector2 oPos)

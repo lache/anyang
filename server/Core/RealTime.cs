@@ -22,13 +22,13 @@ namespace Server.Core
 
         static Realtime()
         {
-          long tps = 0;
-          QueryPerformanceFrequency(ref tps);
-          _tickMultiply = 1.0 / (double)tps;
-          _maxDelta = (long)(tps * 0.1);
+            long tps = 0;
+            QueryPerformanceFrequency(ref tps);
+            _tickMultiply = 1.0 / (double)tps;
+            _maxDelta = (long)(tps * 0.1);
 
-          QueryPerformanceCounter(ref _baseReading);
-          _lastRead = _baseReading;
+            QueryPerformanceCounter(ref _baseReading);
+            _lastRead = _baseReading;
         }
 
         private static double _now;
@@ -44,19 +44,11 @@ namespace Server.Core
 
         private static double Get()
         {
-          long now = 0;
-          QueryPerformanceCounter(ref now);
+            long now = 0;
+            QueryPerformanceCounter(ref now);
 
-          //  work around dual-core bug
-          if (now < _lastRead) {
-            now = _lastRead + 1;
-          }
-          if (now - _lastRead > _maxDelta) {
-            //  don't advance time too much all at once
-            _baseReading += now - _lastRead - _maxDelta;
-          }
-          _lastRead = now;
-          return (now - _baseReading) * _tickMultiply;
+            _lastRead = now;
+            return (now - _baseReading) * _tickMultiply;
         }
     }
 }
