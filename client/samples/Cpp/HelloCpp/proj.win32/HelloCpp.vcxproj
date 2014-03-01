@@ -133,6 +133,7 @@
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\Chat.cpp" />
     <ClCompile Include="..\Classes\EPIC.cpp" />
+    <ClCompile Include="..\Classes\GameObject.cpp" />
     <ClCompile Include="..\Classes\GameObjectArray.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\NetworkCore.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="..\Classes\game_msg.h" />
     <ClInclude Include="..\Classes\HelloWorldScene.h" />
     <ClInclude Include="..\Classes\NetworkCore.h" />
+    <ClInclude Include="..\Classes\PacketHandlers.h" />
     <ClInclude Include="..\Classes\pylon_msg.h" />
     <ClInclude Include="..\Classes\resource_msg.h" />
     <ClInclude Include="..\Classes\system_msg.h" />
@@ -170,6 +172,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Classes\Extrapolator.inl" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="..\..\..\..\..\resources\data\msg.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -5,6 +5,7 @@
 #include "utf8.h"
 #include "GameObjectArray.h"
 #include "Chat.h"
+#include "PacketHandlers.h"
 
 USING_NS_CC;
 
@@ -201,6 +202,8 @@ void HelloWorld::menuCloseCallback(Object* sender)
 void HelloWorld::update(float dt)
 {
 	AnPollNetworkIoService();
+	AnUpdateGameObjects();
+	AnUpdateServerTime(dt);
 
 	Point layerPos = getPosition();
 	static float moveSpeed = -5.0f;
