@@ -38,7 +38,7 @@ void AnSendChat()
 	auto len = strlen(text);
 	if (len > 0 && len < 200)
 	{
-		msg::chat_msg msg(AnGetPlayerObjectId(), text);
+		msg::chat_msg msg(AnGetPlayerObjectId(), "", text);
 		session->write(msg);
 	}
 	GChatTextField->setString("");
