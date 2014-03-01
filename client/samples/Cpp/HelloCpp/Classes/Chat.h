@@ -1,4 +1,10 @@
 #pragma once
 
-void AnSendChat(int objectId, const char* text);
+namespace cocos2d
+{
+	class Node;
+}
+
+void AnSendChat();
 void AnAppendChat(const char* text);
+void AnCreateChatLogs(cocos2d::Node* parent);
