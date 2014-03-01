@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -17,19 +18,33 @@ namespace Server.Forms
     {
         private readonly Network _network = new Network();
         private Session _session;
+        private Dictionary<int /* id */, PointF> _posMap = new Dictionary<int, PointF>();
         public FormAiViewer()
         {
             InitializeComponent();
+            PrepareDispatchMap();
         }
 
         private void FormAiViewer_Load(object sender, EventArgs e)
         {
             _session = _network.Connect("localhost", 40004);
+            _session.Send(new EnterWorldMsg(":)"));
+        }
+
+        private void FormAiViewer_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            _session.Disconnect();
         }
 
         private void FormAiViewer_Paint(object sender, PaintEventArgs e)
         {
+            var g = e.Graphics;
+            g.Clear(Color.White);
 
+            foreach (var pair in _posMap)
+            {
+                g.FillRectangle(Brushes.Black, pair.Value.X, pair.Value.Y, 2, 2);
+            }
         }
 
         void OnWorldInfo(WorldInfoMsg msg)
@@ -39,22 +54,23 @@ namespace Server.Forms
 
         void OnSpawn(SpawnMsg msg)
         {
-
         }
 
         void OnDespawn(DespawnMsg msg)
         {
-
         }
 
         void OnUpdatePosition(UpdatePositionMsg msg)
         {
-
+            if (_posMap.ContainsKey(msg.Id))
+                _posMap.Remove(msg.Id);
+            _posMap.Add(msg.Id, new PointF((float)msg.X, (float)msg.Y));
         }
 
         private void sessionTimer_Tick(object sender, EventArgs e)
         {
             DispatchMessage();
+            Invalidate();
         }
 
         #region Message Dispatch
