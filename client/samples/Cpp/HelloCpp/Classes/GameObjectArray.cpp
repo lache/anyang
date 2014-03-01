@@ -30,10 +30,10 @@ int AnSpawnGameObject(int objectId, double x, double y)
 		//s->setAnchorPoint(Point::ZERO);
 		GBaseLayer->addChild(s);
 
-		GameObject o;
-		o.objectId = objectId;
-		o.name[0] = '\0';
-		o.sprite = s;
+		auto o = new GameObject(x, y);
+		o->objectId = objectId;
+		o->name[0] = '\0';
+		o->sprite = s;
 
 		GGameObjectMap[objectId] = o;
 		return objectId;
@@ -46,11 +46,12 @@ int AnDespawnGameObject(int objectId)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
-		if (GGameObjectMap[objectId].sprite)
+		if (GGameObjectMap[objectId]->sprite)
 		{
-			GGameObjectMap[objectId].sprite->removeFromParent();
+			GGameObjectMap[objectId]->sprite->removeFromParent();
 		}
 
+		delete GGameObjectMap[objectId];
 		GGameObjectMap.erase(objectId);
 		return objectId;
 	}
@@ -69,9 +70,9 @@ int AnMoveObject(int objectId, double x, double y)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
-		if (GGameObjectMap[objectId].sprite)
+		if (GGameObjectMap[objectId]->sprite)
 		{
-			GGameObjectMap[objectId].sprite->setPosition(Point(x, y));
+			GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
 
 			AnSendMove(objectId, x, y);
 		}
@@ -88,9 +89,9 @@ int AnUpdateObjectPosition(int objectId, double x, double y)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
-		if (GGameObjectMap[objectId].sprite)
+		if (GGameObjectMap[objectId]->sprite)
 		{
-			GGameObjectMap[objectId].sprite->setPosition(Point(x, y));
+			GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
 		}
 
 		return objectId;
@@ -109,4 +110,12 @@ void AnSetPlayerObjectId(int objectId)
 int AnGetPlayerObjectId()
 {
 	return GPlayerObjectId;
+}
+
+void AnUpdateGameObjects()
+{
+	for (auto p : GGameObjectMap)
+	{
+		p.second->Update();
+	}
 }

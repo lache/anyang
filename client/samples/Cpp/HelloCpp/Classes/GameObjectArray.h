@@ -1,9 +1,9 @@
 #pragma once
 
 #include <unordered_map>
-struct GameObject;
+class GameObject;
 
-typedef std::unordered_map<int, GameObject> GameObjectMap;
+typedef std::unordered_map<int, GameObject*> GameObjectMap;
 
 namespace cocos2d
 {
@@ -18,3 +18,4 @@ int AnMoveObject(int objectId, double x, double y);
 int AnUpdateObjectPosition(int objectId, double x, double y);
 void AnSetPlayerObjectId(int objectId);
 int AnGetPlayerObjectId();
+void AnUpdateGameObjects();

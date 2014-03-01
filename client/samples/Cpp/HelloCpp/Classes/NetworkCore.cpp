@@ -22,6 +22,7 @@ static asio::io_service io_svc;
 typedef std::shared_ptr<msg_session> msg_session_ref;
 msg_session_ref session;
 static std::thread* io_svc_thread;
+double GServerTime = 0;
 
 int AnConnect()
 {
@@ -77,6 +78,6 @@ void AnSendMove(int objectId, double x, double y)
 {
 	//AnDebugOutput("Before send move packet... objectId=%d, x=%lf, y=%lf\n", objectId, x, y);
 
-	msg::move_msg msg(objectId, x, y, 0, 0, 0);
+	msg::move_msg msg(objectId, x, y, 0, 0, GServerTime);
 	session->write(msg);
 }

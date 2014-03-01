@@ -23,6 +23,13 @@
 #include "GameObjectArray.h"
 #include "Chat.h"
 
+extern double GServerTime;
+
+void AnUpdateServerTime(double dt)
+{
+	GServerTime += dt;
+}
+
 void AnDebugOutput(const char* format, ...)
 {
 	static const size_t max_length = 4096;
@@ -44,6 +51,8 @@ MSG_HANDLER(world_info)
 	AnDebugOutput("  User  sid = %d\n", msg.id);
 
 	AnSetPlayerObjectId(msg.id);
+
+	GServerTime = msg.server_now;
 }
 
 
