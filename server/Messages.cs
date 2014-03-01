@@ -234,6 +234,7 @@ namespace Server.Message
         public const int TypeId = 1005;
         public int Id { get; set; }
         public int WorldId { get; set; }
+        public double ServerNow { get; set; }
         public List<SpawnMsg> SpawnList { get; private set; }
         
         public WorldInfoMsg()
@@ -241,10 +242,11 @@ namespace Server.Message
             SpawnList = new List<SpawnMsg>();
         }
         
-        public WorldInfoMsg(int id, int worldId, List<SpawnMsg> spawnList)
+        public WorldInfoMsg(int id, int worldId, double serverNow, List<SpawnMsg> spawnList)
         {
             Id = id;
             WorldId = worldId;
+            ServerNow = serverNow;
             SpawnList = spawnList;
         }
         
@@ -253,6 +255,7 @@ namespace Server.Message
             writer.Write(TypeId);
             writer.Write(Id);
             writer.Write(WorldId);
+            writer.Write(ServerNow);
             writer.Write(SpawnList.Count);
             foreach (var each in SpawnList) each.WriteTo(writer);
         }
@@ -261,6 +264,7 @@ namespace Server.Message
         {
             Id = reader.ReadInt32();
             WorldId = reader.ReadInt32();
+            ServerNow = reader.ReadDouble();
             {
                 var count = reader.ReadInt32();
                 SpawnList.AddRange(Enumerable.Range(0, count).Select(_ => new SpawnMsg()));

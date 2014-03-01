@@ -40,6 +40,7 @@
     <msg name="world_info" from="server" to="client">
       <field type="int" name="id"/>
       <field type="int" name="world_id"/>
+      <field type="double" name="server_now"/>
       <ref msg="spawn"/>
     </msg>
     <!-- 클라이언트가 채팅을 했거나, 다른 클라이언트로부터의 채팅 메시지를 받을 때 -->
