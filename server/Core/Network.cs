@@ -41,6 +41,16 @@ namespace Server.Core
             _socket = socket;
         }
 
+        public void Disconnect()
+        {
+            try
+            {
+                _socket.Close();
+            }
+            catch
+            { }
+        }
+
         public object Source { get; set; }
 
         public void Send(IMessage message)

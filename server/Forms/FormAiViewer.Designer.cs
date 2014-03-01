@@ -45,6 +45,7 @@
             this.ClientSize = new System.Drawing.Size(1075, 582);
             this.Name = "FormAiViewer";
             this.Text = "Ai Viewer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormAiViewer_FormClosing);
             this.Load += new System.EventHandler(this.FormAiViewer_Load);
             this.Paint += new System.Windows.Forms.PaintEventHandler(this.FormAiViewer_Paint);
             this.ResumeLayout(false);
