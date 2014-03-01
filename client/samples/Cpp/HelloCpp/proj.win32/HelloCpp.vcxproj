@@ -132,6 +132,7 @@
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
     <ClCompile Include="..\Classes\Chat.cpp" />
+    <ClCompile Include="..\Classes\EPIC.cpp" />
     <ClCompile Include="..\Classes\GameObjectArray.cpp" />
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\NetworkCore.cpp" />
@@ -142,6 +143,8 @@
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\AppMacros.h" />
     <ClInclude Include="..\Classes\Chat.h" />
+    <ClInclude Include="..\Classes\EPIC.h" />
+    <ClInclude Include="..\Classes\Extrapolator.h" />
     <ClInclude Include="..\Classes\GameObject.h" />
     <ClInclude Include="..\Classes\GameObjectArray.h" />
     <ClInclude Include="..\Classes\game_msg.h" />
@@ -164,6 +167,9 @@
     <ProjectReference Include="..\..\..\..\msg\msg.vcxproj">
       <Project>{c4e63e1e-601a-45f4-b7da-3eb90c0cea21}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Classes\Extrapolator.inl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
