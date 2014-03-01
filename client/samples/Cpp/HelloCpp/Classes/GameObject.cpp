@@ -19,5 +19,5 @@ void GameObject::Update()
 {
 	m_pPosition->UpdateTime();
 
-	AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY());
+	//AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY());
 }
