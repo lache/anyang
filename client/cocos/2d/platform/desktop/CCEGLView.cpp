@@ -298,6 +298,11 @@ void EGLViewEventHandler::onGLFWKeyCallback(GLFWwindow *window, int key, int sca
         auto dispatcher = Director::getInstance()->getEventDispatcher();
         dispatcher->dispatchEvent(&event);
     }
+
+	if (key == 259 && scancode == 14 && (GLFW_REPEAT == action || GLFW_PRESS == action))
+	{
+		IMEDispatcher::sharedDispatcher()->dispatchDeleteBackward();
+	}
 }
 
 void EGLViewEventHandler::onGLFWCharCallback(GLFWwindow *window, unsigned int character)

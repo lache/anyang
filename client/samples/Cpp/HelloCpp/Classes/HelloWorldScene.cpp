@@ -4,6 +4,7 @@
 #include "NetworkCore.h"
 #include "utf8.h"
 #include "GameObjectArray.h"
+#include "Chat.h"
 
 USING_NS_CC;
 
@@ -13,6 +14,28 @@ static bool keyup;
 static bool keydown;
 static bool keyplus;
 static bool keyminus;
+static TextFieldTTF* GChatTextField;
+
+static const int MAX_CHAT_LOG = 5;
+static LabelTTF* GChatLogs[MAX_CHAT_LOG];
+static_assert(MAX_CHAT_LOG >= 2, "Should larger than 1");
+static int GCurrentLogPosition;
+
+void AnAppendChat(const char* text)
+{
+	const auto lastYPos = GChatLogs[(MAX_CHAT_LOG - 1 + GCurrentLogPosition)%MAX_CHAT_LOG]->getPositionY();
+	const auto gapYPos = GChatLogs[GCurrentLogPosition]->getPositionY() - GChatLogs[(GCurrentLogPosition+1)%MAX_CHAT_LOG]->getPositionY();
+
+	for each(auto c in GChatLogs)
+	{
+		c->setPositionY(c->getPositionY() + gapYPos);
+	}
+
+	GChatLogs[GCurrentLogPosition]->setPositionY(lastYPos);
+	GChatLogs[GCurrentLogPosition]->setString(text);
+
+	GCurrentLogPosition = (GCurrentLogPosition + 1) % MAX_CHAT_LOG;
+}
 
 void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 {
@@ -35,6 +58,11 @@ void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 		break;
 	case EventKeyboard::KeyCode::KEY_KP_MINUS:
 		keyminus = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_RETURN:
+	case EventKeyboard::KeyCode::KEY_KP_ENTER:
+		AnSendChat(AnGetPlayerObjectId(), GChatTextField->getString().c_str());
+		GChatTextField->setString("");
 		break;
 	}
 }
@@ -72,18 +100,14 @@ void DefaultOnMouseUp(Event* evt)
 	{
 		auto p = Point(e->getCursorX(), e->getCursorY());
 
-		//p = Director::getInstance()->convertToGL(p);
-
 		auto visibleSize = Director::getInstance()->getVisibleSize();
 		auto origin = Director::getInstance()->getVisibleOrigin();
 
-		auto w = 900;
-		auto h = 640;
+		auto glView = EGLView::getInstance();
 
-
-		
-		
-		AnMoveObject(AnGetPlayerObjectId(), p.x/2, p.y/2);
+		assert(glView->getScaleX() == 1);
+		assert(glView->getScaleY() == 1);
+		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y);
 	}
 }
 
@@ -135,7 +159,7 @@ bool HelloWorld::init()
     // create menu, it's an autorelease object
     auto menu = Menu::create(closeItem, NULL);
     menu->setPosition(Point::ZERO);
-    this->addChild(menu, 1);
+    //this->addChild(menu, 1);
     
     /////////////////////////////
     // 3. add your codes below...
@@ -144,7 +168,7 @@ bool HelloWorld::init()
     // create and initialize a label
     
     //auto label = LabelTTF::create("안녕하세요 세계여", "Arial", TITLE_FONT_SIZE);
-	auto label = LabelTTF::create(to_utf8(L"안녕하세요 세계여"), "Arial", TITLE_FONT_SIZE);
+	auto label = LabelTTF::create(to_utf8(L"안냥하세요 세계여"), "Arial", TITLE_FONT_SIZE);
 	label->setColor(Color3B::BLUE);
     // position the label on the center of the screen
     label->setPosition(Point(origin.x + visibleSize.width/2,
@@ -153,7 +177,31 @@ bool HelloWorld::init()
     // add the label as a child to this layer
 	this->addChild(label, 1);
 
-	CCTMXTiledMap *map = CCTMXTiledMap::create("..\\..\\..\\..\\..\\resources\\map\\default_1.tmx");
+	const auto CHAT_FONT_SIZE = 2.0f * TITLE_FONT_SIZE / 3;
+	// 채팅 텍스트 필드
+	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder(to_utf8(L"(여기에 채팅 입력)"), "Arial", CHAT_FONT_SIZE);
+	pTextField->setPosition(Point(origin.x + visibleSize.width / 2,
+		origin.y + pTextField->getContentSize().height));
+	pTextField->setColor(Color3B::BLACK);
+	pTextField->attachWithIME();
+	addChild(pTextField);
+	GChatTextField = pTextField;
+
+	// 채팅 로그
+	for (int i = 0; i < MAX_CHAT_LOG; ++i)
+	{
+		auto label = LabelTTF::create(to_utf8(L" "), "Arial", CHAT_FONT_SIZE);
+		label->setColor(Color3B::GREEN);
+		label->setPosition(Point(origin.x + visibleSize.width / 2,
+			origin.y + (MAX_CHAT_LOG - i + 1) * label->getContentSize().height));
+
+		// add the label as a child to this layer
+		addChild(label, 1);
+
+		GChatLogs[i] = label;
+	}
+
+	TMXTiledMap *map = TMXTiledMap::create("..\\..\\..\\..\\..\\resources\\map\\default_1.tmx");
 	addChild(map, -1);
 
 	/*auto gameObject = Sprite::create("images/player.png");

@@ -26,8 +26,8 @@ int AnSpawnGameObject(int objectId, double x, double y)
 	{
 		auto s = Sprite::create("images/player.png");
 		s->setPosition(Point(x, y));
-		//s->setScale(0.5f);
-		//s->setAnchorPoint(Point(0.5f, 0.5f));
+		s->setScale(0.25f);
+		//s->setAnchorPoint(Point::ZERO);
 		GBaseLayer->addChild(s);
 
 		GameObject o;

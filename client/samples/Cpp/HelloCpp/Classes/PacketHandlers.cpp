@@ -21,6 +21,7 @@
 #include "resource_msg.h"
 #include "pylon_msg.h"
 #include "GameObjectArray.h"
+#include "Chat.h"
 
 void AnDebugOutput(const char* format, ...)
 {
@@ -69,7 +70,7 @@ MSG_HANDLER(despawn)
 
 MSG_HANDLER(update_position)
 {
-	AnDebugOutput("UPDATE_POSITION: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d\n", msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move);
+	//AnDebugOutput("UPDATE_POSITION: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d\n", msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move);
 
 	AnUpdateObjectPosition(msg.id, msg.x, msg.y);
 }
@@ -87,4 +88,9 @@ MSG_HANDLER(update_hp)
 MSG_HANDLER(session_error)
 {
 	AnDebugOutput("Gone, server, gone.\n");
+}
+
+MSG_HANDLER(chat)
+{
+	AnAppendChat(msg.message.c_str());
 }
