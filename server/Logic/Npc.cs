@@ -1,4 +1,5 @@
-﻿using Server.Message;
+﻿using Server.Core;
+using Server.Message;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -72,33 +73,25 @@ namespace Server.Logic
                 _data.Id, GetType().Name, IsAlive());
         }
 
-        protected SpawnMsg ToSpawnMsg()
+        public SpawnMsg ToSpawnMsg()
         {
-            var msg = new SpawnMsg { Id = _data.Id, Name = _data.Name };
-            msg.CharacterResource.Id = _data.Id;
-            msg.CharacterResource.ResourceId = _data.ResourceId;
-            msg.UpdatePosition.Id = _data.Id;
-            msg.UpdatePosition.X = _data.X;
-            msg.UpdatePosition.Y = _data.Y;
-            msg.UpdatePosition.Dir = _data.Dir;
-            msg.UpdatePosition.Speed = _data.Speed;
-            msg.UpdateHp.Id = _data.Id;
-            msg.UpdateHp.MaxHp = _data.MaxHp;
-            msg.UpdateHp.Hp = _data.Hp;
-            return msg;
+            return new SpawnMsg(_data.Id, _data.Name,
+                new CharacterResourceMsg(_data.Id, _data.ResourceId),
+                new UpdatePositionMsg(_data.Id, _data.X, _data.Y, _data.Dir, _data.Speed, Realtime.Now, false),
+                new UpdateHpMsg(_data.Id, _data.MaxHp, _data.Hp));
         }
 
-        protected void BroadCastToNetworkActors<T>(T msg) where T : IMessage
+        protected void MovePosition(int x, int y, double dir, double speed)
         {
-            var message = msg as UpdatePositionMsg;
-            if (message != null)
-            {
-                _data.X = message.X;
-                _data.Y = message.Y;
-                _data.Dir = message.Dir;
-                _data.Speed = message.Speed;
-            }
+            _data.X = x;
+            _data.Y = y;
+            _data.Dir = dir;
+            _data.Speed = speed;
+            BroadcastToNetworkActors(new UpdatePositionMsg(_data.Id, x, y, dir, speed, Realtime.Now, false));
+        }
 
+        protected void BroadcastToNetworkActors<T>(T msg) where T : IMessage
+        {
             foreach (var actor in _world.Actors.OfType<NetworkActor>())
                 actor.SendToNetwork(msg);
         }
@@ -106,7 +99,7 @@ namespace Server.Logic
 
     class RoamingNpc : Npc
     {
-        private List<Position> _roamingPointList;
+        private readonly List<Position> _roamingPointList;
         private int _moveTo = 0;
         public RoamingNpc(World world, Ai ai, NpcData data, List<Position> roamingPoints)
             : base(world, ai, data)
@@ -116,7 +109,7 @@ namespace Server.Logic
 
         public override IEnumerable<int> CoroEntry()
         {
-            BroadCastToNetworkActors(ToSpawnMsg());
+            BroadcastToNetworkActors(ToSpawnMsg());
 
             while (true)
             {
@@ -131,19 +124,9 @@ namespace Server.Logic
                 // 길찾기를 해봅시다
                 Location.X = (int)_data.X; Location.Y = (int)_data.Y;
                 var nextPos = this.FindWay(_roamingPointList[_moveTo]);
-                
-                // 클라에 알려줍니다
-                var moveMsg = new UpdatePositionMsg
-                {
-                    Id = _data.Id,
-                    X = nextPos.X,
-                    Y = nextPos.Y,
-                    Dir = curPos.ToDirection(nextPos).ToClientDirection(),
-                    Speed = 1,
-                };
-                
-                BroadCastToNetworkActors(moveMsg);
 
+                // 클라에 알려줍니다
+                MovePosition(nextPos.X, nextPos.Y, curPos.ToDirection(nextPos).ToClientDirection(), 1);
                 yield return NextRandom(1000, 2000);
             }
         }

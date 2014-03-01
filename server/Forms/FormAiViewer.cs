@@ -34,7 +34,7 @@ namespace Server.Forms
 
         void OnWorldInfo(WorldInfoMsg msg)
         {
-            
+
         }
 
         void OnSpawn(SpawnMsg msg)

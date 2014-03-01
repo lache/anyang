@@ -18,6 +18,15 @@ namespace Server.Message
         public const int TypeId = 1000;
         public string Name { get; set; }
         
+        public EnterWorldMsg()
+        {
+        }
+        
+        public EnterWorldMsg(string name)
+        {
+            Name = name;
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -54,6 +63,15 @@ namespace Server.Message
             CharacterResource = new CharacterResourceMsg();
             UpdatePosition = new UpdatePositionMsg();
             UpdateHp = new UpdateHpMsg();
+        }
+        
+        public SpawnMsg(int id, string name, CharacterResourceMsg characterResource, UpdatePositionMsg updatePosition, UpdateHpMsg updateHp)
+        {
+            Id = id;
+            Name = name;
+            CharacterResource = characterResource;
+            UpdatePosition = updatePosition;
+            UpdateHp = updateHp;
         }
         
         public void WriteTo(BinaryWriter writer)
@@ -99,6 +117,20 @@ namespace Server.Message
         public double Speed { get; set; }
         public double Time { get; set; }
         
+        public MoveMsg()
+        {
+        }
+        
+        public MoveMsg(int id, double x, double y, double dir, double speed, double time)
+        {
+            Id = id;
+            X = x;
+            Y = y;
+            Dir = dir;
+            Speed = speed;
+            Time = time;
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -132,6 +164,21 @@ namespace Server.Message
         public double Time { get; set; }
         public bool InstanceMove { get; set; }
         
+        public UpdatePositionMsg()
+        {
+        }
+        
+        public UpdatePositionMsg(int id, double x, double y, double dir, double speed, double time, bool instanceMove)
+        {
+            Id = id;
+            X = x;
+            Y = y;
+            Dir = dir;
+            Speed = speed;
+            Time = time;
+            InstanceMove = instanceMove;
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -161,6 +208,15 @@ namespace Server.Message
         public const int TypeId = 1004;
         public int Id { get; set; }
         
+        public DespawnMsg()
+        {
+        }
+        
+        public DespawnMsg(int id)
+        {
+            Id = id;
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -183,6 +239,13 @@ namespace Server.Message
         public WorldInfoMsg()
         {
             SpawnList = new List<SpawnMsg>();
+        }
+        
+        public WorldInfoMsg(int id, int worldId, List<SpawnMsg> spawnList)
+        {
+            Id = id;
+            WorldId = worldId;
+            SpawnList = spawnList;
         }
         
         public void WriteTo(BinaryWriter writer)
@@ -214,12 +277,31 @@ namespace Server.Message
     {
         public const int TypeId = 1006;
         public int Id { get; set; }
+        public string Name { get; set; }
         public string Message { get; set; }
+        
+        public ChatMsg()
+        {
+        }
+        
+        public ChatMsg(int id, string name, string message)
+        {
+            Id = id;
+            Name = name;
+            Message = message;
+        }
         
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
             writer.Write(Id);
+            if (string.IsNullOrEmpty(Name)) writer.Write(0);
+            else
+            {
+                var bytes = Encoding.UTF8.GetBytes(Name);
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
+            }
             if (string.IsNullOrEmpty(Message)) writer.Write(0);
             else
             {
@@ -235,6 +317,11 @@ namespace Server.Message
             {
                 var length = reader.ReadInt32();
                 var bytes = reader.ReadBytes(length);
+                Name = Encoding.UTF8.GetString(bytes);
+            }
+            {
+                var length = reader.ReadInt32();
+                var bytes = reader.ReadBytes(length);
                 Message = Encoding.UTF8.GetString(bytes);
             }
         }
@@ -245,6 +332,16 @@ namespace Server.Message
         public const int TypeId = 1007;
         public int Id { get; set; }
         public int ResourceId { get; set; }
+        
+        public CharacterResourceMsg()
+        {
+        }
+        
+        public CharacterResourceMsg(int id, int resourceId)
+        {
+            Id = id;
+            ResourceId = resourceId;
+        }
         
         public void WriteTo(BinaryWriter writer)
         {
@@ -265,6 +362,15 @@ namespace Server.Message
         public const int TypeId = 1008;
         public int InteractId { get; set; }
         
+        public InteractMsg()
+        {
+        }
+        
+        public InteractMsg(int interactId)
+        {
+            InteractId = interactId;
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -283,6 +389,17 @@ namespace Server.Message
         public int Id { get; set; }
         public int MaxHp { get; set; }
         public int Hp { get; set; }
+        
+        public UpdateHpMsg()
+        {
+        }
+        
+        public UpdateHpMsg(int id, int maxHp, int hp)
+        {
+            Id = id;
+            MaxHp = maxHp;
+            Hp = hp;
+        }
         
         public void WriteTo(BinaryWriter writer)
         {
@@ -304,6 +421,15 @@ namespace Server.Message
     {
         public const int TypeId = 1010;
         public string Message { get; set; }
+        
+        public AlertMsg()
+        {
+        }
+        
+        public AlertMsg(string message)
+        {
+            Message = message;
+        }
         
         public void WriteTo(BinaryWriter writer)
         {
@@ -333,6 +459,16 @@ namespace Server.Message
         public int Id { get; set; }
         public byte[] Mp3 { get; set; }
         
+        public VoiceMsg()
+        {
+        }
+        
+        public VoiceMsg(int id, byte[] mp3)
+        {
+            Id = id;
+            Mp3 = mp3;
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -357,6 +493,17 @@ namespace Server.Message
         public string Host { get; set; }
         public int Port { get; set; }
         public string Name { get; set; }
+        
+        public ServerMsg()
+        {
+        }
+        
+        public ServerMsg(string host, int port, string name)
+        {
+            Host = host;
+            Port = port;
+            Name = name;
+        }
         
         public void WriteTo(BinaryWriter writer)
         {
@@ -398,6 +545,10 @@ namespace Server.Message
     {
         public const int TypeId = 4001;
         
+        public RequestServerMsg()
+        {
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -416,6 +567,11 @@ namespace Server.Message
         public ServersMsg()
         {
             ServerList = new List<ServerMsg>();
+        }
+        
+        public ServersMsg(List<ServerMsg> serverList)
+        {
+            ServerList = serverList;
         }
         
         public void WriteTo(BinaryWriter writer)
@@ -443,6 +599,15 @@ namespace Server.Message
     {
         public const int TypeId = 4003;
         public string Name { get; set; }
+        
+        public InterChatLoginMsg()
+        {
+        }
+        
+        public InterChatLoginMsg(string name)
+        {
+            Name = name;
+        }
         
         public void WriteTo(BinaryWriter writer)
         {
@@ -472,6 +637,17 @@ namespace Server.Message
         public string Name { get; set; }
         public string Message { get; set; }
         public long Ticks { get; set; }
+        
+        public InterChatMsg()
+        {
+        }
+        
+        public InterChatMsg(string name, string message, long ticks)
+        {
+            Name = name;
+            Message = message;
+            Ticks = ticks;
+        }
         
         public void WriteTo(BinaryWriter writer)
         {
@@ -515,6 +691,16 @@ namespace Server.Message
         public int TypeCode { get; set; }
         public string Content { get; set; }
         
+        public InterChatCommandMsg()
+        {
+        }
+        
+        public InterChatCommandMsg(int typeCode, string content)
+        {
+            TypeCode = typeCode;
+            Content = content;
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -543,6 +729,10 @@ namespace Server.Message
     {
         public const int TypeId = 4006;
         
+        public AlivePingMsg()
+        {
+        }
+        
         public void WriteTo(BinaryWriter writer)
         {
             writer.Write(TypeId);
@@ -556,6 +746,10 @@ namespace Server.Message
     public class AlivePongMsg : IMessage
     {
         public const int TypeId = 4007;
+        
+        public AlivePongMsg()
+        {
+        }
         
         public void WriteTo(BinaryWriter writer)
         {

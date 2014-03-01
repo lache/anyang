@@ -58,6 +58,7 @@ namespace Server.Logic
             // WorldInfo의 Spawn 패킷에는 자기 자신에 대한 정보를 보내지 않는다.
             var infoMsg = new WorldInfoMsg { Id = _data.ObjectId, WorldId = _data.WorldId };
             infoMsg.SpawnList.AddRange(_world.GetActors<Player>(this).Select(e => e.ToSpawnMsg()));
+            infoMsg.SpawnList.AddRange(_world.GetActors<Npc>(this).Select(e => e.ToSpawnMsg()));
             SendToNetwork(infoMsg);
 
             // 시야에 의한 Spawn 패킷을 전파할 때에는 자기 자신까지 포함해서 전달한다.
@@ -68,18 +69,10 @@ namespace Server.Logic
 
         SpawnMsg ToSpawnMsg()
         {
-            var msg = new SpawnMsg { Id = _data.ObjectId, Name = _data.Name };
-            msg.CharacterResource.Id = _data.ObjectId;
-            msg.CharacterResource.ResourceId = _data.ResourceId;
-            msg.UpdatePosition.Id = _data.ObjectId;
-            msg.UpdatePosition.X = _data.X;
-            msg.UpdatePosition.Y = _data.Y;
-            msg.UpdatePosition.Dir = _data.Dir;
-            msg.UpdatePosition.Speed = _data.Speed;
-            msg.UpdateHp.Id = _data.ObjectId;
-            msg.UpdateHp.MaxHp = _data.MaxHp;
-            msg.UpdateHp.Hp = _data.Hp;
-            return msg;
+            return new SpawnMsg(_data.ObjectId, _data.Name,
+                new CharacterResourceMsg(_data.ObjectId, _data.ResourceId),
+                new UpdatePositionMsg(_data.ObjectId, _data.X, _data.Y, _data.Dir, _data.Speed, Realtime.Now, false),
+                new UpdateHpMsg(_data.ObjectId, _data.MaxHp, _data.Hp));
         }
 
         void OnMove(MoveMsg msg)
@@ -89,18 +82,18 @@ namespace Server.Logic
             _data.Dir = msg.Dir;
             _data.Speed = msg.Speed;
 
-            _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
+            _polator.AddSample(msg.Time, Realtime.Now, 
+                new Vector2 { X = msg.X, Y = msg.Y },
+                new Vector2 { X = msg.Speed * Math.Cos(msg.Dir), Y = msg.Speed * Math.Sin(msg.Dir) });
 
-            var updatePos = new UpdatePositionMsg
-                {
-                    Id = msg.Id, X = msg.X, Y = msg.Y, Speed = msg.Speed, Dir = msg.Dir, Time = msg.Time
-                };
+            var posMsg = new UpdatePositionMsg(msg.Id, msg.X, msg.Y, msg.Speed, msg.Dir, msg.Time, false);
             foreach (var actor in _world.GetActors<NetworkActor>())
-                actor.SendToNetwork(updatePos);
+                actor.SendToNetwork(posMsg);
         }
 
         void OnChat(ChatMsg msg)
         {
+            msg.Name = _data.Name;
             foreach (var actor in _world.GetActors<NetworkActor>())
                 actor.SendToNetwork(msg);
         }

@@ -103,6 +103,25 @@ foreach (var groupNode in msgXml.Elements("group"))
             }
             endBracket();
         }
+        else
+        {
+            writeCode("");
+            writeCode(string.Format("public {0}()", messageClassName));
+            startBracket();
+            endBracket();
+        }
+
+        if (members.Any())
+        {
+            writeCode("");
+            writeCode(string.Format("public {0}({1})", messageClassName, string.Join(", ", members.Select(e => e.Item3 + " " + ToVarName(e.Item2)))));
+            startBracket();
+            foreach (var pair in members)
+            {
+                writeCode(string.Format("{0} = {1};", pair.Item2, ToVarName(pair.Item2)));
+            }
+            endBracket();
+        }
 
         writeCode("");
         writeCode("public void WriteTo(BinaryWriter writer)");
@@ -243,5 +262,10 @@ string ToCamelCase(string source, bool upperFirst = true)
         }
     }
     return builder.ToString();
+}
+
+string ToVarName(string className)
+{
+    return char.ToLower(className[0]) + className.Substring(1);
 }
 #>

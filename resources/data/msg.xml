@@ -45,6 +45,7 @@
     <!-- 클라이언트가 채팅을 했거나, 다른 클라이언트로부터의 채팅 메시지를 받을 때 -->
     <msg name="chat" from="both" to="both">
       <field type="int" name="id"/>
+      <field type="string" name="name"/>
       <field type="string" name="message"/>
     </msg>
     <!-- 캐릭터의 외형 정보 등을 포함한 정보로 Spawn 되거나 외형이 변경되었을 때 받는다. -->
