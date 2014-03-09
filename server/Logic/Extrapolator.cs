@@ -77,7 +77,7 @@ namespace Server.Logic
             else
             {
                 double dt2 = 1.0 / (_aimTime - _snapTime);
-                _snapVel = _aimPos - (_snapPos * dt2);
+                _snapVel = (_aimPos - _snapPos) * dt2;
             }
             return true;
         }
