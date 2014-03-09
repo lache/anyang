@@ -157,8 +157,12 @@ bool HelloWorld::init()
 
 	// 채팅 로그
 	AnCreateChatLogs(this);
-	
+
+#ifdef _DEBUG
 	TMXTiledMap *map = TMXTiledMap::create("..\\..\\..\\..\\..\\resources\\map\\default_1.tmx");
+#else
+	TMXTiledMap *map = TMXTiledMap::create("map/default_1.tmx");
+#endif
 	addChild(map, -1);
 
 	/*auto gameObject = Sprite::create("images/player.png");
