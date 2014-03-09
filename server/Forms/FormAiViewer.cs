@@ -60,7 +60,7 @@ namespace Server.Forms
         {
         }
 
-        void OnUpdatePosition(UpdatePositionMsg msg)
+        void OnUpdatePosition(MoveMsg msg)
         {
             if (_posMap.ContainsKey(msg.Id))
                 _posMap.Remove(msg.Id);

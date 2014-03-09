@@ -10,20 +10,11 @@
       <field type="int" name="id"/>
       <field type="string" name="name" attribute="nameplate.name"/>
       <ref msg="character_resource" once="true"/>
-      <ref msg="update_position" once="true"/>
+      <ref msg="move" once="true"/>
       <ref msg="update_hp" once="true"/>
     </msg>
-    <!-- 클라이언트가 움직일 때 -->
-    <msg name="move" from="client" to="server">
-      <field type="int" name="id"/>
-      <field type="double" name="x" attribute="pos.x"/>
-      <field type="double" name="y" attribute="pos.y"/>
-      <field type="double" name="dir" attribute="motion.dir"/>
-      <field type="double" name="speed" attribute="motion.speed"/>
-      <field type="double" name="time"/>
-    </msg>
-    <!-- 클라이언트가 움직였다는 상황을 다른 클라이언트들에게 알려줄 때 -->
-    <msg name="update_position" from="server" to="client">
+    <!-- 클라이언트가 움직일 때, 클라이언트가 움직였다는 상황을 다른 클라이언트들에게 알려줄 때 -->
+    <msg name="move" from="both" to="both">
       <field type="int" name="id"/>
       <field type="double" name="x" attribute="pos.x"/>
       <field type="double" name="y" attribute="pos.y"/>

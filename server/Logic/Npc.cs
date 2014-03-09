@@ -77,7 +77,7 @@ namespace Server.Logic
         {
             return new SpawnMsg(_data.Id, _data.Name,
                 new CharacterResourceMsg(_data.Id, _data.ResourceId),
-                new UpdatePositionMsg(_data.Id, _data.X, _data.Y, _data.Dir, _data.Speed, Realtime.Now, false),
+                new MoveMsg(_data.Id, _data.X, _data.Y, _data.Dir, _data.Speed, Realtime.Now, false),
                 new UpdateHpMsg(_data.Id, _data.MaxHp, _data.Hp));
         }
 
@@ -87,7 +87,7 @@ namespace Server.Logic
             _data.Y = y;
             _data.Dir = dir;
             _data.Speed = speed;
-            BroadcastToNetworkActors(new UpdatePositionMsg(_data.Id, x, y, dir, speed, Realtime.Now, false));
+            BroadcastToNetworkActors(new MoveMsg(_data.Id, x, y, dir, speed, Realtime.Now, false));
         }
 
         protected void BroadcastToNetworkActors<T>(T msg) where T : IMessage

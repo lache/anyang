@@ -74,32 +74,8 @@ namespace Server.Logic
         {
             return new SpawnMsg(_data.ObjectId, _data.Name,
                 new CharacterResourceMsg(_data.ObjectId, _data.ResourceId),
-                new UpdatePositionMsg(_data.ObjectId, _data.X, _data.Y, _data.Dir, _data.Speed, Realtime.Now, false),
+                new MoveMsg(_data.ObjectId, _data.X, _data.Y, _data.Dir, _data.Speed, Realtime.Now, false),
                 new UpdateHpMsg(_data.ObjectId, _data.MaxHp, _data.Hp));
-        }
-
-        private void MovePosition(double x, double y, double dir, double speed)
-        {
-            _data.X = x;
-            _data.Y = y;
-            _data.Dir = dir;
-            _data.Speed = speed;
-
-            var posMsg = new UpdatePositionMsg(_data.ObjectId, x, y, speed, dir, Realtime.Now, false);
-            foreach (var actor in _world.GetActors<NetworkActor>(this))
-                actor.SendToNetwork(posMsg);
-        }
-
-        private double _prevX, _prevY;
-        void OnMove(MoveMsg msg)
-        {
-            if (_prevX != msg.X || _prevY != msg.Y)
-            {
-                Logger.Write("C[{2}] {0}, {1}", msg.X, msg.Y, _data.Name);
-                _prevX = msg.X;
-                _prevY = msg.Y;
-            }
-            _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
         }
 
         void OnChat(ChatMsg msg)
@@ -122,25 +98,46 @@ namespace Server.Logic
                 actor.SendToNetwork(msg);
         }
 
+        #region Move & Update Location
+
         private IEnumerable<int> CoroUpdatePos()
         {
-            int count = 0;
             while (_logged)
             {
-                Vector2 pos, velocity;
-                var result = _polator.ReadPosition(Realtime.Now, out pos, out velocity);
+                UpdatePosition();
 
-                MovePosition(pos.X, pos.Y, _data.Dir, _data.Speed);
-
-                const int sendCount = 20;
+                const int sendCount = 4 /* it's magic */;
                 yield return 1000 / sendCount;
-
-                if (++count % sendCount == 0)
-                {
-                    Logger.Write("S[{3}] {0}, {1} = {2}", pos.X, pos.Y, result, _data.Name);
-                    // Logger.Write(Realtime.Now);
-                }
             }
         }
+
+        void OnMove(MoveMsg msg)
+        {
+            _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
+            UpdatePosition();
+        }
+
+        private void MovePosition(double x, double y, double dir, double speed)
+        {
+            _data.X = x;
+            _data.Y = y;
+            _data.Dir = dir;
+            _data.Speed = speed;
+
+            var posMsg = new MoveMsg(_data.ObjectId, x, y, speed, dir, Realtime.Now, false);
+            foreach (var actor in _world.GetActors<NetworkActor>(this))
+                actor.SendToNetwork(posMsg);
+        }
+
+        private void UpdatePosition()
+        {
+            Vector2 pos;
+            if (_polator.ReadPosition(Realtime.Now, out pos))
+            {
+                MovePosition(pos.X, pos.Y, _data.Dir, _data.Speed);
+            }
+        }
+
+        #endregion
     }
 }

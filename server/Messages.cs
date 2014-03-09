@@ -55,22 +55,22 @@ namespace Server.Message
         public int Id { get; set; }
         public string Name { get; set; }
         public CharacterResourceMsg CharacterResource { get; set; }
-        public UpdatePositionMsg UpdatePosition { get; set; }
+        public MoveMsg Move { get; set; }
         public UpdateHpMsg UpdateHp { get; set; }
         
         public SpawnMsg()
         {
             CharacterResource = new CharacterResourceMsg();
-            UpdatePosition = new UpdatePositionMsg();
+            Move = new MoveMsg();
             UpdateHp = new UpdateHpMsg();
         }
         
-        public SpawnMsg(int id, string name, CharacterResourceMsg characterResource, UpdatePositionMsg updatePosition, UpdateHpMsg updateHp)
+        public SpawnMsg(int id, string name, CharacterResourceMsg characterResource, MoveMsg move, UpdateHpMsg updateHp)
         {
             Id = id;
             Name = name;
             CharacterResource = characterResource;
-            UpdatePosition = updatePosition;
+            Move = move;
             UpdateHp = updateHp;
         }
         
@@ -86,7 +86,7 @@ namespace Server.Message
                 writer.Write(bytes);
             }
             CharacterResource.WriteTo(writer);
-            UpdatePosition.WriteTo(writer);
+            Move.WriteTo(writer);
             UpdateHp.WriteTo(writer);
         }
         
@@ -101,7 +101,7 @@ namespace Server.Message
             reader.ReadInt32(); // throw type-id
             CharacterResource.ReadFrom(reader);
             reader.ReadInt32(); // throw type-id
-            UpdatePosition.ReadFrom(reader);
+            Move.ReadFrom(reader);
             reader.ReadInt32(); // throw type-id
             UpdateHp.ReadFrom(reader);
         }
@@ -116,59 +116,13 @@ namespace Server.Message
         public double Dir { get; set; }
         public double Speed { get; set; }
         public double Time { get; set; }
+        public bool InstanceMove { get; set; }
         
         public MoveMsg()
         {
         }
         
-        public MoveMsg(int id, double x, double y, double dir, double speed, double time)
-        {
-            Id = id;
-            X = x;
-            Y = y;
-            Dir = dir;
-            Speed = speed;
-            Time = time;
-        }
-        
-        public void WriteTo(BinaryWriter writer)
-        {
-            writer.Write(TypeId);
-            writer.Write(Id);
-            writer.Write(X);
-            writer.Write(Y);
-            writer.Write(Dir);
-            writer.Write(Speed);
-            writer.Write(Time);
-        }
-        
-        public void ReadFrom(BinaryReader reader)
-        {
-            Id = reader.ReadInt32();
-            X = reader.ReadDouble();
-            Y = reader.ReadDouble();
-            Dir = reader.ReadDouble();
-            Speed = reader.ReadDouble();
-            Time = reader.ReadDouble();
-        }
-    }
-    
-    public class UpdatePositionMsg : IMessage
-    {
-        public const int TypeId = 1003;
-        public int Id { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Dir { get; set; }
-        public double Speed { get; set; }
-        public double Time { get; set; }
-        public bool InstanceMove { get; set; }
-        
-        public UpdatePositionMsg()
-        {
-        }
-        
-        public UpdatePositionMsg(int id, double x, double y, double dir, double speed, double time, bool instanceMove)
+        public MoveMsg(int id, double x, double y, double dir, double speed, double time, bool instanceMove)
         {
             Id = id;
             X = x;
@@ -205,7 +159,7 @@ namespace Server.Message
     
     public class DespawnMsg : IMessage
     {
-        public const int TypeId = 1004;
+        public const int TypeId = 1003;
         public int Id { get; set; }
         
         public DespawnMsg()
@@ -231,7 +185,7 @@ namespace Server.Message
     
     public class WorldInfoMsg : IMessage
     {
-        public const int TypeId = 1005;
+        public const int TypeId = 1004;
         public int Id { get; set; }
         public int WorldId { get; set; }
         public double ServerNow { get; set; }
@@ -279,7 +233,7 @@ namespace Server.Message
     
     public class ChatMsg : IMessage
     {
-        public const int TypeId = 1006;
+        public const int TypeId = 1005;
         public int Id { get; set; }
         public string Name { get; set; }
         public string Message { get; set; }
@@ -333,7 +287,7 @@ namespace Server.Message
     
     public class CharacterResourceMsg : IMessage
     {
-        public const int TypeId = 1007;
+        public const int TypeId = 1006;
         public int Id { get; set; }
         public int ResourceId { get; set; }
         
@@ -363,7 +317,7 @@ namespace Server.Message
     
     public class InteractMsg : IMessage
     {
-        public const int TypeId = 1008;
+        public const int TypeId = 1007;
         public int InteractId { get; set; }
         
         public InteractMsg()
@@ -389,7 +343,7 @@ namespace Server.Message
     
     public class UpdateHpMsg : IMessage
     {
-        public const int TypeId = 1009;
+        public const int TypeId = 1008;
         public int Id { get; set; }
         public int MaxHp { get; set; }
         public int Hp { get; set; }
@@ -423,7 +377,7 @@ namespace Server.Message
     
     public class AlertMsg : IMessage
     {
-        public const int TypeId = 1010;
+        public const int TypeId = 1009;
         public string Message { get; set; }
         
         public AlertMsg()
@@ -774,14 +728,13 @@ namespace Server.Message
                 case 1000: return new EnterWorldMsg();
                 case 1001: return new SpawnMsg();
                 case 1002: return new MoveMsg();
-                case 1003: return new UpdatePositionMsg();
-                case 1004: return new DespawnMsg();
-                case 1005: return new WorldInfoMsg();
-                case 1006: return new ChatMsg();
-                case 1007: return new CharacterResourceMsg();
-                case 1008: return new InteractMsg();
-                case 1009: return new UpdateHpMsg();
-                case 1010: return new AlertMsg();
+                case 1003: return new DespawnMsg();
+                case 1004: return new WorldInfoMsg();
+                case 1005: return new ChatMsg();
+                case 1006: return new CharacterResourceMsg();
+                case 1007: return new InteractMsg();
+                case 1008: return new UpdateHpMsg();
+                case 1009: return new AlertMsg();
                 case 3000: return new VoiceMsg();
                 case 4000: return new ServerMsg();
                 case 4001: return new RequestServerMsg();
