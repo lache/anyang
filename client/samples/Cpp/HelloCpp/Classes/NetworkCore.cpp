@@ -76,7 +76,7 @@ void AnDebugOutput(const char* format, ...);
 
 void AnSendMove(int objectId, double x, double y)
 {
-	//AnDebugOutput("Before send move packet... objectId=%d, x=%lf, y=%lf\n", objectId, x, y);
+	AnDebugOutput("Before send move packet... objectId=%d, x=%lf, y=%lf, time=%lf\n", objectId, x, y, GServerTime);
 
 	msg::move_msg msg(objectId, x, y, 0, 0, GServerTime);
 	session->write(msg);

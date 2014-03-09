@@ -49,6 +49,7 @@ MSG_HANDLER(world_info)
 	AnDebugOutput("===World Info===\n");
 	AnDebugOutput("  World sid = %d\n", msg.world_id);
 	AnDebugOutput("  User  sid = %d\n", msg.id);
+	AnDebugOutput("  Server Time = %lf\n", msg.server_now);
 
 	AnSetPlayerObjectId(msg.id);
 
@@ -79,7 +80,8 @@ MSG_HANDLER(despawn)
 
 MSG_HANDLER(update_position)
 {
-	//AnDebugOutput("UPDATE_POSITION: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d\n", msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move);
+	AnDebugOutput("UPDATE_POSITION: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d, time=%lf\n",
+		msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move, msg.time);
 
 	AnUpdateObjectPosition(msg.id, msg.x, msg.y);
 }

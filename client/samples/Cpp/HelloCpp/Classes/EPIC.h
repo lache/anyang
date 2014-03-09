@@ -25,6 +25,7 @@ public:
 	~AnExtrapolator();
 
 	void UpdateTime();
+	void DeliverPacket(Packet const &packet, double now);
 
 private:
 	AnExtrapolator();
@@ -35,7 +36,6 @@ private:
 	double GetRealTime();
 	double Latency();
 	void SendPacket(Pos const &pos, double time);
-	void DeliverPacket(Packet const &packet, double now);
 	void ReceivePackets(double now);
 
 	double lastReadTime = 0;

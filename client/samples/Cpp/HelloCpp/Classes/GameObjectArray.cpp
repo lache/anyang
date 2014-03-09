@@ -70,6 +70,8 @@ int AnMoveObject(int objectId, double x, double y)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
+		//GGameObjectMap[objectId]->AppendPositionSample(x, y, GServerTime);
+
 		if (GGameObjectMap[objectId]->sprite)
 		{
 			GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
@@ -89,6 +91,8 @@ int AnUpdateObjectPosition(int objectId, double x, double y)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
+		//GGameObjectMap[objectId]->AddPositionSample(x, y);
+
 		if (GGameObjectMap[objectId]->sprite)
 		{
 			GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));

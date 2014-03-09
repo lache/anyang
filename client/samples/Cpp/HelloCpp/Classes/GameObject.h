@@ -18,6 +18,7 @@ public:
 	cocos2d::Sprite* sprite;
 
 	void Update();
+	void AddPositionSample(double x, double y, double time);
 
 private:
 	GameObject();
