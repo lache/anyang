@@ -113,18 +113,26 @@ namespace Server.Logic
 
         void OnMove(MoveMsg msg)
         {
-            _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
-            UpdatePosition();
+            if (msg.InstanceMove)
+            {
+                _polator.Reset(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
+                MovePosition(msg.X, msg.Y, _data.Dir, _data.Speed, /* instanceMove = */ true);
+            }
+            else
+            {
+                _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
+                UpdatePosition();
+            }
         }
 
-        private void MovePosition(double x, double y, double dir, double speed)
+        private void MovePosition(double x, double y, double dir, double speed, bool instanceMove)
         {
             _data.X = x;
             _data.Y = y;
             _data.Dir = dir;
             _data.Speed = speed;
 
-            var posMsg = new MoveMsg(_data.ObjectId, x, y, speed, dir, Realtime.Now, false);
+            var posMsg = new MoveMsg(_data.ObjectId, x, y, speed, dir, Realtime.Now, instanceMove);
             foreach (var actor in _world.GetActors<NetworkActor>(this))
                 actor.SendToNetwork(posMsg);
         }
@@ -134,7 +142,7 @@ namespace Server.Logic
             Vector2 pos;
             if (_polator.ReadPosition(Realtime.Now, out pos))
             {
-                MovePosition(pos.X, pos.Y, _data.Dir, _data.Speed);
+                MovePosition(pos.X, pos.Y, _data.Dir, _data.Speed, /* instanceMove = */ false);
             }
         }
 
