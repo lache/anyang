@@ -86,7 +86,7 @@ namespace Server.Logic
             _data.Speed = speed;
 
             var posMsg = new UpdatePositionMsg(_data.ObjectId, x, y, speed, dir, Realtime.Now, false);
-            foreach (var actor in _world.GetActors<NetworkActor>())
+            foreach (var actor in _world.GetActors<NetworkActor>(this))
                 actor.SendToNetwork(posMsg);
         }
 
