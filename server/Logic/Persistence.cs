@@ -31,9 +31,7 @@ namespace Server.Logic
         private readonly Dictionary<int /* objectId */, PersistenceData> _dataMap = new Dictionary<int, PersistenceData>();
         private int _idSerial;
 
-        public bool NonPersistenceWorld { get; set; }
-
-        public Persistence()
+        public Persistence(bool nonPersistenceWorld)
         {
             if (!Directory.Exists(DataDirectory))
                 Directory.CreateDirectory(DataDirectory);
@@ -77,7 +75,7 @@ namespace Server.Logic
             if (_dataMap.Count > 0)
                 _idSerial = _dataMap.Select(e => e.Key).Max();
 
-            if (NonPersistenceWorld)
+            if (nonPersistenceWorld)
                 _dataMap.Clear();
         }
 
