@@ -207,23 +207,32 @@ void HelloWorld::update(float dt)
 
 	Point layerPos = getPosition();
 	static float moveSpeed = -5.0f;
+	static const float charMoveSpeed = 1 * dt;
 	if (keyright)
 	{
 		layerPos.x += moveSpeed;
+
+		AnMoveObjectBy(AnGetPlayerObjectId(), charMoveSpeed, 0);
 	}
 	if (keyleft)
 	{
 		layerPos.x -= moveSpeed;
+
+		AnMoveObjectBy(AnGetPlayerObjectId(), -charMoveSpeed, 0);
 	}
 	if (keyup)
 	{
 		layerPos.y += moveSpeed;
+
+		AnMoveObjectBy(AnGetPlayerObjectId(), 0, charMoveSpeed);
 	}
 	if (keydown)
 	{
 		layerPos.y -= moveSpeed;
+
+		AnMoveObjectBy(AnGetPlayerObjectId(), 0, -charMoveSpeed);
 	}
-	setPosition(layerPos);
+	//setPosition(layerPos);
 
 	static float scaleSpeed = 0.01f;
 	float layerScale = getScale();

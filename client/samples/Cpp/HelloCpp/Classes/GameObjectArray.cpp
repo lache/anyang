@@ -87,6 +87,28 @@ int AnMoveObject(int objectId, double x, double y)
 	}
 }
 
+int AnMoveObjectBy(int objectId, double dx, double dy)
+{
+	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
+	{
+		if (GGameObjectMap[objectId]->sprite)
+		{
+			Point p = GGameObjectMap[objectId]->sprite->getPosition();
+
+			p.x += dx;
+			p.y += dy;
+
+			AnMoveObject(objectId, p.x, p.y);
+		}
+
+		return objectId;
+	}
+	else
+	{
+		return INVALID_GAME_OBJECT_ID;
+	}
+}
+
 int AnUpdateObjectPosition(int objectId, double x, double y)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
