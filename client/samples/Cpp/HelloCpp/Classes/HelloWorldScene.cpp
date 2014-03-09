@@ -206,37 +206,38 @@ void HelloWorld::menuCloseCallback(Object* sender)
 void HelloWorld::update(float dt)
 {
 	AnPollNetworkIoService();
-	AnUpdateGameObjects();
+	AnUpdateGameObjects(dt);
 	AnUpdateServerTime(dt);
 
 	Point layerPos = getPosition();
 	static float moveSpeed = -5.0f;
-	static const float charMoveSpeed = 100 * dt;
+	static const float charMoveSpeed = 100;
+	static const float charMoveAmount = charMoveSpeed * dt;
 
 	Point playerPosD;
 	if (keyright)
 	{
 		layerPos.x += moveSpeed;
 
-		playerPosD.x += charMoveSpeed;
+		playerPosD.x += charMoveAmount;
 	}
 	if (keyleft)
 	{
 		layerPos.x -= moveSpeed;
 
-		playerPosD.x -= charMoveSpeed;
+		playerPosD.x -= charMoveAmount;
 	}
 	if (keyup)
 	{
 		layerPos.y += moveSpeed;
 
-		playerPosD.y += charMoveSpeed;
+		playerPosD.y += charMoveAmount;
 	}
 	if (keydown)
 	{
 		layerPos.y -= moveSpeed;
 
-		playerPosD.y -= charMoveSpeed;
+		playerPosD.y -= charMoveAmount;
 	}
 
 	//setPosition(layerPos);
@@ -250,6 +251,7 @@ void HelloWorld::update(float dt)
 	else if (playerPosD.x != 0 || playerPosD.y != 0)
 	{
 		playerPosDZeroed = false;
+		playerPosD = playerPosD.normalize() * charMoveAmount;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, false);
 	}
 	
