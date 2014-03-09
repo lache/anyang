@@ -30,3 +30,4 @@ client/samples/Cpp/HelloCpp/Classes/data_center_server.cpp
 client/samples/Cpp/HelloCpp/Classes/data_type_id.h
 *.vshost.exe
 Thumbs.db
+server/Server.csproj.user
