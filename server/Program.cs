@@ -22,7 +22,7 @@ namespace Server
 
     class Program
     {
-        private readonly Persistence _persistence = new Persistence();
+        private readonly Persistence _persistence;
         private readonly Network _network = new Network();
         private readonly Coroutine _coro = new Coroutine();
         private readonly World _world;
@@ -30,8 +30,8 @@ namespace Server
 
         public Program(ProgramOptions options)
         {
+            _persistence = new Persistence(options.NonPersistenceWorld);
             _world = new World(_coro, _persistence);
-            _persistence.NonPersistenceWorld = options.NonPersistenceWorld;
             _options = options;
         }
 
