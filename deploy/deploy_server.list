@@ -1,2 +1,3 @@
 ..\server\bin\Release\*.dll,server\
 ..\server\bin\Release\Server.exe,server\
+..\server\bin\Release\Data\*,server\Data\
