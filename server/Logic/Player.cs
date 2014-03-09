@@ -132,7 +132,7 @@ namespace Server.Logic
 
                 MovePosition(pos.X, pos.Y, _data.Dir, _data.Speed);
 
-                const int sendCount = 20;
+                const int sendCount = 4;
                 yield return 1000 / sendCount;
 
                 if (++count % sendCount == 0)
