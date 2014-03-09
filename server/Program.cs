@@ -17,6 +17,7 @@ namespace Server
     class ProgramOptions
     {
         public bool Debug { get; set; }
+        public bool NonPersistenceWorld { get; set; }
     }
 
     class Program
@@ -30,6 +31,7 @@ namespace Server
         public Program(ProgramOptions options)
         {
             _world = new World(_coro, _persistence);
+            _persistence.NonPersistenceWorld = options.NonPersistenceWorld;
             _options = options;
         }
 
@@ -115,6 +117,7 @@ namespace Server
             foreach (var arg in args)
             {
                 if (string.Equals(arg, "--debug")) options.Debug = true;
+                if (string.Equals(arg, "--no-store")) options.NonPersistenceWorld = true;
             }
             new Program(options).Run();
         }

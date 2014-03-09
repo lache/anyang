@@ -31,6 +31,8 @@ namespace Server.Logic
         private readonly Dictionary<int /* objectId */, PersistenceData> _dataMap = new Dictionary<int, PersistenceData>();
         private int _idSerial;
 
+        public bool NonPersistenceWorld { get; set; }
+
         public Persistence()
         {
             if (!Directory.Exists(DataDirectory))
@@ -74,6 +76,9 @@ namespace Server.Logic
             // Serial이 겹치지 않도록 처리해준다.
             if (_dataMap.Count > 0)
                 _idSerial = _dataMap.Select(e => e.Key).Max();
+
+            if (NonPersistenceWorld)
+                _dataMap.Clear();
         }
 
         public T Find<T>(Func<T, bool> predicate) where T : PersistenceData

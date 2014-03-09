@@ -95,7 +95,7 @@ namespace Server.Logic
         {
             if (_prevX != msg.X || _prevY != msg.Y)
             {
-                Logger.Write("C {0}, {1}", msg.X, msg.Y);
+                Logger.Write("C[{2}] {0}, {1}", msg.X, msg.Y, _data.Name);
                 _prevX = msg.X;
                 _prevY = msg.Y;
             }
@@ -137,7 +137,7 @@ namespace Server.Logic
 
                 if (++count % sendCount == 0)
                 {
-                    Logger.Write("S {0}, {1} = {2}", pos.X, pos.Y, result);
+                    Logger.Write("S[{3}] {0}, {1} = {2}", pos.X, pos.Y, result, _data.Name);
                     // Logger.Write(Realtime.Now);
                 }
             }
