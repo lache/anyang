@@ -4,28 +4,24 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Server.Logic
 {
     class NpcData
     {
-        public int Id { get; set; }
-
-        public string Name { get; set; }
-        public int WorldId { get; set; }
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Dir { get; set; }
-        public double Speed { get; set; }
-        public int ResourceId { get; set; }
-        public int MaxHp { get; set; }
-        public int Hp { get; set; }
+        public CharacterData Character { get; set; }
+        public MoveData Move { get; set; }
+        public NpcData()
+        {
+            Character = new CharacterData();
+            Move = new MoveData();
+        }
     }
 
     class Npc : AiActor
     {
-        private static object IssueLock = new object();
         private static int NpcIssued = 9999;
         protected NpcData _data;
        
@@ -33,16 +29,15 @@ namespace Server.Logic
             : base(world, ai)
         {
             _data = data;
-            lock (IssueLock)
-            {
-                _data.Id = NpcIssued;
-                NpcIssued++;
-            }
+            Add<CharacterController>(_data.Character);
+            Add<MoveController>(_data.Move);
+
+            ObjectId = Interlocked.Increment(ref NpcIssued);
         }
 
         public override bool IsAlive()
         {
-            return _data.Hp > 0;
+            return _data.Character.Hp > 0;
         }
 
         public override IEnumerable<int> CoroEntry()
@@ -59,41 +54,18 @@ namespace Server.Logic
         {
             var npc = obj as Npc;
             if (npc == null) return false;
-            return npc._data.Id == _data.Id;
+            return npc.ObjectId == ObjectId;
         }
 
         public override int GetHashCode()
         {
-            return _data.Id;
+            return ObjectId;
         }
 
         public override string ToString()
         {
             return string.Format("Npc Id: {0}, Type: {1}, IsAlive: {2}",
-                _data.Id, GetType().Name, IsAlive());
-        }
-
-        public SpawnMsg ToSpawnMsg()
-        {
-            return new SpawnMsg(_data.Id, _data.Name,
-                new CharacterResourceMsg(_data.Id, _data.ResourceId),
-                new MoveMsg(_data.Id, _data.X, _data.Y, _data.Dir, _data.Speed, Realtime.Now, false),
-                new UpdateHpMsg(_data.Id, _data.MaxHp, _data.Hp));
-        }
-
-        protected void MovePosition(int x, int y, double dir, double speed)
-        {
-            _data.X = x;
-            _data.Y = y;
-            _data.Dir = dir;
-            _data.Speed = speed;
-            BroadcastToNetworkActors(new MoveMsg(_data.Id, x, y, dir, speed, Realtime.Now, false));
-        }
-
-        protected void BroadcastToNetworkActors<T>(T msg) where T : IMessage
-        {
-            foreach (var actor in _world.Actors.OfType<NetworkActor>())
-                actor.SendToNetwork(msg);
+                ObjectId, GetType().Name, IsAlive());
         }
     }
 
@@ -109,12 +81,14 @@ namespace Server.Logic
 
         public override IEnumerable<int> CoroEntry()
         {
-            BroadcastToNetworkActors(ToSpawnMsg());
+            Broadcast(Get<CharacterController>().MakeSpawnMsg());
 
-            while (true)
+            while (Have<MoveController>())
             {
+                var moveCtrl = Get<MoveController>();
+
                 // 이미 도달한 경우 다음 목적지로 이동한다
-                var curPos = new Position { X = (int)_data.X, Y = (int)_data.Y };
+                var curPos = moveCtrl.Pos;
                 if (curPos == _roamingPointList[_moveTo])
                 {
                     _moveTo++;
@@ -122,11 +96,11 @@ namespace Server.Logic
                 }
 
                 // 길찾기를 해봅시다
-                Location.X = (int)_data.X; Location.Y = (int)_data.Y;
+                Location = moveCtrl.Pos;
                 var nextPos = this.FindWay(_roamingPointList[_moveTo]);
 
                 // 클라에 알려줍니다
-                MovePosition(nextPos.X, nextPos.Y, curPos.ToDirection(nextPos).ToClientDirection(), 1);
+                moveCtrl.Move(nextPos.X, nextPos.Y, curPos.ToDirection(nextPos).ToClientDirection(), 1);
                 yield return NextRandom(1000, 2000);
             }
         }

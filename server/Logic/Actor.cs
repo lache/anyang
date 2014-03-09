@@ -15,7 +15,11 @@ namespace Server.Logic
     class Actor
     {
         protected readonly World _world;
+        protected readonly Dictionary<Type, IController> _controllers = new Dictionary<Type, IController>();
+
         public Position Location = new Position { X = 0, Y = 0 };
+
+        public int ObjectId { get; set; }
 
         public Actor(World world)
         {
@@ -37,7 +41,72 @@ namespace Server.Logic
         // 예를 들어 NetworkActor의 Disconnect 시에 호출되어 영속성을 보장해준다.
         public virtual IEnumerable<int> CoroDispose()
         {
+            // 등록된 모든 Controller를 제거한다.
+            RemoveAllController();
+
             yield break;
+        }
+
+        #region Controller
+
+        public TController Add<TController>(object data) where TController : IController
+        {
+            var controller = (TController) Activator.CreateInstance(typeof(TController), this, data);
+            controller.Attached = true;
+            _controllers.Add(typeof(TController), controller);
+            return controller;
+        }
+
+        public TController Get<TController>()
+        {
+            IController controller;
+            if (_controllers.TryGetValue(typeof(TController), out controller))
+                return (TController)controller;
+            return default(TController);
+        }
+
+        public bool Have<TController>()
+        {
+            return _controllers.ContainsKey(typeof(TController));
+        }
+
+        public bool RemoveController<TController>()
+        {
+            var controller = (IController)Get<TController>();
+            if (controller == null)
+                return false;
+
+            controller.Attached = false;
+            return _controllers.Remove(typeof(TController));
+        }
+
+        public void RemoveAllController()
+        {
+            foreach (IController ctrl in _controllers.Values)
+                ctrl.Attached = false;
+            _controllers.Clear();
+        }
+
+        public void Broadcast<T>(T msg, bool withoutMe = false) where T : IMessage
+        {
+            var targets = withoutMe ? _world.GetActors<NetworkActor>(this) : _world.GetActors<NetworkActor>();
+            foreach (var actor in targets)
+                actor.SendToNetwork(msg);
+        }
+
+        #endregion
+    }
+
+    static class ActorExtension
+    {
+        public static IEnumerable<Actor> Have<TController>(this IEnumerable<Actor> source) where TController : IController
+        {
+            return source.Where(e => e.Have<TController>());
+        }
+
+        public static IEnumerable<TController> Get<TController>(this IEnumerable<Actor> source) where TController : IController
+        {
+            return source.Select(e => e.Get<TController>()).Where(e => e != null);
         }
     }
 

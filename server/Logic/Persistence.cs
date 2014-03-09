@@ -67,6 +67,9 @@ namespace Server.Logic
                 {
                     var ser = loadSerMap[typename];
                     var data = (PersistenceData)ser.ReadObject(reader);
+
+                    // 데이터 규격이 변경되어도 null 객체는 없도록 해준다.
+                    MakeNoNull(data);
                     _dataMap.Add(data.ObjectId, data);
                 }
             }
@@ -77,6 +80,18 @@ namespace Server.Logic
 
             if (nonPersistenceWorld)
                 _dataMap.Clear();
+        }
+
+        private void MakeNoNull(object obj)
+        {
+            foreach (var property in obj.GetType().GetProperties().Where(e => e.CanWrite))
+            {
+                if (property.GetValue(obj) != null)
+                    continue;
+                var propObj = property.PropertyType == typeof(string) ? "" : Activator.CreateInstance(property.PropertyType);
+                property.SetValue(obj, propObj);
+                MakeNoNull(propObj);
+            }
         }
 
         public T Find<T>(Func<T, bool> predicate) where T : PersistenceData
