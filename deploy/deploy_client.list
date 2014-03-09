@@ -5,3 +5,5 @@
 ..\client\samples\Cpp\HelloCpp\Resources\ipad\*,client\ipad\
 ..\client\samples\Cpp\HelloCpp\Resources\ipadhd\*,client\ipadhd\
 ..\client\samples\Cpp\HelloCpp\Resources\iphone\*,client\iphone\
+..\client\samples\Cpp\HelloCpp\Resources\images\*,client\images\
+..\resources\map\*,client\map\
