@@ -129,7 +129,7 @@ namespace Server.Logic
 
             //  calculate the interpolated position
             oVel = _snapVel;
-            oPos = (_snapPos + oVel) * (forTime - _snapTime);
+            oPos = _snapPos + oVel * (forTime - _snapTime);
 
             if (!ok)
             {

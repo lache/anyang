@@ -90,9 +90,15 @@ namespace Server.Logic
                 actor.SendToNetwork(posMsg);
         }
 
+        private double _prevX, _prevY;
         void OnMove(MoveMsg msg)
         {
-            Logger.Write("C {0}, {1}, {2}, {3}", msg.Time, Realtime.Now, msg.X, msg.Y);
+            if (_prevX != msg.X || _prevY != msg.Y)
+            {
+                Logger.Write("C {0}, {1}", msg.X, msg.Y);
+                _prevX = msg.X;
+                _prevY = msg.Y;
+            }
             _polator.AddSample(msg.Time, Realtime.Now, new Vector2 { X = msg.X, Y = msg.Y });
         }
 
@@ -126,7 +132,7 @@ namespace Server.Logic
 
                 MovePosition(pos.X, pos.Y, _data.Dir, _data.Speed);
 
-                const int sendCount = 1;
+                const int sendCount = 20;
                 yield return 1000 / sendCount;
 
                 if (++count % sendCount == 0)
