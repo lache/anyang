@@ -103,5 +103,5 @@ MSG_HANDLER(session_error)
 
 MSG_HANDLER(chat)
 {
-	AnAppendChat(msg.message.c_str());
+	AnAppendChat(msg.name.c_str(), msg.message.c_str());
 }

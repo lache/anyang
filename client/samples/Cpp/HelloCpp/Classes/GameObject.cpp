@@ -2,6 +2,7 @@
 #include "GameObject.h"
 #include "EPIC.h"
 #include "NetworkCore.h"
+#include "GameObjectArray.h"
 
 extern double GServerTime;
 
@@ -19,9 +20,12 @@ GameObject::~GameObject()
 
 void GameObject::Update()
 {
-	m_pPosition->UpdateTime();
+	//m_pPosition->UpdateTime();
 
-	AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY());
+	if (objectId == AnGetPlayerObjectId())
+	{
+		AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY());
+	}
 }
 
 void GameObject::AddPositionSample(double x, double y, double time)

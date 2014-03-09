@@ -73,7 +73,7 @@ void AnCreateChatLogs(Node* parent)
 	}
 }
 
-void AnAppendChat(const char* text)
+void AnAppendChat(const char* speaker, const char* text)
 {
 	const auto lastYPos = GChatLogs[(MAX_CHAT_LOG - 1 + GCurrentLogPosition) % MAX_CHAT_LOG]->getPositionY();
 	const auto gapYPos = GChatLogs[GCurrentLogPosition]->getPositionY() - GChatLogs[(GCurrentLogPosition + 1) % MAX_CHAT_LOG]->getPositionY();
@@ -84,7 +84,9 @@ void AnAppendChat(const char* text)
 	}
 
 	GChatLogs[GCurrentLogPosition]->setPositionY(lastYPos);
-	GChatLogs[GCurrentLogPosition]->setString(text);
 
+	auto str = String::createWithFormat("%s : %s", speaker ? speaker : "[?]", text ? text : "?");
+	GChatLogs[GCurrentLogPosition]->setString(str->getCString());
+	
 	GCurrentLogPosition = (GCurrentLogPosition + 1) % MAX_CHAT_LOG;
 }

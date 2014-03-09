@@ -207,7 +207,7 @@ void HelloWorld::update(float dt)
 
 	Point layerPos = getPosition();
 	static float moveSpeed = -5.0f;
-	static const float charMoveSpeed = 1 * dt;
+	static const float charMoveSpeed = 100 * dt;
 	if (keyright)
 	{
 		layerPos.x += moveSpeed;
