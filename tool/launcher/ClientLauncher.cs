@@ -23,13 +23,14 @@ namespace launcher
             get { return Path.Combine(ClientPath, "HelloCpp.exe"); }
         }
 
-        public void Execute()
+        public void Execute(string accountName)
         {
             if (!File.Exists(ClientExecutablePath))
                 throw new InvalidOperationException("Cannot find a client binary.\nPlease restart this launcher.");
 
             using (var clientProcess = new Process())
             {
+                clientProcess.StartInfo.Arguments = "127.0.0.1 " + accountName;
                 clientProcess.StartInfo.FileName = ClientExecutablePath;
                 clientProcess.StartInfo.WorkingDirectory = ClientPath;
                 clientProcess.StartInfo.WindowStyle = ProcessWindowStyle.Normal;

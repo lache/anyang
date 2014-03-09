@@ -170,7 +170,6 @@ namespace launcher
 
         private void buttonStartGame_Click(object sender, EventArgs e)
         {
-            /*
             var userName = textAccountName.Text.Trim();
             if (string.IsNullOrWhiteSpace(userName))
             {
@@ -180,6 +179,7 @@ namespace launcher
                 return;
             }
 
+            /*
             var serverIndices = listViewServers.SelectedIndices;
             if (serverIndices.Count == 0 || serverIndices.Count > 1)
             {
@@ -195,10 +195,9 @@ namespace launcher
             {
                 timerRefresh.Enabled = false;
 
-                ClientLauncher.Instance.Execute();
+                ClientLauncher.Instance.Execute(userName);
 
                 SaveAccountNameToRegistry();
-                Close();
             }
             catch (Exception exception)
             {
