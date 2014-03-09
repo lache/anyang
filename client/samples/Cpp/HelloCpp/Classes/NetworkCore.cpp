@@ -74,10 +74,10 @@ void AnPollNetworkIoService()
 
 void AnDebugOutput(const char* format, ...);
 
-void AnSendMove(int objectId, double x, double y)
+void AnSendMove(int objectId, double x, double y, bool instanceMove)
 {
 	AnDebugOutput("Before send move packet... objectId=%d, x=%lf, y=%lf, time=%lf\n", objectId, x, y, GServerTime);
 
-	msg::move_msg msg(objectId, x, y, 0, 0, GServerTime);
+	msg::move_msg msg(objectId, x, y, 0, 0, GServerTime, instanceMove);
 	session->write(msg);
 }

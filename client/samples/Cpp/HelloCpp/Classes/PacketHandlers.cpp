@@ -62,12 +62,12 @@ MSG_HANDLER(spawn)
 	AnDebugOutput("SPAWN: objectId=%d, name=%s, pos_x=%lf, pos_y=%lf, speed=%lf, dir=%lf\n",
 		msg.id,
 		msg.name.c_str(),
-		msg.update_position.x,
-		msg.update_position.y,
-		msg.update_position.speed,
-		msg.update_position.dir);
+		msg.move.x,
+		msg.move.y,
+		msg.move.speed,
+		msg.move.dir);
 
-	AnSpawnGameObject(msg.id, msg.update_position.x, msg.update_position.y);
+	AnSpawnGameObject(msg.id, msg.move.x, msg.move.y);
 }
 
 MSG_HANDLER(despawn)
@@ -78,9 +78,9 @@ MSG_HANDLER(despawn)
 	AnDespawnGameObject(msg.id);
 }
 
-MSG_HANDLER(update_position)
+MSG_HANDLER(move)
 {
-	AnDebugOutput("UPDATE_POSITION: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d, time=%lf\n",
+	AnDebugOutput("MOVE: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d, time=%lf\n",
 		msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move, msg.time);
 
 	AnUpdateObjectPosition(msg.id, msg.x, msg.y);

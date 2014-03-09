@@ -66,7 +66,7 @@ const GameObjectMap& AnGetGameObjectMap()
 	return GGameObjectMap;
 }
 
-int AnMoveObject(int objectId, double x, double y)
+int AnMoveObject(int objectId, double x, double y, bool instanceMove)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
@@ -76,7 +76,7 @@ int AnMoveObject(int objectId, double x, double y)
 		{
 			GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
 
-			AnSendMove(objectId, x, y);
+			AnSendMove(objectId, x, y, instanceMove);
 		}
 
 		return objectId;
@@ -87,7 +87,7 @@ int AnMoveObject(int objectId, double x, double y)
 	}
 }
 
-int AnMoveObjectBy(int objectId, double dx, double dy)
+int AnMoveObjectBy(int objectId, double dx, double dy, bool instanceMove)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
@@ -98,7 +98,7 @@ int AnMoveObjectBy(int objectId, double dx, double dy)
 			p.x += dx;
 			p.y += dy;
 
-			AnMoveObject(objectId, p.x, p.y);
+			AnMoveObject(objectId, p.x, p.y, instanceMove);
 		}
 
 		return objectId;

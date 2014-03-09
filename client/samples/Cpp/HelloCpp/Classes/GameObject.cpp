@@ -24,7 +24,7 @@ void GameObject::Update()
 
 	if (objectId == AnGetPlayerObjectId())
 	{
-		AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY());
+		AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY(), false);
 	}
 }
 

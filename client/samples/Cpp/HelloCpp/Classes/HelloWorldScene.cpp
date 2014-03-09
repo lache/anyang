@@ -85,13 +85,13 @@ void DefaultOnMouseUp(Event* evt)
 
 		assert(glView->getScaleX() == 1);
 		assert(glView->getScaleY() == 1);
-		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y);
+		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y, true);
 	}
 }
 
 void DefaultOnTouchEnded(Touch* t, Event* evt)
 {
-	AnMoveObject(AnGetPlayerObjectId(), t->getLocation().x, t->getLocation().y);
+	AnMoveObject(AnGetPlayerObjectId(), t->getLocation().x, t->getLocation().y, true);
 }
 
 Scene* HelloWorld::scene()
@@ -208,32 +208,47 @@ void HelloWorld::update(float dt)
 	Point layerPos = getPosition();
 	static float moveSpeed = -5.0f;
 	static const float charMoveSpeed = 100 * dt;
+
+	Point playerPosD;
 	if (keyright)
 	{
 		layerPos.x += moveSpeed;
 
-		AnMoveObjectBy(AnGetPlayerObjectId(), charMoveSpeed, 0);
+		playerPosD.x += charMoveSpeed;
 	}
 	if (keyleft)
 	{
 		layerPos.x -= moveSpeed;
 
-		AnMoveObjectBy(AnGetPlayerObjectId(), -charMoveSpeed, 0);
+		playerPosD.x -= charMoveSpeed;
 	}
 	if (keyup)
 	{
 		layerPos.y += moveSpeed;
 
-		AnMoveObjectBy(AnGetPlayerObjectId(), 0, charMoveSpeed);
+		playerPosD.y += charMoveSpeed;
 	}
 	if (keydown)
 	{
 		layerPos.y -= moveSpeed;
 
-		AnMoveObjectBy(AnGetPlayerObjectId(), 0, -charMoveSpeed);
+		playerPosD.y -= charMoveSpeed;
 	}
+
 	//setPosition(layerPos);
 
+	static bool playerPosDZeroed = true;
+	if (playerPosD.x == 0 && playerPosD.y == 0 && playerPosDZeroed == false)
+	{
+		playerPosDZeroed = true;
+		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, true);
+	}
+	else if (playerPosD.x != 0 || playerPosD.y != 0)
+	{
+		playerPosDZeroed = false;
+		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, false);
+	}
+	
 	static float scaleSpeed = 0.01f;
 	float layerScale = getScale();
 	if (keyplus)
