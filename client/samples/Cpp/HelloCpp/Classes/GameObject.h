@@ -18,7 +18,7 @@ public:
 	cocos2d::Sprite* sprite;
 	cocos2d::Point targetPosition;
 
-	void Update();
+	void Update(float dt);
 	void AddPositionSample(double x, double y, double time);
 
 private:

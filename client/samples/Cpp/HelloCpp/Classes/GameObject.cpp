@@ -18,7 +18,7 @@ GameObject::~GameObject()
 	m_pPosition = nullptr;
 }
 
-void GameObject::Update()
+void GameObject::Update(float dt)
 {
 	//m_pPosition->UpdateTime();
 
@@ -28,7 +28,13 @@ void GameObject::Update()
 	}
 	else
 	{
-		sprite->setPosition((targetPosition * 1.01f + sprite->getPosition()) / 2.01f);
+		const auto& length = (targetPosition - sprite->getPosition()).getLength();
+		if (length >= 1)
+		{
+			const auto& moveDir = (targetPosition - sprite->getPosition()).normalize();
+
+			sprite->setPosition(sprite->getPosition() + moveDir * 100 * dt);
+		}
 	}
 }
 

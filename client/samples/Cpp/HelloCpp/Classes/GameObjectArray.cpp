@@ -109,7 +109,7 @@ int AnMoveObjectBy(int objectId, double dx, double dy, bool instanceMove)
 	}
 }
 
-int AnUpdateObjectTargetPosition(int objectId, double x, double y)
+int AnUpdateObjectTargetPosition(int objectId, double x, double y, bool instanceMove)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
@@ -119,7 +119,10 @@ int AnUpdateObjectTargetPosition(int objectId, double x, double y)
 		{
 			GGameObjectMap[objectId]->targetPosition = Point(x, y);
 
-			//GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
+			if (instanceMove)
+			{
+				GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
+			}
 		}
 
 		return objectId;
@@ -140,10 +143,10 @@ int AnGetPlayerObjectId()
 	return GPlayerObjectId;
 }
 
-void AnUpdateGameObjects()
+void AnUpdateGameObjects(float dt)
 {
 	for (auto p : GGameObjectMap)
 	{
-		p.second->Update();
+		p.second->Update(dt);
 	}
 }

@@ -83,7 +83,7 @@ MSG_HANDLER(move)
 	AnDebugOutput("MOVE: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d, time=%lf\n",
 		msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move, msg.time);
 
-	AnUpdateObjectTargetPosition(msg.id, msg.x, msg.y);
+	AnUpdateObjectTargetPosition(msg.id, msg.x, msg.y, msg.instance_move);
 }
 
 MSG_HANDLER(character_resource)
