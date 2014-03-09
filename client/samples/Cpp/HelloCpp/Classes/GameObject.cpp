@@ -26,6 +26,10 @@ void GameObject::Update()
 	{
 		AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY(), false);
 	}
+	else
+	{
+		sprite->setPosition((targetPosition * 1.01f + sprite->getPosition()) / 2.01f);
+	}
 }
 
 void GameObject::AddPositionSample(double x, double y, double time)
