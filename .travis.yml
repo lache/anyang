@@ -5,8 +5,7 @@ before_install:
   # pipe stdout to dev/null because qq is still too chatty
   - sudo add-apt-repository ppa:directhex/monoxide
   - sudo apt-get update && sudo apt-get dist-upgrade
-  - sudo apt-get install -qq mono-devel mono-gmcs > /dev/null
-  - mozroots --import --sync
+  - sudo apt-get install mono-devel mono-gmcs > /dev/null
 
 env:
   - EnableNuGetPackageRestore=true
