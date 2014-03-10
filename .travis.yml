@@ -5,7 +5,7 @@ before_install:
   # pipe stdout to dev/null because qq is still too chatty
   - export FORCE_ADD_APT_REPOSITORY=force
   - sudo add-apt-repository ppa:directhex/monoxide -y
-  - sudo apt-get update -qq > /dev/null && sudo apt-get dist-upgrade -qq > /dev/null
+  - sudo apt-get update -qq > /dev/null
   - sudo apt-get install -qq mono-devel mono-gmcs > /dev/null
 
 env:
