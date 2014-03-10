@@ -1,0 +1,15 @@
+language: c
+
+before_install:
+  # Make sure mono is installed,
+  # pipe stdout to dev/null because qq is still too chatty
+  - sudo add-apt-repository ppa:directhex/monoxide
+  - sudo apt-get update && sudo apt-get dist-upgrade
+  - sudo apt-get install -qq mono-devel mono-gmcs > /dev/null
+  - mozroots --import --sync
+
+env:
+  - EnableNuGetPackageRestore=true
+
+script:
+  - xbuild server/Server.sln /p:Configuration=Release
