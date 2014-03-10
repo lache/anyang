@@ -12,4 +12,5 @@ env:
   - EnableNuGetPackageRestore=true
 
 script:
-  - xbuild server/Server.sln /p:Configuration=Release
+  - cd server
+  - xbuild Server.sln /p:Configuration=Release
