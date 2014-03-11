@@ -30,10 +30,19 @@ int AnSpawnGameObject(int objectId, double x, double y)
 		//s->setAnchorPoint(Point::ZERO);
 		GBaseLayer->addChild(s);
 
+		auto st = Sprite::create("images/player.png");
+		st->setPosition(Point(x, y));
+		st->setScale(0.25f);
+		st->setColor(Color3B::GREEN);
+		st->setLocalZOrder(10);
+		//s->setAnchorPoint(Point::ZERO);
+		GBaseLayer->addChild(st);
+
 		auto o = new GameObject(x, y);
 		o->objectId = objectId;
 		o->name[0] = '\0';
 		o->sprite = s;
+		o->targetSprite = st;
 
 		GGameObjectMap[objectId] = o;
 		return objectId;
@@ -113,16 +122,21 @@ int AnUpdateObjectTargetPosition(int objectId, double x, double y, bool instance
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
-		//GGameObjectMap[objectId]->AddPositionSample(x, y);
+		Point p(x, y);
 
 		if (GGameObjectMap[objectId]->sprite)
 		{
-			GGameObjectMap[objectId]->targetPosition = Point(x, y);
+			GGameObjectMap[objectId]->targetPosition = p;
 
 			if (instanceMove)
 			{
-				GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
+				GGameObjectMap[objectId]->sprite->setPosition(p);
 			}
+		}
+
+		if (GGameObjectMap[objectId]->targetSprite)
+		{
+			GGameObjectMap[objectId]->targetSprite->setPosition(p);
 		}
 
 		return objectId;

@@ -15,7 +15,8 @@ public:
 
 	int objectId;
 	char name[128];
-	cocos2d::Sprite* sprite;
+	cocos2d::Sprite* sprite; // 클라이언트가 알고 있는 현재 위치
+	cocos2d::Sprite* targetSprite; // 서버에서 알려준 현재 위치
 	cocos2d::Point targetPosition;
 
 	void Update(float dt);
