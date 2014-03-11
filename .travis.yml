@@ -14,3 +14,6 @@ env:
 script:
   - cd server
   - xbuild Server.sln /p:Configuration=Release
+
+notifications:
+  webhooks: https://mmo.slack.com/services/hooks/travis?token=y23iDaflPdknryS9xNKZqOIo
