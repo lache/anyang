@@ -62,7 +62,11 @@ protected:
 
 private:
     // message queue for concurrency
+    #ifdef WIN32
     typedef Concurrency::concurrent_queue<msg_writer_ref> write_msgs_t;
+    #else
+    typedef tbb::concurrent_queue<msg_writer_ref> write_msgs_t;
+    #endif
     write_msgs_t write_msgs;
 
     // to close after current io completion

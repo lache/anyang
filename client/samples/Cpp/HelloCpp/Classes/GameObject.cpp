@@ -12,30 +12,23 @@ const static float DEFAULT_MOVE_SEND_INTERVAL = 1.0f;
 extern double GServerTime;
 
 GameObject::GameObject(double x, double y)
-: m_pPosition(new AnExtrapolator(x, y))
-, lastMoveSendTime(0)
+: lastMoveSendTime(0)
 , moveSendInterval(DEFAULT_MOVE_SEND_INTERVAL)
+, age(0)
 {
 }
 
 GameObject::~GameObject()
 {
-	delete m_pPosition;
-	m_pPosition = nullptr;
-}
-
-static inline double GetCurrentGameTime()
-{
-	timeval now;
-	cocos2d::gettimeofday(&now, NULL);
-	return ((double)now.tv_sec + now.tv_usec / 1e6);
 }
 
 void GameObject::Update(float dt)
 {
+	age += dt;
+
 	if (objectId == AnGetPlayerObjectId())
 	{
-		const auto currentTime = GetCurrentGameTime();
+		const auto currentTime = age;
 		if (currentTime - lastMoveSendTime > moveSendInterval)
 		{
 			AnSendMove(objectId, sprite->getPositionX(), sprite->getPositionY(), false);
@@ -67,7 +60,7 @@ void GameObject::MoveBy(double dx, double dy, bool instanceMove)
 		sprite->setPosition(p);
 
 		// 서버로 통지하는 것은 일정 시간마다 해 줌
-		const auto currentTime = GetCurrentGameTime();
+		const auto currentTime = age;
 		if (currentTime - lastMoveSendTime > moveSendInterval)
 		{
 			AnSendMove(objectId, p.x, p.y, instanceMove);

@@ -9,7 +9,11 @@
 #include <memory>
 #include <deque>
 #include <mutex>
-//#include <concurrent_queue.h>
+#ifdef WIN32
+#include <concurrent_queue.h>
+#else
+#include <tbb/concurrent_queue.h>
+#endif
 #include <functional>
 #include <thread>
 

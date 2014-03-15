@@ -38,7 +38,6 @@ set(SAMPLE_SRC
   Classes/AppDelegate.cpp
   Classes/HelloWorldScene.cpp
   Classes/Chat.cpp
-  Classes/EPIC.cpp
   Classes/GameObject.cpp
   Classes/GameObjectArray.cpp
   Classes/NetworkCore.cpp
@@ -81,4 +80,8 @@ else()
     )
 endif()
 
+if(WIN32 AND MSVC)
 target_link_libraries(${APP_NAME} audio cocos2d)
+else()
+target_link_libraries(${APP_NAME} audio cocos2d tbb)
+endif()
