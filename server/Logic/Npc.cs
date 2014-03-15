@@ -100,9 +100,7 @@ namespace Server.Logic
                 var nextPos = this.FindWay(_roamingPointList[_moveTo]);
 
                 // 클라에 알려줍니다
-                //const int magic = 24;
-                const int magic = 1;
-                moveCtrl.Move(nextPos.X * magic, nextPos.Y * magic, curPos.ToDirection(nextPos).ToClientDirection(), 1);
+                moveCtrl.Move(nextPos.X, nextPos.Y, curPos.ToDirection(nextPos).ToClientDirection(), 1);
                 yield return NextRandom(500, 800);
             }
         }

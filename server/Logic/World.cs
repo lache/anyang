@@ -58,6 +58,35 @@ namespace Server.Logic
         public IEnumerable<int> CoroEntry()
         {
             // TODO: 월드의 중앙 AI를 구현한다.
+
+            // 마을을 소환한다.
+
+            // 마을 크기에 따라 NPC를 소환한다.
+
+            // 마을 크기와 NPC의 개체수를 고려하여 자원을 소환한다.
+
+            // 자원의 척박도: blue, yellow, red
+
+            foreach (var step in Enumerable.Range(1, 10))
+            {
+                var x = step * 50;
+                var y = step * 50;
+                var npcData = new NpcData
+                {
+                    Character = new CharacterData { Name = "John", MaxHp = 100, Hp = 100, ResourceId = 1 },
+                    Move = new MoveData { WorldId = 1, X = x, Y = y, Dir = 0, Speed = 0 }
+                };
+                var roamingPosList = new List<Position> {
+                    new Position{ X = x, Y = y },
+                    new Position{ X = x, Y = y + 50 },
+                    new Position{ X = x + 50, Y = y + 50 },
+                    new Position{ X = x + 50, Y = y },
+                };
+
+                var roamingNpc = new RoamingNpc(this, null, npcData, roamingPosList);
+                _coro.AddEntry(roamingNpc.CoroEntry);
+            }
+
             while (true)
             {
                 yield return 1000;

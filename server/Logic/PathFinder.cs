@@ -151,10 +151,7 @@ namespace Server.Logic
         {
             var ways = actor.FindWays(dest, method);
             if (ways.Count() > 0)
-            {
-                Console.WriteLine("X: {0}, Y: {1}", ways.First().X, ways.First().Y);
                 return actor.FindWays(dest, method).First();
-            }
             else
                 return dest.Clone();
         }
