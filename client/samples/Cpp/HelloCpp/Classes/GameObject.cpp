@@ -5,7 +5,7 @@
 #include "GameObjectArray.h"
 #include "cocos2d.h"
 
-using namespace cocos2d;
+USING_NS_CC;
 
 const static float DEFAULT_MOVE_SEND_INTERVAL = 1.0f;
 
@@ -24,7 +24,8 @@ GameObject::~GameObject()
 	m_pPosition = nullptr;
 }
 
-static inline double GetCurrentGameTime() {
+static inline double GetCurrentGameTime()
+{
 	timeval now;
 	cocos2d::gettimeofday(&now, NULL);
 	return ((double)now.tv_sec + now.tv_usec / 1e6);
