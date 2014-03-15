@@ -40,16 +40,6 @@ namespace Server.Logic
             return _data.Character.Hp > 0;
         }
 
-        public override IEnumerable<int> CoroEntry()
-        {
-            return base.CoroAiEntry();
-        }
-
-        public override IEnumerable<int> CoroDispose()
-        {
-            return base.CoroDispose();
-        }
-
         public override bool Equals(object obj)
         {
             var npc = obj as Npc;
@@ -79,11 +69,11 @@ namespace Server.Logic
             _roamingPointList = roamingPoints;
         }
 
-        public override IEnumerable<int> CoroEntry()
+        protected override IEnumerable<int> CoroMainEntry()
         {
             Broadcast(Get<CharacterController>().MakeSpawnMsg());
 
-            while (Have<MoveController>())
+            while (IsAlive())
             {
                 var moveCtrl = Get<MoveController>();
 

@@ -32,18 +32,34 @@ namespace Server.Logic
         }
 
         // 객체 생성 시 불리는 Coroutine 진입 함수.
-        public virtual IEnumerable<int> CoroEntry()
+        public IEnumerable<int> CoroEntry()
         {
-            yield break;
-        }
+            // Main Logic에 대한 Coroutine을 수행한다.
+            foreach (var coroValue in CoroMainEntry())
+                yield return coroValue;
 
-        // 객체 소멸 시 불리는 Coroutine 진입 함수.
-        // 예를 들어 NetworkActor의 Disconnect 시에 호출되어 영속성을 보장해준다.
-        public virtual IEnumerable<int> CoroDispose()
-        {
+            // Dispose 로직을 수행한다.
+            foreach (var coroValue in CoroDispose())
+                yield return coroValue;
+
             // 등록된 모든 Controller를 제거한다.
             RemoveAllController();
 
+            // 등록된 모든 Coroutine을 제거한다.
+            _world.Coro.DeleteEntry(this);
+        }
+
+        protected virtual IEnumerable<int> CoroMainEntry()
+        {
+            // 무한히 생존하는 Actor이다.
+            while (true)
+            {
+                yield return 1000;
+            }
+        }
+
+        protected virtual IEnumerable<int> CoroDispose()
+        {
             yield break;
         }
 
@@ -83,7 +99,10 @@ namespace Server.Logic
         public void RemoveAllController()
         {
             foreach (IController ctrl in _controllers.Values)
+            {
                 ctrl.Attached = false;
+                _world.Coro.DeleteEntry(this);
+            }
             _controllers.Clear();
         }
 
@@ -135,7 +154,7 @@ namespace Server.Logic
             return _random.Next(min, max);
         }
 
-        public IEnumerable<int> CoroAiEntry()
+        protected override IEnumerable<int> CoroMainEntry()
         {
             _world.Actors.Add(this);
             while (IsAlive())
@@ -165,14 +184,19 @@ namespace Server.Logic
             PrepareDispatchMap();
         }
 
+        public bool Connected { get; set; }
+
         public void SendToNetwork(IMessage message)
         {
             _session.Send(message);
         }
 
-        public override IEnumerable<int> CoroEntry()
+        protected override IEnumerable<int> CoroMainEntry()
         {
-            yield break;
+            while (Connected)
+            {
+                yield return 1000;
+            }
         }
 
         #region Message Dispatch
