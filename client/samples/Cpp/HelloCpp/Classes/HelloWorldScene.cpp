@@ -9,28 +9,44 @@
 
 USING_NS_CC;
 
-static bool keyleft;
-static bool keyright;
-static bool keyup;
-static bool keydown;
+static bool keyCharMoveLeft;
+static bool keyCharMoveRight;
+static bool keyCharMoveUp;
+static bool keyCharMoveDown;
 static bool keyZoomIn;
 static bool keyZoomOut;
+static bool keyLayerMoveLeft;
+static bool keyLayerMoveRight;
+static bool keyLayerMoveUp;
+static bool keyLayerMoveDown;
 
 void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 {
 	switch (kc)
 	{
+	case EventKeyboard::KeyCode::KEY_A:
+		keyLayerMoveLeft = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_D:
+		keyLayerMoveRight = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_W:
+		keyLayerMoveUp = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_S:
+		keyLayerMoveDown = true;
+		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		keyleft = true;
+		keyCharMoveLeft = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		keyright = true;
+		keyCharMoveRight = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
-		keyup = true;
+		keyCharMoveUp = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		keydown = true;
+		keyCharMoveDown = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_9:
 		keyZoomIn = true;
@@ -49,17 +65,29 @@ void DefaultOnKeyReleased(EventKeyboard::KeyCode kc, Event* evt)
 {
 	switch (kc)
 	{
+	case EventKeyboard::KeyCode::KEY_A:
+		keyLayerMoveLeft = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_D:
+		keyLayerMoveRight = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_W:
+		keyLayerMoveUp = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_S:
+		keyLayerMoveDown = false;
+		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		keyleft = false;
+		keyCharMoveLeft = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		keyright = false;
+		keyCharMoveRight = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
-		keyup = false;
+		keyCharMoveUp = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		keydown = false;
+		keyCharMoveDown = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_9:
 		keyZoomIn = false;
@@ -216,33 +244,41 @@ void HelloWorld::update(float dt)
 	static const float charMoveSpeed = 100;
 	static const float charMoveAmount = charMoveSpeed * dt;
 
-	Point playerPosD;
-	if (keyright)
+	if (keyLayerMoveRight)
 	{
 		layerPos.x += moveSpeed;
-
-		playerPosD.x += charMoveAmount;
 	}
-	if (keyleft)
+	if (keyLayerMoveLeft)
 	{
 		layerPos.x -= moveSpeed;
-
-		playerPosD.x -= charMoveAmount;
 	}
-	if (keyup)
+	if (keyLayerMoveUp)
 	{
 		layerPos.y += moveSpeed;
-
-		playerPosD.y += charMoveAmount;
 	}
-	if (keydown)
+	if (keyLayerMoveDown)
 	{
 		layerPos.y -= moveSpeed;
+	}
+	setPosition(layerPos);
 
+	Point playerPosD;
+	if (keyCharMoveRight)
+	{
+		playerPosD.x += charMoveAmount;
+	}
+	if (keyCharMoveLeft)
+	{
+		playerPosD.x -= charMoveAmount;
+	}
+	if (keyCharMoveUp)
+	{
+		playerPosD.y += charMoveAmount;
+	}
+	if (keyCharMoveDown)
+	{
 		playerPosD.y -= charMoveAmount;
 	}
-
-	//setPosition(layerPos);
 
 	static bool playerPosDZeroed = true;
 	if (playerPosD.x == 0 && playerPosD.y == 0 && playerPosDZeroed == false)
