@@ -13,8 +13,8 @@ static bool keyleft;
 static bool keyright;
 static bool keyup;
 static bool keydown;
-static bool keyplus;
-static bool keyminus;
+static bool keyZoomIn;
+static bool keyZoomOut;
 
 void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 {
@@ -32,11 +32,11 @@ void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		keydown = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_PLUS:
-		keyplus = true;
+	case EventKeyboard::KeyCode::KEY_9:
+		keyZoomIn = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_MINUS:
-		keyminus = true;
+	case EventKeyboard::KeyCode::KEY_0:
+		keyZoomOut = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_RETURN:
 	case EventKeyboard::KeyCode::KEY_KP_ENTER:
@@ -61,11 +61,11 @@ void DefaultOnKeyReleased(EventKeyboard::KeyCode kc, Event* evt)
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		keydown = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_PLUS:
-		keyplus = false;
+	case EventKeyboard::KeyCode::KEY_9:
+		keyZoomIn = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_MINUS:
-		keyminus = false;
+	case EventKeyboard::KeyCode::KEY_0:
+		keyZoomOut = false;
 		break;
 	}
 }
@@ -203,6 +203,8 @@ void HelloWorld::menuCloseCallback(Object* sender)
 #endif
 }
 
+void AnDebugOutput(const char* format, ...);
+
 void HelloWorld::update(float dt)
 {
 	AnPollNetworkIoService();
@@ -245,11 +247,26 @@ void HelloWorld::update(float dt)
 	static bool playerPosDZeroed = true;
 	if (playerPosD.x == 0 && playerPosD.y == 0 && playerPosDZeroed == false)
 	{
+		// 플레이어가 이동을 멈췄을 때
+		if (!playerPosDZeroed)
+		{
+			// 플레이어가 이동을 멈춘 처음 경우일 때 (edge-trigger)
+			AnDebugOutput("Stopped [edge-trigger]\n");
+			AnResetLastMoveSendTime(AnGetPlayerObjectId());
+		}
+		
 		playerPosDZeroed = true;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, true);
 	}
 	else if (playerPosD.x != 0 || playerPosD.y != 0)
 	{
+		// 플레이어가 이동 중일 때
+		if (playerPosDZeroed)
+		{
+			// 플레이어가 이동을 시작한 처음 경우일 때 (edge-trigger)
+			AnDebugOutput("Moving [edge-trigger]\n");
+			AnResetLastMoveSendTime(AnGetPlayerObjectId());
+		}
 		playerPosDZeroed = false;
 		playerPosD = playerPosD.normalize() * charMoveAmount;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, false);
@@ -257,11 +274,11 @@ void HelloWorld::update(float dt)
 	
 	static float scaleSpeed = 0.01f;
 	float layerScale = getScale();
-	if (keyplus)
+	if (keyZoomIn)
 	{
 		layerScale += scaleSpeed;
 	}
-	if (keyminus)
+	if (keyZoomOut)
 	{
 		layerScale -= scaleSpeed;
 	}

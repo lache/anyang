@@ -24,25 +24,27 @@ int AnSpawnGameObject(int objectId, double x, double y)
 
 	if (GGameObjectMap.find(objectId) == GGameObjectMap.end())
 	{
-		auto s = Sprite::create("images/player.png");
-		s->setPosition(Point(x, y));
-		s->setScale(0.25f);
-		//s->setAnchorPoint(Point::ZERO);
-		GBaseLayer->addChild(s);
+		auto sprite = Sprite::create("images/player.png");
+		sprite->setPosition(Point(x, y));
+		sprite->setScale(0.25f);
+		GBaseLayer->addChild(sprite);
 
-		auto st = Sprite::create("images/player.png");
-		st->setPosition(Point(x, y));
-		st->setScale(0.25f);
-		st->setColor(Color3B::GREEN);
-		st->setLocalZOrder(10);
-		//s->setAnchorPoint(Point::ZERO);
-		GBaseLayer->addChild(st);
+		Sprite* ghostSprite = nullptr;
+		if (AnGetPlayerObjectId() != objectId)
+		{
+			ghostSprite = Sprite::create("images/player.png");
+			ghostSprite->setPosition(Point(x, y));
+			ghostSprite->setScale(0.25f);
+			ghostSprite->setColor(Color3B::GREEN);
+			ghostSprite->setLocalZOrder(10);
+			GBaseLayer->addChild(ghostSprite);
+		}
 
 		auto o = new GameObject(x, y);
 		o->objectId = objectId;
 		o->name[0] = '\0';
-		o->sprite = s;
-		o->targetSprite = st;
+		o->sprite = sprite;
+		o->ghostSprite = ghostSprite;
 
 		GGameObjectMap[objectId] = o;
 		return objectId;
@@ -79,12 +81,8 @@ int AnMoveObject(int objectId, double x, double y, bool instanceMove)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
-		//GGameObjectMap[objectId]->AppendPositionSample(x, y, GServerTime);
-
 		if (GGameObjectMap[objectId]->sprite)
 		{
-			GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
-
 			AnSendMove(objectId, x, y, instanceMove);
 		}
 
@@ -100,16 +98,7 @@ int AnMoveObjectBy(int objectId, double dx, double dy, bool instanceMove)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
-		if (GGameObjectMap[objectId]->sprite)
-		{
-			Point p = GGameObjectMap[objectId]->sprite->getPosition();
-
-			p.x += dx;
-			p.y += dy;
-
-			AnMoveObject(objectId, p.x, p.y, instanceMove);
-		}
-
+		GGameObjectMap[objectId]->MoveBy(dx, dy, instanceMove);
 		return objectId;
 	}
 	else
@@ -134,9 +123,9 @@ int AnUpdateObjectTargetPosition(int objectId, double x, double y, bool instance
 			}
 		}
 
-		if (GGameObjectMap[objectId]->targetSprite)
+		if (GGameObjectMap[objectId]->ghostSprite)
 		{
-			GGameObjectMap[objectId]->targetSprite->setPosition(p);
+			GGameObjectMap[objectId]->ghostSprite->setPosition(p);
 		}
 
 		return objectId;
@@ -162,5 +151,19 @@ void AnUpdateGameObjects(float dt)
 	for (auto p : GGameObjectMap)
 	{
 		p.second->Update(dt);
+	}
+}
+
+int AnResetLastMoveSendTime(int objectId)
+{
+	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
+	{
+		GGameObjectMap[objectId]->ResetLastMoveSendTime();
+
+		return objectId;
+	}
+	else
+	{
+		return INVALID_GAME_OBJECT_ID;
 	}
 }

@@ -20,3 +20,4 @@ int AnUpdateObjectTargetPosition(int objectId, double x, double y, bool instance
 void AnSetPlayerObjectId(int objectId);
 int AnGetPlayerObjectId();
 void AnUpdateGameObjects(float dt);
+int AnResetLastMoveSendTime(int objectId);
