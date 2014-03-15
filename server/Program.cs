@@ -88,16 +88,13 @@ namespace Server
             }
         }
 
-#if !__MonoCS__
-        [DllImport("kernel32")]
-        static extern bool AllocConsole();
-#endif
-
         static void Main(string[] args)
         {
-#if !__MonoCS__
-            AllocConsole();
-#endif
+            var runningOnMono = Type.GetType("Mono.Runtime") != null;
+            if (!runningOnMono)
+            {
+                ConsoleHelper.Initialize();
+            }
 
             var options = new ProgramOptions();
             foreach (var arg in args)
@@ -121,6 +118,17 @@ namespace Server
             {
                 Environment.ExitCode = 1;
             }
+        }
+    }
+
+    static class ConsoleHelper
+    {
+        [DllImport("kernel32")]
+        static extern bool AllocConsole();
+
+        public static void Initialize()
+        {
+            AllocConsole();
         }
     }
 }
