@@ -201,12 +201,9 @@ namespace Tool
         protected static ProcessResult Zip(string sourceDirectory, string outputFile)
         {
             var runningOnMono = Type.GetType("Mono.Runtime") != null;
-
-#if __MonoCS__
-            const string zipPath = @"7z";
-#else
-            var zipPath = Directory.GetFiles(Path.GetFullPath(Path.Combine("..", "..", "..")), "7z.exe", SearchOption.AllDirectories)[0];
-#endif
+            var zipPath = runningOnMono 
+                ? @"7z"
+                : Directory.GetFiles(Path.GetFullPath(Path.Combine("..", "..", "..")), "7z.exe", SearchOption.AllDirectories)[0];
             if (File.Exists(outputFile))
                 File.Delete(outputFile);
 
