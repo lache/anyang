@@ -194,6 +194,9 @@ namespace Server.Core
     {
         public static bool IsDisconnected(this Exception exception)
         {
+            if (exception is ObjectDisposedException)
+                return true;
+
             if (!(exception is SocketException))
                 return false;
 
