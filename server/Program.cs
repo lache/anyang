@@ -74,33 +74,9 @@ namespace Server
             var actor = new Player(_world, session);
             actor.Connected = true;
             session.Source = actor;
-<<<<<<< HEAD
+
             _coro.AddEntry(actor.CoroEntry);
             _coro.AddEntry(actor.CoroDispatchEntry);
-=======
-            _coro.AddEntry(actor, actor.CoroEntry);
-            _coro.AddEntry(actor, actor.CoroDispatchEntry);
-
-
-            foreach(var step in Enumerable.Range(1, 10))
-            {
-                var x = step * 50;
-                var y = step * 50;
-                var npcData = new NpcData
-                {
-                    Character = new CharacterData { Name = "John", MaxHp = 100, Hp = 100, ResourceId = 1 },
-                    Move = new MoveData { WorldId = 1, X = x, Y = y, Dir = 0, Speed = 0 }
-                };
-                var roamingPosList = new List<Position> {
-                new Position{ X = x, Y = y },
-                new Position{ X = x, Y = y + 50 },
-                new Position{ X = x + 50, Y = y + 50 },
-                new Position{ X = x + 50, Y = y },
-            };
-                var roamingNpc = new RoamingNpc(_world, null, npcData, roamingPosList);
-                _coro.AddEntry(roamingNpc, roamingNpc.CoroEntry);
-            }
->>>>>>> 0d0fe6ee2b695d47d67986f268508a1a09dfcb8c
         }
 
         void network_OnDisconnect(Session session)
