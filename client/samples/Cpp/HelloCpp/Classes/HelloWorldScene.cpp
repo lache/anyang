@@ -203,6 +203,8 @@ void HelloWorld::menuCloseCallback(Object* sender)
 #endif
 }
 
+void AnDebugOutput(const char* format, ...);
+
 void HelloWorld::update(float dt)
 {
 	AnPollNetworkIoService();
@@ -245,11 +247,26 @@ void HelloWorld::update(float dt)
 	static bool playerPosDZeroed = true;
 	if (playerPosD.x == 0 && playerPosD.y == 0 && playerPosDZeroed == false)
 	{
+		// 플레이어가 이동을 멈췄을 때
+		if (!playerPosDZeroed)
+		{
+			// 플레이어가 이동을 멈춘 처음 경우일 때 (edge-trigger)
+			AnDebugOutput("Stopped [edge-trigger]\n");
+			AnResetLastMoveSendTime(AnGetPlayerObjectId());
+		}
+		
 		playerPosDZeroed = true;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, true);
 	}
 	else if (playerPosD.x != 0 || playerPosD.y != 0)
 	{
+		// 플레이어가 이동 중일 때
+		if (playerPosDZeroed)
+		{
+			// 플레이어가 이동을 시작한 처음 경우일 때 (edge-trigger)
+			AnDebugOutput("Moving [edge-trigger]\n");
+			AnResetLastMoveSendTime(AnGetPlayerObjectId());
+		}
 		playerPosDZeroed = false;
 		playerPosD = playerPosD.normalize() * charMoveAmount;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, false);
