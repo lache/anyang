@@ -89,6 +89,8 @@ MSG_HANDLER(move)
 MSG_HANDLER(character_resource)
 {
 	AnDebugOutput("CHARACTER_RESOURCE: objectId=%d, resourceid=%d\n", msg.id, msg.resource_id);
+
+	AnUpdateObjectTint(msg.id, msg.resource_id);
 }
 
 MSG_HANDLER(update_hp)

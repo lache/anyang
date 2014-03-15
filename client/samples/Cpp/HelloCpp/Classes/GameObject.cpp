@@ -91,3 +91,12 @@ void GameObject::ResetLastMoveSendTime()
 {
 	lastMoveSendTime = 0;
 }
+
+void GameObject::SetTint(int rgba)
+{
+	GLubyte r = (rgba & 0x000000ff);
+	GLubyte g = (rgba & 0x0000ff00) >> 8;
+	GLubyte b = (rgba & 0x00ff0000) >> 16;
+	//GLubyte a = (rgba & 0xff000000) >> 24;
+	sprite->setColor(Color3B(r, g, b));
+}
