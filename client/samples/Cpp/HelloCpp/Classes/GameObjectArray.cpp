@@ -77,23 +77,6 @@ const GameObjectMap& AnGetGameObjectMap()
 	return GGameObjectMap;
 }
 
-int AnMoveObject(int objectId, double x, double y, bool instanceMove)
-{
-	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
-	{
-		if (GGameObjectMap[objectId]->sprite)
-		{
-			AnSendMove(objectId, x, y, instanceMove);
-		}
-
-		return objectId;
-	}
-	else
-	{
-		return INVALID_GAME_OBJECT_ID;
-	}
-}
-
 int AnMoveObjectBy(int objectId, double dx, double dy, bool instanceMove)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
@@ -173,6 +156,20 @@ int AnUpdateObjectTint(int objectId, int rgba)
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
 		GGameObjectMap[objectId]->SetTint(rgba);
+
+		return objectId;
+	}
+	else
+	{
+		return INVALID_GAME_OBJECT_ID;
+	}
+}
+
+int AnMoveObject(int objectId, double x, double y)
+{
+	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
+	{
+		GGameObjectMap[objectId]->sprite->setPosition(Point(x, y));
 
 		return objectId;
 	}

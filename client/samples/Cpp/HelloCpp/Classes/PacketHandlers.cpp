@@ -22,6 +22,7 @@
 #include "pylon_msg.h"
 #include "GameObjectArray.h"
 #include "Chat.h"
+#include "GameObject.h"
 
 extern double GServerTime;
 
@@ -67,7 +68,10 @@ MSG_HANDLER(spawn)
 		msg.move.speed,
 		msg.move.dir);
 
-	AnSpawnGameObject(msg.id, msg.move.x, msg.move.y);
+	if (INVALID_GAME_OBJECT_ID == AnSpawnGameObject(msg.id, msg.move.x, msg.move.y))
+	{
+		AnDebugOutput("SPAWN: Object not found: %d", msg.id);
+	}
 }
 
 MSG_HANDLER(despawn)
@@ -75,7 +79,10 @@ MSG_HANDLER(despawn)
 	AnDebugOutput("DESPAWN: objectId=%d",
 		msg.id);
 
-	AnDespawnGameObject(msg.id);
+	if (INVALID_GAME_OBJECT_ID == AnDespawnGameObject(msg.id))
+	{
+		AnDebugOutput("DESPAWN: Object not found: %d", msg.id);
+	}
 }
 
 MSG_HANDLER(move)
@@ -83,14 +90,20 @@ MSG_HANDLER(move)
 	AnDebugOutput("MOVE: objectId=%d, x=%lf, y=%lf, dir=%lf, speed=%lf, instance_move=%d, time=%lf\n",
 		msg.id, msg.x, msg.y, msg.dir, msg.speed, msg.instance_move, msg.time);
 
-	AnUpdateObjectTargetPosition(msg.id, msg.x, msg.y, msg.instance_move);
+	if (INVALID_GAME_OBJECT_ID == AnUpdateObjectTargetPosition(msg.id, msg.x, msg.y, msg.instance_move))
+	{
+		AnDebugOutput("MOVE: Object not found: %d", msg.id);
+	}
 }
 
 MSG_HANDLER(character_resource)
 {
 	AnDebugOutput("CHARACTER_RESOURCE: objectId=%d, resourceid=%d\n", msg.id, msg.resource_id);
 
-	AnUpdateObjectTint(msg.id, msg.resource_id);
+	if (INVALID_GAME_OBJECT_ID == AnUpdateObjectTint(msg.id, msg.resource_id))
+	{
+		AnDebugOutput("CHARACTER_RESOURCE: Object not found: %d", msg.id);
+	}
 }
 
 MSG_HANDLER(update_hp)

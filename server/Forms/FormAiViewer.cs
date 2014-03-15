@@ -18,11 +18,15 @@ namespace Server.Forms
     {
         private readonly Network _network = new Network();
         private Session _session;
-        private Dictionary<int /* id */, PointF> _posMap = new Dictionary<int, PointF>();
+
+        private readonly Dictionary<int /* id */, PointF> _posMap = new Dictionary<int, PointF>();
+        private readonly List<int> _objectIds = new List<int>();
+
         public FormAiViewer()
         {
             InitializeComponent();
             PrepareDispatchMap();
+            DoubleBuffered = true;
         }
 
         private void FormAiViewer_Load(object sender, EventArgs e)
@@ -54,6 +58,7 @@ namespace Server.Forms
 
         void OnSpawn(SpawnMsg msg)
         {
+            _objectIds.Add(msg.Id);
         }
 
         void OnDespawn(DespawnMsg msg)
@@ -62,6 +67,9 @@ namespace Server.Forms
 
         void OnUpdatePosition(MoveMsg msg)
         {
+            if (!_objectIds.Contains(msg.Id))
+                return;
+
             if (_posMap.ContainsKey(msg.Id))
                 _posMap.Remove(msg.Id);
             _posMap.Add(msg.Id, new PointF((float)msg.X, (float)msg.Y));

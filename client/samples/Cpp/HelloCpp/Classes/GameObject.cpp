@@ -5,7 +5,7 @@
 #include "GameObjectArray.h"
 #include "cocos2d.h"
 
-using namespace cocos2d;
+USING_NS_CC;
 
 const static float DEFAULT_MOVE_SEND_INTERVAL = 1.0f;
 
@@ -24,7 +24,8 @@ GameObject::~GameObject()
 	m_pPosition = nullptr;
 }
 
-static inline double GetCurrentGameTime() {
+static inline double GetCurrentGameTime()
+{
 	timeval now;
 	cocos2d::gettimeofday(&now, NULL);
 	return ((double)now.tv_sec + now.tv_usec / 1e6);
@@ -53,18 +54,6 @@ void GameObject::Update(float dt)
 	}
 }
 
-void GameObject::AddPositionSample(double x, double y, double time)
-{
-	Packet p;
-	Pos pos;
-	pos.x = x;
-	pos.y = y;
-	p.pos = pos;
-	p.time = time;
-
-	m_pPosition->DeliverPacket(p, GServerTime);
-}
-
 void GameObject::MoveBy(double dx, double dy, bool instanceMove)
 {
 	if (sprite)
@@ -81,7 +70,7 @@ void GameObject::MoveBy(double dx, double dy, bool instanceMove)
 		const auto currentTime = GetCurrentGameTime();
 		if (currentTime - lastMoveSendTime > moveSendInterval)
 		{
-			AnMoveObject(objectId, p.x, p.y, instanceMove);
+			AnSendMove(objectId, p.x, p.y, instanceMove);
 			lastMoveSendTime = currentTime;
 		}
 	}
