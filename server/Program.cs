@@ -126,7 +126,10 @@ namespace Server
                     Console.ForegroundColor = color;
                     Console.WriteLine(message);
                 };
-            deploy.Execute();
+            if (!deploy.Execute())
+            {
+                Environment.ExitCode = 1;
+            }
         }
     }
 }

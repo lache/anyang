@@ -282,9 +282,12 @@ namespace Tool
     {
         protected override void ExecuteInternal()
         {
-            foreach (var each in File.ReadAllLines(Path.Combine("Tool", "deploy_server.list")).Where(e => !string.IsNullOrWhiteSpace(e)))
+            var deployList = @"./*.dll,server/
+                               ./Server.exe,server/
+                               ./Data/*,server/Data/";
+            foreach (var pair in deployList.Split('\r', '\n').Where(e => !string.IsNullOrWhiteSpace(e))
+                                           .Select(e => e.Trim().Replace('/', Path.DirectorySeparatorChar).Split(',')))
             {
-                var pair = each.Split(',');
                 CopyFiles(pair[0], pair[1]);
             }
             Log(ConsoleColor.Yellow, " * Copy Ok.");

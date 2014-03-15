@@ -85,9 +85,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
-    <None Include="Tool\deploy_server.list">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
     <None Include="Messages.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Messages.cs</LastGenOutput>
