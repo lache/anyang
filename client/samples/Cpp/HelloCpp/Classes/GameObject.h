@@ -17,7 +17,6 @@ public:
 	cocos2d::Point targetPosition;
 	
 	void Update(float dt);
-	void AddPositionSample(double x, double y, double time);
 	void MoveBy(double dx, double dy, bool instanceMove);
 	void ResetLastMoveSendTime();
 	void SetTint(int rgba);
