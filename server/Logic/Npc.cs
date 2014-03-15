@@ -96,4 +96,27 @@ namespace Server.Logic
         }
     }
 
+    class RussoNpc : Npc
+    {
+        private int _townId;
+
+        public RussoNpc(NpcData data, int townId)
+            : base(null, null, data)
+        {
+            _townId = townId;
+        }
+
+        protected override IEnumerable<int> CoroMainEntry()
+        {
+            Broadcast(Get<CharacterController>().MakeSpawnMsg());
+
+            while (IsAlive())
+            {
+                var moveCtrl = Get<MoveController>();
+
+                yield return NextRandom(500, 800);
+            }
+        }
+    }
+
 }
