@@ -73,7 +73,8 @@ namespace Server.Core
             }
             catch (Exception e)
             {
-                Logger.Write(e);
+                if (!e.IsDisconnected())
+                    Logger.Write(e);
             }
         }
 
@@ -120,7 +121,8 @@ namespace Server.Core
             }
             catch (Exception e)
             {
-                Logger.Write(e);
+                if (!e.IsDisconnected())
+                    Logger.Write(e);
             }
 
             lock (_sockets)
