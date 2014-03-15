@@ -67,20 +67,21 @@ namespace Server.Logic
 
         public Position MoveToWay(PathWay way)
         {
+            const int magic = 10;
             var newLoc = Clone();
             switch (way)
             {
                 case PathWay.EAST:
-                    newLoc.X++;
+                    newLoc.X += magic;
                     break;
                 case PathWay.WEST:
-                    newLoc.X--;
+                    newLoc.X -= magic;
                     break;
                 case PathWay.SOUTH:
-                    newLoc.Y--;
+                    newLoc.Y -= magic;
                     break;
                 case PathWay.NORTH:
-                    newLoc.Y++;
+                    newLoc.Y += magic;
                     break;
             }
             return newLoc;
@@ -148,7 +149,14 @@ namespace Server.Logic
     {
         public static Position FindWay(this Actor actor, Position dest, PathFinderMethod method = PathFinderMethod.PFM_ASTAR)
         {
-            return actor.FindWays(dest, method).First();
+            var ways = actor.FindWays(dest, method);
+            if (ways.Count() > 0)
+            {
+                Console.WriteLine("X: {0}, Y: {1}", ways.First().X, ways.First().Y);
+                return actor.FindWays(dest, method).First();
+            }
+            else
+                return dest.Clone();
         }
 
         public static IEnumerable<Position> FindWays(this Actor actor, Position dest, PathFinderMethod method = PathFinderMethod.PFM_ASTAR)
@@ -194,7 +202,8 @@ namespace Server.Logic
                         closedSet.Add(current);
                         foreach (var newLoc in current.PossibleMoves(true))
                         {
-                            if (closedSet.Contains(newLoc) || (!actor.CanMove(newLoc)))
+                            //if (closedSet.Contains(newLoc) || (!actor.CanMove(newLoc)))
+                            if (closedSet.Contains(newLoc))
                                 continue;
 
                             var trueScore = pathScore[current] + 1;
