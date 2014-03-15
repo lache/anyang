@@ -28,12 +28,21 @@ else()
   set(PLATFORM_SRC
     proj.linux/main.cpp
   )
+
+  include_directories(../../../msg/include)
+
   endif()
 
 set(SAMPLE_SRC
   ${PLATFORM_SRC}
   Classes/AppDelegate.cpp
   Classes/HelloWorldScene.cpp
+  Classes/Chat.cpp
+  Classes/EPIC.cpp
+  Classes/GameObject.cpp
+  Classes/GameObjectArray.cpp
+  Classes/NetworkCore.cpp
+  Classes/PacketHandlers.cpp
 )
 
 # add the executable

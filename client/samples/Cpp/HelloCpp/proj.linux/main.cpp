@@ -13,6 +13,6 @@ int main(int argc, char **argv)
     // create the application instance
     AppDelegate app;
     EGLView eglView;
-    eglView.init("HelloCpp",900,640);
+    eglView.init("Town Administration ][",1024,768);
     return Application::getInstance()->run();
 }

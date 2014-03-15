@@ -1,3 +1,5 @@
+#define _ASSERT(x)
+
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
 #include <iostream>
@@ -7,7 +9,7 @@
 #include <memory>
 #include <deque>
 #include <mutex>
-#include <concurrent_queue.h>
+//#include <concurrent_queue.h>
 #include <functional>
 #include <thread>
 
@@ -21,6 +23,8 @@
 #include "Chat.h"
 #include "utf8.h"
 #include "GameObjectArray.h"
+
+
 
 USING_NS_CC;
 
@@ -51,7 +55,7 @@ void AnCreateChatLogs(Node* parent)
 
 	const auto CHAT_FONT_SIZE = 2.0f * TITLE_FONT_SIZE / 3;
 	// 채팅 텍스트 필드
-	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder(to_utf8(L"(여기에 채팅 입력)"), "Arial", CHAT_FONT_SIZE);
+	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder(to_utf8(L"(Type here to chat)"), "Arial", CHAT_FONT_SIZE);
 	pTextField->setPosition(Point(origin.x + visibleSize.width / 2,
 		origin.y + pTextField->getContentSize().height));
 	pTextField->setColor(Color3B::BLACK);
@@ -78,7 +82,7 @@ void AnAppendChat(const char* speaker, const char* text)
 	const auto lastYPos = GChatLogs[(MAX_CHAT_LOG - 1 + GCurrentLogPosition) % MAX_CHAT_LOG]->getPositionY();
 	const auto gapYPos = GChatLogs[GCurrentLogPosition]->getPositionY() - GChatLogs[(GCurrentLogPosition + 1) % MAX_CHAT_LOG]->getPositionY();
 
-	for each(auto c in GChatLogs)
+	for (auto c : GChatLogs)
 	{
 		c->setPositionY(c->getPositionY() + gapYPos);
 	}
