@@ -159,7 +159,8 @@ namespace Server.Core
             }
             catch (Exception e)
             {
-                Logger.Write(e);
+                if (!e.IsDisconnected())
+                    Logger.Write(e);
             }
 
             if (OnDisconnect != null)
@@ -185,6 +186,33 @@ namespace Server.Core
                 }
                 _sockets.Clear();
             }
+        }
+    }
+    public static class SocketHelper
+    {
+        public static bool IsDisconnected(this Exception exception)
+        {
+            if (!(exception is SocketException))
+                return false;
+
+            return IsDisconnected(exception as SocketException);
+        }
+
+        public static bool IsDisconnected(SocketException exception)
+        {
+            switch ((SocketError)exception.ErrorCode)
+            {
+                case SocketError.ConnectionAborted:
+                case SocketError.ConnectionReset:
+                case SocketError.Fault:
+                case SocketError.NetworkReset:
+                case SocketError.OperationAborted:
+                case SocketError.Shutdown:
+                case SocketError.SocketError:
+                case SocketError.TimedOut:
+                    return true;
+            }
+            return false;
         }
     }
 }

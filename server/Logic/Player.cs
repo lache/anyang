@@ -71,7 +71,7 @@ namespace Server.Logic
             foreach (var other in _world.GetActors<NetworkActor>())
                 other.SendToNetwork(myMsg);
 
-            _world.Coro.AddEntry(Get<MoveController>().CoroUpdatePos);
+            _world.Coro.AddEntry(this, Get<MoveController>().CoroUpdatePos);
         }
 
         void OnChat(ChatMsg msg)
@@ -81,10 +81,8 @@ namespace Server.Logic
                 actor.SendToNetwork(msg);
         }
 
-        public override IEnumerable<int> CoroDispose()
+        protected override IEnumerable<int> CoroDispose()
         {
-            RemoveAllController();
-
             yield return 1000;
             _world.Persist.Store(_data);
             _world.Actors.Remove(this);

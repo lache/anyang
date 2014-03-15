@@ -9,34 +9,50 @@
 
 USING_NS_CC;
 
-static bool keyleft;
-static bool keyright;
-static bool keyup;
-static bool keydown;
-static bool keyplus;
-static bool keyminus;
+static bool keyCharMoveLeft;
+static bool keyCharMoveRight;
+static bool keyCharMoveUp;
+static bool keyCharMoveDown;
+static bool keyZoomIn;
+static bool keyZoomOut;
+static bool keyLayerMoveLeft;
+static bool keyLayerMoveRight;
+static bool keyLayerMoveUp;
+static bool keyLayerMoveDown;
 
 void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 {
 	switch (kc)
 	{
+	case EventKeyboard::KeyCode::KEY_A:
+		keyLayerMoveLeft = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_D:
+		keyLayerMoveRight = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_W:
+		keyLayerMoveUp = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_S:
+		keyLayerMoveDown = true;
+		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		keyleft = true;
+		keyCharMoveLeft = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		keyright = true;
+		keyCharMoveRight = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
-		keyup = true;
+		keyCharMoveUp = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		keydown = true;
+		keyCharMoveDown = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_PLUS:
-		keyplus = true;
+	case EventKeyboard::KeyCode::KEY_9:
+		keyZoomIn = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_MINUS:
-		keyminus = true;
+	case EventKeyboard::KeyCode::KEY_0:
+		keyZoomOut = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_RETURN:
 	case EventKeyboard::KeyCode::KEY_KP_ENTER:
@@ -49,23 +65,35 @@ void DefaultOnKeyReleased(EventKeyboard::KeyCode kc, Event* evt)
 {
 	switch (kc)
 	{
+	case EventKeyboard::KeyCode::KEY_A:
+		keyLayerMoveLeft = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_D:
+		keyLayerMoveRight = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_W:
+		keyLayerMoveUp = false;
+		break;
+	case EventKeyboard::KeyCode::KEY_S:
+		keyLayerMoveDown = false;
+		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
-		keyleft = false;
+		keyCharMoveLeft = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
-		keyright = false;
+		keyCharMoveRight = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
-		keyup = false;
+		keyCharMoveUp = false;
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
-		keydown = false;
+		keyCharMoveDown = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_PLUS:
-		keyplus = false;
+	case EventKeyboard::KeyCode::KEY_9:
+		keyZoomIn = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_MINUS:
-		keyminus = false;
+	case EventKeyboard::KeyCode::KEY_0:
+		keyZoomOut = false;
 		break;
 	}
 }
@@ -203,6 +231,8 @@ void HelloWorld::menuCloseCallback(Object* sender)
 #endif
 }
 
+void AnDebugOutput(const char* format, ...);
+
 void HelloWorld::update(float dt)
 {
 	AnPollNetworkIoService();
@@ -214,42 +244,65 @@ void HelloWorld::update(float dt)
 	static const float charMoveSpeed = 100;
 	static const float charMoveAmount = charMoveSpeed * dt;
 
-	Point playerPosD;
-	if (keyright)
+	if (keyLayerMoveRight)
 	{
 		layerPos.x += moveSpeed;
-
-		playerPosD.x += charMoveAmount;
 	}
-	if (keyleft)
+	if (keyLayerMoveLeft)
 	{
 		layerPos.x -= moveSpeed;
-
-		playerPosD.x -= charMoveAmount;
 	}
-	if (keyup)
+	if (keyLayerMoveUp)
 	{
 		layerPos.y += moveSpeed;
-
-		playerPosD.y += charMoveAmount;
 	}
-	if (keydown)
+	if (keyLayerMoveDown)
 	{
 		layerPos.y -= moveSpeed;
+	}
+	setPosition(layerPos);
 
+	Point playerPosD;
+	if (keyCharMoveRight)
+	{
+		playerPosD.x += charMoveAmount;
+	}
+	if (keyCharMoveLeft)
+	{
+		playerPosD.x -= charMoveAmount;
+	}
+	if (keyCharMoveUp)
+	{
+		playerPosD.y += charMoveAmount;
+	}
+	if (keyCharMoveDown)
+	{
 		playerPosD.y -= charMoveAmount;
 	}
-
-	//setPosition(layerPos);
 
 	static bool playerPosDZeroed = true;
 	if (playerPosD.x == 0 && playerPosD.y == 0 && playerPosDZeroed == false)
 	{
+		// 플레이어가 이동을 멈췄을 때
+		if (!playerPosDZeroed)
+		{
+			// 플레이어가 이동을 멈춘 처음 경우일 때 (edge-trigger)
+			AnDebugOutput("Stopped [edge-trigger]\n");
+			AnResetLastMoveSendTime(AnGetPlayerObjectId());
+		}
+		
 		playerPosDZeroed = true;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, true);
 	}
 	else if (playerPosD.x != 0 || playerPosD.y != 0)
 	{
+		// 플레이어가 이동 중일 때
+		if (playerPosDZeroed)
+		{
+			// 플레이어가 이동을 시작한 처음 경우일 때 (edge-trigger)
+			AnDebugOutput("Moving [edge-trigger]\n");
+			AnResetLastMoveSendTime(AnGetPlayerObjectId());
+		}
 		playerPosDZeroed = false;
 		playerPosD = playerPosD.normalize() * charMoveAmount;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, false);
@@ -257,11 +310,11 @@ void HelloWorld::update(float dt)
 	
 	static float scaleSpeed = 0.01f;
 	float layerScale = getScale();
-	if (keyplus)
+	if (keyZoomIn)
 	{
 		layerScale += scaleSpeed;
 	}
-	if (keyminus)
+	if (keyZoomOut)
 	{
 		layerScale -= scaleSpeed;
 	}
