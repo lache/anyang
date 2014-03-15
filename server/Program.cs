@@ -97,20 +97,36 @@ namespace Server
             }
         }
 
+#if !__MonoCS__
         [DllImport("kernel32")]
         static extern bool AllocConsole();
+#endif
 
         static void Main(string[] args)
         {
+#if !__MonoCS__
             AllocConsole();
+#endif
 
             var options = new ProgramOptions();
             foreach (var arg in args)
             {
                 if (string.Equals(arg, "--debug")) options.Debug = true;
                 if (string.Equals(arg, "--no-store")) options.NonPersistenceWorld = true;
+                if (string.Equals(arg, "--deploy")) { DoSelfDeploy(); return; }
             }
             new Program(options).Run();
+        }
+
+        private static void DoSelfDeploy()
+        {
+            var deploy = new Tool.ServerDeploy();
+            deploy.OnLogReceived += (color, message) =>
+                {
+                    Console.ForegroundColor = color;
+                    Console.WriteLine(message);
+                };
+            deploy.Execute();
         }
     }
 }

@@ -6,7 +6,7 @@ before_install:
   - export FORCE_ADD_APT_REPOSITORY=force
   - sudo add-apt-repository ppa:directhex/monoxide -y
   - sudo apt-get update -qq > /dev/null
-  - sudo apt-get install -qq mono-devel mono-gmcs > /dev/null
+  - sudo apt-get install -qq mono-devel mono-gmcs p7zip-full > /dev/null
 
 env:
   - EnableNuGetPackageRestore=true
@@ -14,6 +14,8 @@ env:
 script:
   - cd server
   - xbuild Server.sln /p:Configuration=Release
+  - cd bin/Release
+  - mono Server.exe --deploy
 
 notifications:
   webhooks: https://mmo.slack.com/services/hooks/travis?token=y23iDaflPdknryS9xNKZqOIo

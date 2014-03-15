@@ -1,0 +1,3 @@
+.\*.dll,deploy\
+.\Server.exe,deploy\
+.\Data\*,deploy\Data\

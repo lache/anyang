@@ -50,6 +50,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Tool\Deploy.cs" />
     <Compile Include="Forms\FormAiViewer.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +85,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="App.config" />
+    <None Include="Tool\deploy_server.list">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="Messages.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>Messages.cs</LastGenOutput>
@@ -102,6 +106,7 @@
       <DependentUpon>FormAiViewer.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
