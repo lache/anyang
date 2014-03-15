@@ -17,6 +17,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance,
     EGLView eglView;
     //eglView.init("HelloCpp",900,640);
 	//eglView.init("HelloCpp", 480, 320);
-	eglView.init("HelloCpp", 1024, 768);
+	eglView.init("Town Administration ][", 1024, 768);
     return Application::getInstance()->run();
 }
