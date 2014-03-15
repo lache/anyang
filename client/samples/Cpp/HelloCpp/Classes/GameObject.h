@@ -1,9 +1,6 @@
 #pragma once
 
-namespace cocos2d
-{
-	class Sprite;
-}
+#include <cocos2d.h>
 
 class AnExtrapolator;
 
