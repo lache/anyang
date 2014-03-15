@@ -292,10 +292,10 @@ namespace Tool
             }
             Log(ConsoleColor.Yellow, " * Copy Ok.");
 
-            MakeHash("deploy");
+            MakeHash("server");
 
             Log(ConsoleColor.Yellow, " * Zip Server.");
-            var zipResult = Zip("deploy", "server.zip");
+            var zipResult = Zip("server", "server.zip");
             Log(ConsoleColor.Cyan, 4, zipResult.Stdout.Trim());
             Log(ConsoleColor.Yellow, " * Zip Ok.");
 
