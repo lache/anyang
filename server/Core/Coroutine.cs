@@ -12,7 +12,8 @@ namespace Server.Core
         public delegate IEnumerable<int> LogicEntryDelegate();
 
         private readonly List<LogicEntry> _logicEntries = new List<LogicEntry>();
-        private readonly List<LogicEntryDelegate> _newLogicEntries = new List<LogicEntryDelegate>();
+        private readonly List<NewLogicEntry> _newLogicEntries = new List<NewLogicEntry>();
+        private readonly List<object> _registersToDelete = new List<object>();
 
         private readonly ManualResetEvent _resetEvent = new ManualResetEvent(false);
         private DateTime _previousTime;
@@ -33,7 +34,17 @@ namespace Server.Core
 
         public void AddEntry(LogicEntryDelegate entry)
         {
-            _newLogicEntries.Add(entry);
+            AddEntry(null, entry);
+        }
+
+        public void AddEntry(object register, LogicEntryDelegate entry)
+        {
+            _newLogicEntries.Add(new NewLogicEntry { Delegate = entry, Register = register });
+        }
+
+        public void DeleteEntry(object register)
+        {
+            _registersToDelete.Add(register);
         }
 
         public void Start()
@@ -56,12 +67,17 @@ namespace Server.Core
             var now = DateTime.Now;
             var delta = (now - _previousTime).Milliseconds;
 
-            foreach (var newOne in _newLogicEntries)
+            _newLogicEntries.RemoveAll(e => _registersToDelete.Contains(e.Register));
+            _logicEntries.RemoveAll(e => _registersToDelete.Contains(e.Register));
+            _registersToDelete.Clear();
+
+            foreach (var entry in _newLogicEntries)
             {
                 var newEntry = new LogicEntry
                 {
-                    Enumerator = newOne().GetEnumerator(),
-                    SleepTime = 0
+                    Enumerator = entry.Delegate().GetEnumerator(),
+                    SleepTime = 0,
+                    Register = entry.Register
                 };
                 _logicEntries.Add(newEntry);
             }
@@ -88,6 +104,13 @@ namespace Server.Core
         {
             public IEnumerator<int> Enumerator;
             public int SleepTime;
+            public object Register;
+        }
+
+        private class NewLogicEntry
+        {
+            public LogicEntryDelegate Delegate;
+            public object Register;
         }
     }
 }

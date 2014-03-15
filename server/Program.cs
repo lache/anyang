@@ -72,9 +72,10 @@ namespace Server
         {
             // 네트워크로 연결된 Actor는 Player이므로 User 객체를 만들어준다.
             var actor = new Player(_world, session);
+            actor.Connected = true;
             session.Source = actor;
-            _coro.AddEntry(actor.CoroEntry);
-            _coro.AddEntry(actor.CoroDispatchEntry);
+            _coro.AddEntry(actor, actor.CoroEntry);
+            _coro.AddEntry(actor, actor.CoroDispatchEntry);
 
             var npcData = new NpcData {
                 Character = new CharacterData { Name = "John", MaxHp = 100, Hp = 100, ResourceId = 1 },
@@ -85,15 +86,15 @@ namespace Server
                 new Position{ X = 0, Y = 12},
             };
             var roamingNpc = new RoamingNpc(_world, null, npcData, roamingPosList);
-            _coro.AddEntry(roamingNpc.CoroEntry);
+            _coro.AddEntry(roamingNpc, roamingNpc.CoroEntry);
         }
 
         void network_OnDisconnect(Session session)
         {
-            var actor = session.Source as Actor;
+            var actor = session.Source as NetworkActor;
             if (actor != null)
             {
-                _coro.AddEntry(actor.CoroDispose);
+                actor.Connected = false;
             }
         }
 
