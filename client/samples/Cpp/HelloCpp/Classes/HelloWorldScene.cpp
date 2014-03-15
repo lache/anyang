@@ -13,8 +13,8 @@ static bool keyleft;
 static bool keyright;
 static bool keyup;
 static bool keydown;
-static bool keyplus;
-static bool keyminus;
+static bool keyZoomIn;
+static bool keyZoomOut;
 
 void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 {
@@ -32,11 +32,11 @@ void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		keydown = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_PLUS:
-		keyplus = true;
+	case EventKeyboard::KeyCode::KEY_9:
+		keyZoomIn = true;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_MINUS:
-		keyminus = true;
+	case EventKeyboard::KeyCode::KEY_0:
+		keyZoomOut = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_RETURN:
 	case EventKeyboard::KeyCode::KEY_KP_ENTER:
@@ -61,11 +61,11 @@ void DefaultOnKeyReleased(EventKeyboard::KeyCode kc, Event* evt)
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		keydown = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_PLUS:
-		keyplus = false;
+	case EventKeyboard::KeyCode::KEY_9:
+		keyZoomIn = false;
 		break;
-	case EventKeyboard::KeyCode::KEY_KP_MINUS:
-		keyminus = false;
+	case EventKeyboard::KeyCode::KEY_0:
+		keyZoomOut = false;
 		break;
 	}
 }
@@ -274,11 +274,11 @@ void HelloWorld::update(float dt)
 	
 	static float scaleSpeed = 0.01f;
 	float layerScale = getScale();
-	if (keyplus)
+	if (keyZoomIn)
 	{
 		layerScale += scaleSpeed;
 	}
-	if (keyminus)
+	if (keyZoomOut)
 	{
 		layerScale -= scaleSpeed;
 	}
