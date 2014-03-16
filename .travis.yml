@@ -12,7 +12,7 @@ install:
   - $CXX --version
   - wget http://www.fmod.org/download/fmodex/api/Linux/fmodapi44431linux.tar.gz
   - tar xvzf fmodapi44431linux.tar.gz
-  - sudo cp fmodapi44431linux/api/lib/* /usr/local/bin/ -v
+  - sudo cp fmodapi44431linux/api/lib/* /usr/local/lib/ -v
   - sudo cp fmodapi44431linux/api/inc/*.h /usr/local/include/ -v
   - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
   - chmod +x client/build/install-deps-linux.sh client/tools/travis-scripts/install_glfw.sh
