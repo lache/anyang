@@ -195,6 +195,10 @@ endif()
 elseif(APPLE)
 
 else()
+
+include_directories(../../external/webp/include/linux)
+link_directories(../../external/webp/prebuilt/linux/64-bit)
+
 set(COCOS_LINK
   jpeg
   webp
