@@ -20,7 +20,9 @@ script:
   - cd bin/Release
   - mono Server.exe --deploy
   - cd ../../..
+  - chmod +x client/build/install-deps-linux.sh client/tools/travis-scripts/install_glfw.sh
   - cd client/build
+  - sudo ./install-deps-linux.sh
   - mkdir linux-build
   - cd linux-build
   - cmake ../..
