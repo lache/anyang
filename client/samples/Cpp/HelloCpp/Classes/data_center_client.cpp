@@ -10,11 +10,11 @@ using namespace data;
 
 
 
-static struct __initializer100 {
-    __initializer100()
+static struct __initializer102 {
+    __initializer102()
     {
         
     }
-} ___init101;
+} ___init103;
 
 #pragma warning( default : 4996 )
