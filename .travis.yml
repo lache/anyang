@@ -11,14 +11,17 @@ install:
   - export CXX="g++-4.8"
   - $CXX --version
   - wget http://www.fmod.org/download/fmodex/api/Linux/fmodapi44431linux.tar.gz
-  - tar xzf fmodapi44431linux.tar.gz
-  - sudo cp fmodapi44431linux/api/lib/* /usr/local/bin -v
+  - tar xvzf fmodapi44431linux.tar.gz
+  - sudo cp fmodapi44431linux/api/lib/* /usr/local/bin/ -v
+  - sudo cp fmodapi44431linux/api/inc/*.h /usr/local/include/ -v
+  - export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
   - chmod +x client/build/install-deps-linux.sh client/tools/travis-scripts/install_glfw.sh
   - cd client/build
   - sudo ./install-deps-linux.sh
   - mkdir linux-build
   - cd linux-build
   - cmake ../..
+  - cd ../../..
 
 env:
   - EnableNuGetPackageRestore=true
@@ -27,6 +30,7 @@ script:
   - xbuild server/Server.sln /p:Configuration=Release
   - cd client/build/linux-build
   - make -j10
+  - cd ../../..
 
 notifications:
   webhooks: https://mmo.slack.com/services/hooks/travis?token=y23iDaflPdknryS9xNKZqOIo
