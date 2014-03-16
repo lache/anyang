@@ -19,23 +19,11 @@ script:
   - xbuild Server.sln /p:Configuration=Release
   - cd bin/Release
   - mono Server.exe --deploy
-  - pwd
-  - cd ..
-  - ls
-  - pwd
-  - cd ..
-  - ls
-  - pwd
-  - cd ..
-  - ls
-  - pwd
-  - cd client
-  - ls
-  - cd build
-  - ls
-  - cd linux-build
-  - ls
-  - make
+  - cd ../../..
+  - cd client/build
+  - mkdir linux-build
+  - cmake ../..
+  - make -j10
 
 notifications:
   webhooks: https://mmo.slack.com/services/hooks/travis?token=y23iDaflPdknryS9xNKZqOIo
