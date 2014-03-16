@@ -19,8 +19,22 @@ script:
   - xbuild Server.sln /p:Configuration=Release
   - cd bin/Release
   - mono Server.exe --deploy
-  - cd ../../..
-  - cd client/build/linux-build
+  - pwd
+  - cd ..
+  - ls
+  - pwd
+  - cd ..
+  - ls
+  - pwd
+  - cd ..
+  - ls
+  - pwd
+  - cd client
+  - ls
+  - cd build
+  - ls
+  - cd linux-build
+  - ls
   - make
 
 notifications:
