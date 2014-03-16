@@ -10,8 +10,6 @@ install:
   - sudo apt-get install -qq g++-4.8 mono-devel mono-gmcs p7zip-full libjpeg-dev libwebp-dev libtiff-dev libtbb-dev > /dev/null
   - export CXX="g++-4.8"
   - $CXX --version
-  - sudo updatedb
-  - locate libwebp
   - wget http://www.fmod.org/download/fmodex/api/Linux/fmodapi44431linux.tar.gz
   - tar xvzf fmodapi44431linux.tar.gz
   - sudo cp fmodapi44431linux/api/lib/* /usr/local/lib/ -v
