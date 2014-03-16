@@ -5,16 +5,19 @@ before_install:
   # pipe stdout to dev/null because qq is still too chatty
   - export FORCE_ADD_APT_REPOSITORY=force
   - sudo add-apt-repository ppa:directhex/monoxide -y
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq > /dev/null
-  - sudo apt-get install -qq mono-devel mono-gmcs p7zip-full libjpeg-dev libwebp-dev libtiff-dev libtbb-dev > /dev/null
+  - sudo apt-get install -qq g++-4.8 mono-devel mono-gmcs p7zip-full libjpeg-dev libwebp-dev libtiff-dev libtbb-dev > /dev/null
   - wget http://www.fmod.org/download/fmodex/api/Linux/fmodapi44431linux.tar.gz
   - tar xzf fmodapi44431linux.tar.gz
   - sudo cp fmodapi44431linux/api/lib/* /usr/local/bin
+  - export CXX="g++-4.8"
 
 env:
   - EnableNuGetPackageRestore=true
 
 script:
+  - $CXX --version
   - cd server
   - xbuild Server.sln /p:Configuration=Release
   - cd bin/Release
