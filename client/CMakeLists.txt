@@ -65,9 +65,9 @@ option(BUILD_EDITOR_COCOSBUILDER "Build editor support for cocosbuilder" ON)
 
 
 option(BUILD_HelloCpp "Only build HelloCpp sample" ON)
-option(BUILD_TestCpp "Only build TestCpp sample" ON)
-option(BUILD_HelloLua "Only build HelloLua sample" ON)
-option(BUILD_TestLua "Only build TestLua sample" ON)
+option(BUILD_TestCpp "Only build TestCpp sample" OFF)
+option(BUILD_HelloLua "Only build HelloLua sample" OFF)
+option(BUILD_TestLua "Only build TestLua sample" OFF)
 
 endif()#temp
 
