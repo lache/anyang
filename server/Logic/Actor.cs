@@ -10,6 +10,14 @@ using System.Threading.Tasks;
 
 namespace Server.Logic
 {
+    enum ActionSet
+    {
+        AS_NONE = 1000, // do nothing
+        AS_MOVE = 2000, // move to anywhere
+        AS_CONSTRUCT = 3000, // construct something
+        AS_TUNE_TAX_RATIO = 4000, // tune tax ratio
+    }
+
     // Actor는 행위를 수행하는 기본 단위이다.
     // Coroutine을 통해 추가 작업을 수행하거나, World를 통해 정보를 질의할 수 있다.
     class Actor
@@ -132,21 +140,15 @@ namespace Server.Logic
     class AiActor : Actor
     {
         Random _random = new Random(DateTime.Now.Millisecond);
-        Ai _ai;
 
-        public AiActor(World world, Ai ai)
+        public AiActor(World world)
             : base(world)
         {
-            _ai = ai;
         }
 
         public virtual bool IsAlive()
         {
             return false;
-        }
-
-        void DoItNow(Command command)
-        {
         }
 
         public int NextRandom(int min, int max)
@@ -160,11 +162,8 @@ namespace Server.Logic
             while (IsAlive())
             {
                 // 정보를 모으고 AI 에게 주입 - 현재 어떤 정보가 필요한지 확인 불가
-
                 // 판단을 한 다음 - QLearning을 한번 적용해볼까?
-
                 // 액션을 취한다 - 여튼 명령을 내려보자
-                DoItNow(_ai.GetAction());
 
                 yield return NextRandom(1000, 5000);
             }

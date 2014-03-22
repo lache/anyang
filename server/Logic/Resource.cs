@@ -15,9 +15,16 @@ namespace Server.Logic
         }
     }
 
-    class Resource
+    class Food : Actor
     {
         private static int ResourceIssued = 9999999;
+        protected ResourceData _data;
 
+        public Food(World world, ResourceData data)
+            : base(world)
+        {
+            _data = data;
+            Add<CharacterController>(_data.Character);
+        }
     }
 }

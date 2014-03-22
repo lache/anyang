@@ -25,8 +25,8 @@ namespace Server.Logic
         private static int NpcIssued = 9999;
         protected NpcData _data;
        
-        public Npc(World world, Ai ai, NpcData data)
-            : base(world, ai)
+        public Npc(World world, NpcData data)
+            : base(world)
         {
             _data = data;
             Add<CharacterController>(_data.Character);
@@ -63,8 +63,8 @@ namespace Server.Logic
     {
         private readonly List<Position> _roamingPointList;
         private int _moveTo = 0;
-        public RoamingNpc(World world, Ai ai, NpcData data, List<Position> roamingPoints)
-            : base(world, ai, data)
+        public RoamingNpc(World world, NpcData data, List<Position> roamingPoints)
+            : base(world, data)
         {
             _roamingPointList = roamingPoints;
         }
@@ -101,7 +101,7 @@ namespace Server.Logic
         private int _townId;
 
         public RussoNpc(NpcData data, int townId)
-            : base(null, null, data)
+            : base(null, data)
         {
             _townId = townId;
         }

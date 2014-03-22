@@ -54,6 +54,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\InvisibleHands.cs" />
+    <Compile Include="Logic\MotherOfEarth.cs" />
     <Compile Include="Logic\Resource.cs" />
     <Compile Include="Logic\Town.cs" />
     <Compile Include="Test\CoreTest.cs" />
@@ -72,7 +74,6 @@
     <Compile Include="Core\Logger.cs" />
     <Compile Include="Core\Network.cs" />
     <Compile Include="Logic\Actor.cs" />
-    <Compile Include="Logic\Ai.cs" />
     <Compile Include="Logic\Npc.cs" />
     <Compile Include="Logic\PathFinder.cs" />
     <Compile Include="Logic\Persistence.cs" />
