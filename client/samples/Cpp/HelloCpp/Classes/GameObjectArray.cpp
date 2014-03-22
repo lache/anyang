@@ -5,6 +5,10 @@
 #include "NetworkCore.h"
 #include "utf8.h"
 
+#ifndef WIN32
+#define strcpy_s strcpy
+#endif
+
 USING_NS_CC;
 
 static GameObjectMap GGameObjectMap;
