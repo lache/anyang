@@ -16,7 +16,7 @@ namespace Server.Test
         {
             const int port = 29321;
             var network = new Network();
-            network.StartServer(port + 1);
+            network.StartServer(port);
             var peerSession = network.Connect("127.0.0.1", port);
             peerSession.Disconnect();
         }
