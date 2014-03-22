@@ -52,6 +52,7 @@ namespace Server.Core
         }
 
         public object Source { get; set; }
+        public bool ForDebug { get; set; }
 
         public void Send(IMessage message)
         {
@@ -92,6 +93,27 @@ namespace Server.Core
                 return message;
             }
         }
+
+        public TPacket GetPacket<TPacket>(int timeout = 5000)
+        {
+            if (!ForDebug)
+                throw new InvalidOperationException();
+
+            var task = Task.Run(() =>
+                {
+                    while (true)
+                    {
+                        foreach (var msg in MessageQueue.Flush())
+                        {
+                            if (msg.GetType() == typeof(TPacket))
+                                return msg;
+                        }
+                        Thread.Sleep(64);
+                    }
+                });
+            task.Wait(timeout);
+            return (TPacket)task.Result;
+        }
     }
 
     public class Network : IDisposable
@@ -100,6 +122,26 @@ namespace Server.Core
         public event Action<Session> OnDisconnect;
 
         private readonly List<Socket> _sockets = new List<Socket>();
+        private readonly List<Session> _connectedSessions = new List<Session>();
+
+        public bool ForDebug { get; set; }
+        private readonly ConcurrentQueue<Session> _debugConnectedSessions = new ConcurrentQueue<Session>();
+
+        public Session GetConnectedConnection(int timeout = 2000)
+        {
+            if (!ForDebug)
+                throw new InvalidOperationException();
+
+            var task = Task.Run(() =>
+            {
+                Session outSession = null;
+                _debugConnectedSessions.TryDequeue(out outSession);
+                return outSession;
+            });
+            task.Wait(timeout);
+            return task.Result;
+        }
+
         public async void StartServer(int port)
         {
             var socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -115,8 +157,8 @@ namespace Server.Core
                 while (true)
                 {
                     var clientSocket = await socket.AcceptAsync().ConfigureAwait(false);
-                    var session = new Session(clientSocket);
-                    ProcessClientSocket(session);
+                    var session = new Session(clientSocket) { ForDebug = ForDebug };
+                    ProcessClientSocket(session, /* fromServer = */ true);
                 }
             }
             catch (Exception e)
@@ -137,11 +179,11 @@ namespace Server.Core
             socket.Connect(host, port);
 
             var session = new Session(socket);
-            ProcessClientSocket(session);
+            ProcessClientSocket(session, /* fromServer = */ false);
             return session;
         }
 
-        private async void ProcessClientSocket(Session session)
+        private async void ProcessClientSocket(Session session, bool fromServer)
         {
             lock (_sockets)
             {
@@ -150,6 +192,17 @@ namespace Server.Core
 
             if (OnConnect != null)
                 OnConnect(session);
+
+            lock (_connectedSessions)
+            {
+                _connectedSessions.Add(session);
+            }
+
+            if (fromServer && ForDebug)
+            {
+                lock (_debugConnectedSessions)
+                    _debugConnectedSessions.Enqueue(session);
+            }
 
             try
             {
@@ -163,6 +216,11 @@ namespace Server.Core
             {
                 if (!e.IsDisconnected())
                     Logger.Write(e);
+            }
+
+            lock (_connectedSessions)
+            {
+                _connectedSessions.Add(session);
             }
 
             if (OnDisconnect != null)
@@ -190,6 +248,7 @@ namespace Server.Core
             }
         }
     }
+
     public static class SocketHelper
     {
         public static bool IsDisconnected(this Exception exception)
