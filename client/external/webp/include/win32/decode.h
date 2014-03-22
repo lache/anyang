@@ -318,8 +318,9 @@ WEBP_EXTERN(uint8_t*) WebPIDecGetYUVA(
 static WEBP_INLINE uint8_t* WebPIDecGetYUV(
     const WebPIDecoder* idec, int* last_y, uint8_t** u, uint8_t** v,
     int* width, int* height, int* stride, int* uv_stride) {
-  return WebPIDecGetYUVA(idec, last_y, u, v, NULL, width, height,
-                         stride, uv_stride, NULL);
+	return nullptr;
+  /*return WebPIDecGetYUVA(idec, last_y, u, v, NULL, width, height,
+                         stride, uv_stride, NULL);*/
 }
 
 // Generic call to retrieve information about the displayable area.

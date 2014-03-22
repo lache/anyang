@@ -2,8 +2,6 @@
 
 #include <cocos2d.h>
 
-class AnExtrapolator;
-
 class GameObject
 {
 public:
@@ -17,16 +15,15 @@ public:
 	cocos2d::Point targetPosition;
 	
 	void Update(float dt);
-	void AddPositionSample(double x, double y, double time);
 	void MoveBy(double dx, double dy, bool instanceMove);
 	void ResetLastMoveSendTime();
 	void SetTint(int rgba);
 
 private:
 	GameObject();
-	AnExtrapolator* m_pPosition;
 	double lastMoveSendTime; // 마지막으로 서버에게 이동 패킷을 보낸 시간
 	double moveSendInterval; // 이동 패킷을 서버로 보내는 주기
+	double age;
 };
 
 static const int INVALID_GAME_OBJECT_ID = 0;

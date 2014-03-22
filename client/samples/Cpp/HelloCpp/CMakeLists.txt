@@ -28,12 +28,22 @@ else()
   set(PLATFORM_SRC
     proj.linux/main.cpp
   )
+
+  include_directories(../../../msg/include)
+  include_directories(../../../external/webp/include/linux)
+  link_directories(../../../external/webp/prebuilt/linux/64-bit)
+
   endif()
 
 set(SAMPLE_SRC
   ${PLATFORM_SRC}
   Classes/AppDelegate.cpp
   Classes/HelloWorldScene.cpp
+  Classes/Chat.cpp
+  Classes/GameObject.cpp
+  Classes/GameObjectArray.cpp
+  Classes/NetworkCore.cpp
+  Classes/PacketHandlers.cpp
 )
 
 # add the executable
@@ -72,4 +82,8 @@ else()
     )
 endif()
 
+if(WIN32 AND MSVC)
 target_link_libraries(${APP_NAME} audio cocos2d)
+else()
+target_link_libraries(${APP_NAME} audio cocos2d tbb)
+endif()

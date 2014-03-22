@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Logic\Resource.cs" />
     <Compile Include="Logic\Town.cs" />
     <Compile Include="Test\CoreTest.cs" />
     <Compile Include="Tool\Deploy.cs" />

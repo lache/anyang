@@ -8,11 +8,23 @@
 
 USING_NS_CC;
 
+extern std::string GCmdLine;
+
 int main(int argc, char **argv)
 {
+	for (int i = 0; i < argc; ++i)
+	{
+		GCmdLine += argv[i];
+
+		if (i != argc-1)
+		{
+			GCmdLine += " ";
+		}
+	}
+
     // create the application instance
     AppDelegate app;
     EGLView eglView;
-    eglView.init("HelloCpp",900,640);
+    eglView.init("Town Administration ][",1024,768);
     return Application::getInstance()->run();
 }

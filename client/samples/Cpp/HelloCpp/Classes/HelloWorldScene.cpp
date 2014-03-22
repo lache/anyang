@@ -113,13 +113,16 @@ void DefaultOnMouseUp(Event* evt)
 
 		assert(glView->getScaleX() == 1);
 		assert(glView->getScaleY() == 1);
-		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y, true);
+
+		// 클라 위치는 여기서 바로 업데이트
+		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y);
+		AnSendMove(AnGetPlayerObjectId(), p.x, p.y, true);
 	}
 }
 
 void DefaultOnTouchEnded(Touch* t, Event* evt)
 {
-	AnMoveObject(AnGetPlayerObjectId(), t->getLocation().x, t->getLocation().y, true);
+	AnSendMove(AnGetPlayerObjectId(), t->getLocation().x, t->getLocation().y, true);
 }
 
 Scene* HelloWorld::scene()

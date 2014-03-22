@@ -1,6 +1,7 @@
 #pragma once
 
 #include "msg_def.h"
+#include "msg_writer.h"
 
 /*
     [msg_length][msg_type][msg_data]

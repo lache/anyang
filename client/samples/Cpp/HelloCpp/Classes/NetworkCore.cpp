@@ -1,11 +1,17 @@
-﻿#include <iostream>
+﻿#define _ASSERT(x)
+
+#include <iostream>
 #include <cstdlib>
 #include <cstddef>
 #include <atomic>
 #include <memory>
 #include <deque>
 #include <mutex>
+#if WIN32
 #include <concurrent_queue.h>
+#else
+#include <tbb/concurrent_queue.h>
+#endif
 #include <functional>
 #include <thread>
 
@@ -18,11 +24,16 @@
 
 #include "NetworkCore.h"
 
+#ifndef WIN32
+#include "msg_session.ipp"
+#endif
+
 static asio::io_service io_svc;
 typedef std::shared_ptr<msg_session> msg_session_ref;
 msg_session_ref session;
 static std::thread* io_svc_thread;
 double GServerTime = 0;
+std::string GCmdLine;
 
 int AnConnect()
 {
@@ -31,8 +42,8 @@ int AnConnect()
 	
 	try
 	{
-		std::string cmdLine = GetCommandLineA();
-		std::istringstream iss(cmdLine);
+		//std::string cmdLine = GetCommandLineA();
+		std::istringstream iss(GCmdLine);
 		std::string exeName;
 		std::string serverName;
 		std::string playerName;

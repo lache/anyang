@@ -1,3 +1,5 @@
+#define _ASSERT(x)
+
 #include <iostream>
 #include <cstdlib>
 #include <cstddef>
@@ -5,7 +7,11 @@
 #include <memory>
 #include <deque>
 #include <mutex>
+#ifdef WIN32
 #include <concurrent_queue.h>
+#else
+#include <tbb/concurrent_queue.h>
+#endif
 #include <functional>
 #include <thread>
 
@@ -37,7 +43,11 @@ void AnDebugOutput(const char* format, ...)
 	char buffer[max_length];
 	va_list vaList;
 	va_start(vaList, format);
+#ifdef WIN32
 	_vsnprintf(buffer, max_length, format, vaList);
+#else
+	vsnprintf(buffer, max_length, format, vaList);
+#endif
 	va_end(vaList);
 
 #ifdef WIN32

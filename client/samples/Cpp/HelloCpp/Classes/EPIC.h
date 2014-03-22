@@ -3,7 +3,10 @@
 #include <math.h>
 #include <map>
 #include "Extrapolator.h"
+
+#ifdef WIN32
 #include <Windows.h>
+#endif
 
 #pragma warning(disable: 4996)
 

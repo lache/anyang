@@ -307,7 +307,15 @@ void EGLViewEventHandler::onGLFWKeyCallback(GLFWwindow *window, int key, int sca
 
 void EGLViewEventHandler::onGLFWCharCallback(GLFWwindow *window, unsigned int character)
 {
-    IMEDispatcher::sharedDispatcher()->dispatchInsertText((const char*) &character, 1);
+#ifdef WIN32
+	char input_utf8_raw[16];
+	const wchar_t str[2] = { character, L'\0' };
+	WideCharToMultiByte(CP_UTF8, 0, str, -1, input_utf8_raw, sizeof(input_utf8_raw), NULL, NULL);
+	
+	IMEDispatcher::sharedDispatcher()->dispatchInsertText(input_utf8_raw, strlen(input_utf8_raw));
+#else
+	IMEDispatcher::sharedDispatcher()->dispatchInsertText((const char*)character, 1);
+#endif
 }
 
 void EGLViewEventHandler::onGLFWWindowPosCallback(GLFWwindow *windows, int x, int y)
