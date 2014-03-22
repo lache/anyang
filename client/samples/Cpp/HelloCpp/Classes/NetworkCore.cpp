@@ -42,7 +42,11 @@ int AnConnect()
 	
 	try
 	{
-		//std::string cmdLine = GetCommandLineA();
+#ifdef WIN32
+		GCmdLine = GetCommandLineA();
+#else
+		// GCmdLine 아직 구현이 안ㅋ됨ㅋ
+#endif
 		std::istringstream iss(GCmdLine);
 		std::string exeName;
 		std::string serverName;

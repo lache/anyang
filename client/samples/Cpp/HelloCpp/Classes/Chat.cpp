@@ -28,8 +28,6 @@
 #include "utf8.h"
 #include "GameObjectArray.h"
 
-
-
 USING_NS_CC;
 
 extern msg_session_ref session;
@@ -81,7 +79,7 @@ void AnCreateChatLogs(Node* parent)
 	}
 }
 
-void AnAppendChat(const char* speaker, const char* text)
+void AnAppendChat(int id, const char* speaker, const char* text)
 {
 	const auto lastYPos = GChatLogs[(MAX_CHAT_LOG - 1 + GCurrentLogPosition) % MAX_CHAT_LOG]->getPositionY();
 	const auto gapYPos = GChatLogs[GCurrentLogPosition]->getPositionY() - GChatLogs[(GCurrentLogPosition + 1) % MAX_CHAT_LOG]->getPositionY();
@@ -97,4 +95,28 @@ void AnAppendChat(const char* speaker, const char* text)
 	GChatLogs[GCurrentLogPosition]->setString(str->getCString());
 	
 	GCurrentLogPosition = (GCurrentLogPosition + 1) % MAX_CHAT_LOG;
+
+	if (auto s = (Sprite*)AnGetBaseLayer()->getChildByTag(id))
+	{
+		auto oneLineChat = LabelTTF::create(text, "Arial", TITLE_FONT_SIZE);
+		oneLineChat->setFontSize(TITLE_FONT_SIZE);
+		oneLineChat->setColor(Color3B::BLACK);
+		oneLineChat->setScale(1.75f);
+		oneLineChat->setAnchorPoint(Point(0, 1));
+		oneLineChat->setPosition(Point(0, 500));
+		oneLineChat->runAction(Sequence::create(
+			DelayTime::create(1.0f),
+			MoveBy::create(1.5f, Point(0, 150)),
+			nullptr
+			));
+		oneLineChat->runAction(Sequence::create(
+			DelayTime::create(1.0f),
+			DelayTime::create(1.0f),
+			FadeOut::create(0.5f),
+			RemoveSelf::create(),
+			nullptr
+			));
+
+		s->addChild(oneLineChat);
+	}
 }

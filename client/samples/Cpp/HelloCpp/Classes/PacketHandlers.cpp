@@ -78,7 +78,7 @@ MSG_HANDLER(spawn)
 		msg.move.speed,
 		msg.move.dir);
 
-	if (INVALID_GAME_OBJECT_ID == AnSpawnGameObject(msg.id, msg.move.x, msg.move.y))
+	if (INVALID_GAME_OBJECT_ID == AnSpawnGameObject(msg.id, msg.move.x, msg.move.y, msg.name.c_str()))
 	{
 		AnDebugOutput("SPAWN: Object not found: %d", msg.id);
 	}
@@ -128,5 +128,5 @@ MSG_HANDLER(session_error)
 
 MSG_HANDLER(chat)
 {
-	AnAppendChat(msg.name.c_str(), msg.message.c_str());
+	AnAppendChat(msg.id, msg.name.c_str(), msg.message.c_str());
 }

@@ -3,6 +3,7 @@
 #include "GameObjectArray.h"
 #include "GameObject.h"
 #include "NetworkCore.h"
+#include "utf8.h"
 
 USING_NS_CC;
 
@@ -15,7 +16,12 @@ void AnSetBaseLayer(Layer* baseLayer)
 	GBaseLayer = baseLayer;
 }
 
-int AnSpawnGameObject(int objectId, double x, double y)
+Layer* AnGetBaseLayer()
+{
+	return GBaseLayer;
+}
+
+int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 {
 	if (objectId <= 0)
 	{
@@ -27,6 +33,7 @@ int AnSpawnGameObject(int objectId, double x, double y)
 		auto sprite = Sprite::create("images/player.png");
 		sprite->setPosition(Point(x, y));
 		sprite->setScale(0.25f);
+		sprite->setTag(objectId);
 		GBaseLayer->addChild(sprite);
 
 		Sprite* ghostSprite = nullptr;
@@ -40,11 +47,19 @@ int AnSpawnGameObject(int objectId, double x, double y)
 			GBaseLayer->addChild(ghostSprite);
 		}
 
+		auto nameplate = LabelTTF::create(name, "Arial", TITLE_FONT_SIZE);
+		nameplate->setFontSize(TITLE_FONT_SIZE);
+		nameplate->setColor(Color3B::BLACK);
+		nameplate->setScale(2);
+		nameplate->setAnchorPoint(Point(0, 1));
+		sprite->addChild(nameplate);
+
 		auto o = new GameObject(x, y);
 		o->objectId = objectId;
-		o->name[0] = '\0';
+		strcpy_s(o->name, name);
 		o->sprite = sprite;
 		o->ghostSprite = ghostSprite;
+		o->nameplate = nameplate;
 
 		GGameObjectMap[objectId] = o;
 		return objectId;

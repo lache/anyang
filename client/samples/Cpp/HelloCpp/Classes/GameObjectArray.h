@@ -11,7 +11,8 @@ namespace cocos2d
 }
 
 void AnSetBaseLayer(cocos2d::Layer* baseLayer);
-int AnSpawnGameObject(int objectId, double x, double y);
+cocos2d::Layer* AnGetBaseLayer();
+int AnSpawnGameObject(int objectId, double x, double y, const char* name);
 int AnDespawnGameObject(int objectId);
 const GameObjectMap& AnGetGameObjectMap();
 int AnMoveObject(int objectId, double x, double y);

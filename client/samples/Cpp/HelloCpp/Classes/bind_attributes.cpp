@@ -8,10 +8,10 @@
 
 
 #pragma region /* factory-register */
-static struct __initializer100 {
-    __initializer100()
+static struct __initializer1 {
+    __initializer1()
     {
     
     }
-} ___init101;
+} ___init2;
 #pragma endregion

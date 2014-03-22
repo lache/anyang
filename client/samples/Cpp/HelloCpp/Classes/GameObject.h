@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include <cocos2d.h>
 
@@ -10,9 +10,10 @@ public:
 
 	int objectId;
 	char name[128];
-	cocos2d::Sprite* sprite; // Å¬¶óÀÌ¾ğÆ®°¡ ¾Ë°í ÀÖ´Â ÇöÀç À§Ä¡
-	cocos2d::Sprite* ghostSprite; // ¼­¹ö¿¡¼­ ¾Ë·ÁÁØ ÇöÀç À§Ä¡
-	cocos2d::Point targetPosition;
+	cocos2d::Sprite* sprite; // í´ë¼ì´ì–¸íŠ¸ê°€ ì•Œê³  ìˆëŠ” í˜„ì¬ ìœ„ì¹˜
+	cocos2d::Sprite* ghostSprite; // ì„œë²„ì—ì„œ ì•Œë ¤ì¤€ í˜„ì¬ ìœ„ì¹˜
+	cocos2d::Point targetPosition; // ì›€ì§ì—¬ì„œ ë„ë‹¬í•  ìµœì¢… ìœ„ì¹˜
+	cocos2d::Sprite* nameplate; // ëª…íŒ¨
 	
 	void Update(float dt);
 	void MoveBy(double dx, double dy, bool instanceMove);
@@ -21,8 +22,8 @@ public:
 
 private:
 	GameObject();
-	double lastMoveSendTime; // ¸¶Áö¸·À¸·Î ¼­¹ö¿¡°Ô ÀÌµ¿ ÆĞÅ¶À» º¸³½ ½Ã°£
-	double moveSendInterval; // ÀÌµ¿ ÆĞÅ¶À» ¼­¹ö·Î º¸³»´Â ÁÖ±â
+	double lastMoveSendTime; // ë§ˆì§€ë§‰ìœ¼ë¡œ ì„œë²„ì—ê²Œ ì´ë™ íŒ¨í‚·ì„ ë³´ë‚¸ ì‹œê°„
+	double moveSendInterval; // ì´ë™ íŒ¨í‚·ì„ ì„œë²„ë¡œ ë³´ë‚´ëŠ” ì£¼ê¸°
 	double age;
 };
 

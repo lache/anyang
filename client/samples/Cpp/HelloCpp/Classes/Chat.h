@@ -6,5 +6,5 @@ namespace cocos2d
 }
 
 void AnSendChat();
-void AnAppendChat(const char* speaker, const char* text);
+void AnAppendChat(int id, const char* speaker, const char* text);
 void AnCreateChatLogs(cocos2d::Node* parent);
