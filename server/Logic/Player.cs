@@ -30,7 +30,7 @@ namespace Server.Logic
         }
     }
 
-    class Player : NetworkActor
+    partial class Player : NetworkActor
     {
         private PlayerData _data = new PlayerData("nonamed");
 
@@ -77,8 +77,21 @@ namespace Server.Logic
         void OnChat(ChatMsg msg)
         {
             msg.Name = _data.Character.Name;
-            foreach (var actor in _world.GetActors<NetworkActor>())
-                actor.SendToNetwork(msg);
+
+            bool success;
+            if (Commands.Instance.IsAdminCommand(msg.Message) &&
+                Commands.Instance.Dispatch(this, msg.Message, out success))
+            {
+                var report = msg.Message + " -> " + (success ? "ok." : "fail.");
+                msg.Message = report;
+
+                Logger.Write(report);
+                Broadcast(msg);
+            }
+            else
+            {
+                Broadcast(msg);
+            }
         }
 
         protected override IEnumerable<int> CoroDispose()
@@ -93,13 +106,36 @@ namespace Server.Logic
                 actor.SendToNetwork(msg);
         }
 
-        #region Move & Update Location
-
         void OnMove(MoveMsg msg)
         {
             Get<MoveController>().ProcessPacket(msg);
         }
-
-        #endregion
     }
+
+    #region Admin Commands
+
+    partial class Player
+    {
+        [CommandHandler("help", "명령어를 확인합니다")]
+        internal bool SendHelpOfCommands()
+        {
+            var message = new StringBuilder();
+            foreach (var info in Commands.Instance.HandlerInfos)
+            {
+                message.AppendLine(string.Format(".{0} -> {1}", info.Command, info.Description));
+
+                // 첫 번째 인자로 들어가는 admin은 생략한다.
+                for (var paramIndex = 1; paramIndex < info.Parameters.Length; ++paramIndex)
+                {
+                    var param = info.Parameters[paramIndex];
+                    message.AppendLine(string.Format("  [{0}] {1} ({2})", paramIndex, param.Description, param.ActualType.Name));
+                }
+            }
+
+            Broadcast(new ChatMsg(ObjectId, _data.Character.Name, message.ToString()));
+            return true;
+        }
+    }
+
+    #endregion
 }

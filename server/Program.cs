@@ -38,6 +38,8 @@ namespace Server
 
         public void Run()
         {
+            Commands.Initialize();
+
             _network.OnConnect += network_OnConnect;
             _network.OnDisconnect += network_OnDisconnect;
 
@@ -104,6 +106,7 @@ namespace Server
                 if (string.Equals(arg, "--no-store")) options.NonPersistenceWorld = true;
                 if (string.Equals(arg, "--deploy")) { DoSelfDeploy(); return; }
             }
+
             new Program(options).Run();
         }
 

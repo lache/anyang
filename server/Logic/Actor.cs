@@ -18,6 +18,31 @@ namespace Server.Logic
         AS_TUNE_TAX_RATIO = 4000, // tune tax ratio
     }
 
+    class ActorManager
+    {
+        public static readonly ActorManager Instance = new ActorManager();
+
+        private List<Actor> _actors = new List<Actor>();
+
+        public void Add(Actor actor)
+        {
+            _actors.Add(actor);
+        }
+
+        public Actor this[int objectId]
+        {
+            get
+            {
+                return _actors.FirstOrDefault(e => e.ObjectId == objectId);
+            }
+        }
+
+        public void Remove(Actor actor)
+        {
+            _actors.Remove(actor);
+        }
+    }
+
     // Actor는 행위를 수행하는 기본 단위이다.
     // Coroutine을 통해 추가 작업을 수행하거나, World를 통해 정보를 질의할 수 있다.
     class Actor
@@ -42,6 +67,8 @@ namespace Server.Logic
         // 객체 생성 시 불리는 Coroutine 진입 함수.
         public IEnumerable<int> CoroEntry()
         {
+            ActorManager.Instance.Add(this);
+
             // Main Logic에 대한 Coroutine을 수행한다.
             foreach (var coroValue in CoroMainEntry())
                 yield return coroValue;
@@ -55,6 +82,8 @@ namespace Server.Logic
 
             // 등록된 모든 Coroutine을 제거한다.
             _world.Coro.DeleteEntry(this);
+
+            ActorManager.Instance.Remove(this);
         }
 
         protected virtual IEnumerable<int> CoroMainEntry()
