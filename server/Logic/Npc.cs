@@ -20,10 +20,11 @@ namespace Server.Logic
         }
     }
 
-    class Npc : AiActor
+    class Npc : Actor
     {
         private static int NpcIssued = 9999;
         protected NpcData _data;
+        protected Random _random = new Random(DateTime.Now.Millisecond);
        
         public Npc(World world, NpcData data)
             : base(world)
@@ -33,9 +34,11 @@ namespace Server.Logic
             Add<MoveController>(_data.Move);
 
             ObjectId = Interlocked.Increment(ref NpcIssued);
+
+            _world.Actors.Add(this);
         }
 
-        public override bool IsAlive()
+        public bool IsAlive()
         {
             return _data.Character.Hp > 0;
         }
@@ -56,6 +59,11 @@ namespace Server.Logic
         {
             return string.Format("Npc Id: {0}, Type: {1}, IsAlive: {2}",
                 ObjectId, GetType().Name, IsAlive());
+        }
+
+        public int NextRandom(int min, int max)
+        {
+            return _random.Next(min, max);
         }
     }
 
@@ -91,29 +99,6 @@ namespace Server.Logic
 
                 // 클라에 알려줍니다
                 moveCtrl.Move(nextPos.X, nextPos.Y, curPos.ToDirection(nextPos).ToClientDirection(), 1);
-                yield return NextRandom(500, 800);
-            }
-        }
-    }
-
-    class RussoNpc : Npc
-    {
-        private int _townId;
-
-        public RussoNpc(NpcData data, int townId)
-            : base(null, data)
-        {
-            _townId = townId;
-        }
-
-        protected override IEnumerable<int> CoroMainEntry()
-        {
-            Broadcast(Get<CharacterController>().MakeSpawnMsg());
-
-            while (IsAlive())
-            {
-                var moveCtrl = Get<MoveController>();
-
                 yield return NextRandom(500, 800);
             }
         }

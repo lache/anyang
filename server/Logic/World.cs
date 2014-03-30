@@ -1,6 +1,7 @@
 ﻿using Server.Core;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -76,26 +77,6 @@ namespace Server.Logic
             // 마을 크기와 NPC의 개체수를 고려하여 자원을 소환한다.
 
             // 자원의 척박도: blue, yellow, red
-
-            //foreach (var step in Enumerable.Range(1, 10))
-            //{
-            //    var x = step * 50;
-            //    var y = step * 50;
-            //    var npcData = new NpcData
-            //    {
-            //        Character = new CharacterData { Name = "John", MaxHp = 100, Hp = 100, ResourceId = 1 },
-            //        Move = new MoveData { WorldId = 1, X = x, Y = y, Dir = 0, Speed = 0 }
-            //    };
-            //    var roamingPosList = new List<Position> {
-            //        new Position{ X = x, Y = y },
-            //        new Position{ X = x, Y = y + 50 },
-            //        new Position{ X = x + 50, Y = y + 50 },
-            //        new Position{ X = x + 50, Y = y },
-            //    };
-
-            //    var roamingNpc = new RoamingNpc(this, null, npcData, roamingPosList);
-            //    _coro.AddEntry(roamingNpc.CoroEntry);
-            //}
 
             while (true)
             {
