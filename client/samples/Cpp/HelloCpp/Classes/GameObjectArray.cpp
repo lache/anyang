@@ -86,6 +86,11 @@ int AnDespawnGameObject(int objectId)
 			GGameObjectMap[objectId]->sprite->removeFromParent();
 		}
 
+		if (GGameObjectMap[objectId]->ghostSprite)
+		{		
+			GGameObjectMap[objectId]->ghostSprite->removeFromParent();
+		}
+		
 		delete GGameObjectMap[objectId];
 		GGameObjectMap.erase(objectId);
 		return objectId;
