@@ -67,9 +67,7 @@ namespace Server.Logic
             SendToNetwork(infoMsg);
 
             // 시야에 의한 Spawn 패킷을 전파할 때에는 자기 자신까지 포함해서 전달한다.
-            var myMsg = Get<CharacterController>().MakeSpawnMsg();
-            foreach (var other in _world.GetActors<NetworkActor>())
-                other.SendToNetwork(myMsg);
+            Broadcast(Get<CharacterController>().MakeSpawnMsg());
 
             _world.Coro.AddEntry(this, Get<MoveController>().CoroUpdatePos);
         }
@@ -78,6 +76,7 @@ namespace Server.Logic
         {
             msg.Name = _data.Character.Name;
 
+            // admin command 처리
             bool success;
             if (Commands.Instance.IsAdminCommand(msg.Message) &&
                 Commands.Instance.Dispatch(this, msg.Message, out success))
@@ -90,6 +89,7 @@ namespace Server.Logic
             }
             else
             {
+                // 일반 채팅 메시지 처리
                 Broadcast(msg);
             }
         }
@@ -101,9 +101,7 @@ namespace Server.Logic
             _world.Actors.Remove(this);
             Logger.Write("{0} is logout.", _data.Character.Name);
 
-            var msg = new DespawnMsg { Id = _data.ObjectId };
-            foreach (var actor in _world.Actors.OfType<NetworkActor>())
-                actor.SendToNetwork(msg);
+            Broadcast(new DespawnMsg { Id = _data.ObjectId });
         }
 
         void OnMove(MoveMsg msg)
