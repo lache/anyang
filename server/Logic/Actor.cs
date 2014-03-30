@@ -166,40 +166,6 @@ namespace Server.Logic
         }
     }
 
-    class AiActor : Actor
-    {
-        Random _random = new Random(DateTime.Now.Millisecond);
-
-        public AiActor(World world)
-            : base(world)
-        {
-        }
-
-        public virtual bool IsAlive()
-        {
-            return false;
-        }
-
-        public int NextRandom(int min, int max)
-        {
-            return _random.Next(min, max);
-        }
-
-        protected override IEnumerable<int> CoroMainEntry()
-        {
-            _world.Actors.Add(this);
-            while (IsAlive())
-            {
-                // 정보를 모으고 AI 에게 주입 - 현재 어떤 정보가 필요한지 확인 불가
-                // 판단을 한 다음 - QLearning을 한번 적용해볼까?
-                // 액션을 취한다 - 여튼 명령을 내려보자
-
-                yield return NextRandom(1000, 5000);
-            }
-            _world.Actors.Remove(this);
-        }
-    }
-
     // Network 연결에 의해 Message 기반으로 수행될 Actor이다.
     // 이 객체는 실제 로직을 포함하지는 않고, Message 처리에 대한 기반 역할만 한다.
     class NetworkActor : Actor
