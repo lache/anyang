@@ -7,6 +7,12 @@
 #include "Chat.h"
 #include "PacketHandlers.h"
 
+#ifdef _DEBUG
+const char* GFontPath = R"(..\..\..\..\..\Resources\fonts\H2GTRE.TTF)";
+#else
+const char* GFontPath = R"(fonts/H2GTRE.TTF)";
+#endif
+
 USING_NS_CC;
 
 static bool keyCharMoveLeft;
@@ -179,19 +185,17 @@ bool HelloWorld::init()
     // create and initialize a label
     
     //auto label = LabelTTF::create("안녕하세요 세계여", "Arial", TITLE_FONT_SIZE);
-#ifdef _DEBUG
-	const char* pszFontPath = R"(..\..\..\..\..\Resources\fonts\H2GTRE.TTF)";
-#else
-	const char* pszFontPath = R"(fonts/H2GTRE.TTF)";
-#endif
 
-	TTFConfig ttfConfig(pszFontPath, TITLE_FONT_SIZE * 2);
+
+	TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE * 2);
 	ttfConfig.distanceFieldEnabled = true;
 	auto label = Label::createWithTTF(ttfConfig, to_utf8(L"클라이언트의 세계여!"));
 	label->setColor(Color3B::BLACK);
 	label->setAnchorPoint(Point(0.5, 0.5));
 	label->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
 	
+	//label->setString(to_utf8(L"크크크크킄"));
+
 	//label->setLabelEffect()
 	//label->getTexture()->setTexParameters()
 	//label->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
