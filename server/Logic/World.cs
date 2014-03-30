@@ -58,15 +58,22 @@ namespace Server.Logic
 
         public IEnumerable<int> CoroEntry()
         {
-            // TODO: 월드의 중앙 AI를 구현한다.
+            // TODO: MotherOfEarth, InvisibleHands, 및 TownMaker 를 소환!
 
-            // 마을을 소환한다.
+            // MotherOfEarth 소환
+            var moe = new MotherOfEarth(this, new NpcData());
+            Actors.Add(moe);
+            _coro.AddEntry(moe.CoroEntry);
 
-            // 마을 크기에 따라 NPC를 소환한다.
+            // InvisibleHands 소환
+            var invHands = new InvisibleHands(this, new NpcData());
+            Actors.Add(invHands);
+            _coro.AddEntry(invHands.CoroEntry);
 
-            // 마을 크기와 NPC의 개체수를 고려하여 자원을 소환한다.
-
-            // 자원의 척박도: blue, yellow, red
+            // TownMaker 소환
+            var townMaker = new TownMaker(this, new NpcData());
+            Actors.Add(townMaker);
+            _coro.AddEntry(townMaker.CoroEntry);
 
             while (true)
             {
