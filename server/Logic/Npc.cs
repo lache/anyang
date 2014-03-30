@@ -36,6 +36,7 @@ namespace Server.Logic
             ObjectId = Interlocked.Increment(ref NpcIssued);
 
             _world.Actors.Add(this);
+            Broadcast(Get<CharacterController>().MakeSpawnMsg());
         }
 
         public bool IsAlive()
