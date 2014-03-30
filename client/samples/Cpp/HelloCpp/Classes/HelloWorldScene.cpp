@@ -129,9 +129,10 @@ Scene* HelloWorld::scene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
-    
+
     // 'layer' is an autorelease object
     HelloWorld *layer = HelloWorld::create();
+
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -145,12 +146,13 @@ bool HelloWorld::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !Layer::init() )
+    //if ( !LayerColor::initWithColor(Color4B::WHITE) )
+	if (!Layer::init())
     {
         return false;
     }
-    
-    auto visibleSize = Director::getInstance()->getVisibleSize();
+
+	auto visibleSize = Director::getInstance()->getVisibleSize();
     auto origin = Director::getInstance()->getVisibleOrigin();
 
     /////////////////////////////
@@ -177,14 +179,31 @@ bool HelloWorld::init()
     // create and initialize a label
     
     //auto label = LabelTTF::create("안녕하세요 세계여", "Arial", TITLE_FONT_SIZE);
-	auto label = LabelTTF::create(to_utf8(L"안냥하세요 세계여"), "Arial", TITLE_FONT_SIZE);
-	label->setColor(Color3B::BLUE);
+#ifdef _DEBUG
+	const char* pszFontPath = R"(..\..\..\..\..\Resources\fonts\H2GTRE.TTF)";
+#else
+	const char* pszFontPath = R"(fonts/H2GTRE.TTF)";
+#endif
+
+	TTFConfig ttfConfig(pszFontPath, TITLE_FONT_SIZE * 2);
+	ttfConfig.distanceFieldEnabled = true;
+	auto label = Label::createWithTTF(ttfConfig, to_utf8(L"클라이언트의 세계여!"));
+	label->setColor(Color3B::BLACK);
+	label->setAnchorPoint(Point(0.5, 0.5));
+	label->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
+	
+	//label->setLabelEffect()
+	//label->getTexture()->setTexParameters()
+	//label->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
+	//label->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
+	//BlendFunc bf = { GL_ONE, GL_ONE_MINUS_SRC_ALPHA };
+	//label->setBlendFunc(bf); // <-- CORRECT BLENDING MODE
     // position the label on the center of the screen
     label->setPosition(Point(origin.x + visibleSize.width/2,
                             origin.y + visibleSize.height - label->getContentSize().height));
 
     // add the label as a child to this layer
-	this->addChild(label, 1);
+	this->addChild(label, 100);
 
 	// 채팅 로그
 	AnCreateChatLogs(this);
