@@ -127,6 +127,8 @@ namespace Server.Core
         public bool ForDebug { get; set; }
         private readonly ConcurrentQueue<Session> _debugConnectedSessions = new ConcurrentQueue<Session>();
 
+        private readonly Dictionary<Type, Action<Session, IMessage>> _manualHandlerMap = new Dictionary<Type, Action<Session, IMessage>>();
+
         public Session GetConnectedConnection(int timeout = 2000)
         {
             if (!ForDebug)
@@ -209,7 +211,14 @@ namespace Server.Core
                 while (true)
                 {
                     var message = await session.Receive().ConfigureAwait(false);
-                    session.MessageQueue.Add(message);
+                    if (_manualHandlerMap.ContainsKey(message.GetType()))
+                    {
+                        _manualHandlerMap[message.GetType()](session, message);
+                    }
+                    else
+                    {
+                        session.MessageQueue.Add(message);
+                    }
                 }
             }
             catch (Exception e)
@@ -230,6 +239,11 @@ namespace Server.Core
             {
                 _sockets.Remove(session._socket);
             }
+        }
+
+        public void AddManualHandler(Type msgType, Action<Session, IMessage> handler)
+        {
+            _manualHandlerMap.Add(msgType, handler);
         }
 
         public void Dispose()

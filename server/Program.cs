@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using System.Xml.XPath;
 using System.Runtime.InteropServices;
 using System.Threading;
+using System.IO;
 
 namespace Server
 {
@@ -25,14 +26,12 @@ namespace Server
     {
         private readonly Persistence _persistence;
         private readonly Network _network = new Network();
-        private readonly Coroutine _coro = new Coroutine();
-        private readonly World _world;
+        private readonly Dictionary<int, World> _worlds = new Dictionary<int, World>();
         private readonly ProgramOptions _options;
 
         public Program(ProgramOptions options)
         {
             _persistence = new Persistence(options.NonPersistenceWorld);
-            _world = new World(_coro, _persistence);
             _options = options;
         }
 
@@ -42,20 +41,32 @@ namespace Server
 
             _network.OnConnect += network_OnConnect;
             _network.OnDisconnect += network_OnDisconnect;
+            _network.AddManualHandler(typeof(EnterWorldMsg), network_OnEnterWorld);
 
             Logger.Write("start nerwork");
             _network.StartServer(40004);
 
             // 서버 로직의 시작점은 World이다.
             Logger.Write("start logic");
-            _coro.AddEntry(_world.CoroEntry);
-            _coro.AddEntry(CoroUpdateRealtime);
+
+            var coro = new Coroutine();
+            coro.AddEntry(CoroUpdateRealtime);
+
+            // 각 대륙에 대한 World을 만들어준다.
+            foreach (var mapFile in Directory.GetFiles("Data", "*.tmx"))
+            {
+                var world = new World(_persistence, mapFile);
+                _worlds.Add(world.Id, world);
+            }
+
+            foreach (var world in _worlds.Values)
+                world.Start();
 
             if (!_options.Debug)
-                _coro.Run();
+                coro.Run();
             else
             {
-                _coro.Start();
+                coro.Start();
                 Application.Run(new FormAiViewer());
             }
         }
@@ -70,16 +81,8 @@ namespace Server
             }
         }
 
-        // 네트워크 세션과 Actor를 연결해준다.
         void network_OnConnect(Session session)
         {
-            // 네트워크로 연결된 Actor는 Player이므로 User 객체를 만들어준다.
-            var actor = new Player(_world, session);
-            actor.Connected = true;
-            session.Source = actor;
-
-            _coro.AddEntry(actor.CoroEntry);
-            _coro.AddEntry(actor.CoroDispatchEntry);
         }
 
         void network_OnDisconnect(Session session)
@@ -89,6 +92,32 @@ namespace Server
             {
                 actor.Connected = false;
             }
+        }
+
+        void network_OnEnterWorld(Session session, IMessage msgObj)
+        {
+            // 네트워크 세션과 Actor를 연결해준다.
+            var msg = (EnterWorldMsg)msgObj;
+
+            // 로그인한 유저의 World를 찾는다.
+            var data = _persistence.Find<PlayerData>(e => e.Character.Name == msg.Name);
+            if (data == null)
+            {
+                data = new PlayerData(msg.Name);
+                _persistence.Store(data);
+            }
+
+            World world;
+            if (!_worlds.TryGetValue(data.Move.WorldId, out world))
+                return;
+
+            // 네트워크로 연결된 Actor는 Player이므로 User 객체를 만들어준다.
+            var actor = new Player(world, session, data);
+            actor.Connected = true;
+            session.Source = actor;
+
+            world.Coro.AddEntry(actor.CoroEntry);
+            world.Coro.AddEntry(actor.CoroDispatchEntry);
         }
 
         static void Main(string[] args)

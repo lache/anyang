@@ -19,7 +19,7 @@ namespace Server.Core
         private DateTime _previousTime;
         private readonly int _logicInterval;
 
-        private const int DefaultLogicInterval = 128;
+        private const int DefaultLogicInterval = 64;
 
         public Coroutine()
             : this(DefaultLogicInterval)
