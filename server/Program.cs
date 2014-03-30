@@ -38,7 +38,7 @@ namespace Server
 
         public void Run()
         {
-            Commands.Initialize();
+            Initializer.Do(InitializePhase.Game);
 
             _network.OnConnect += network_OnConnect;
             _network.OnDisconnect += network_OnDisconnect;
@@ -93,11 +93,7 @@ namespace Server
 
         static void Main(string[] args)
         {
-            var runningOnMono = Type.GetType("Mono.Runtime") != null;
-            if (!runningOnMono)
-            {
-                ConsoleHelper.Initialize();
-            }
+            Initializer.Do(InitializePhase.Program);
 
             var options = new ProgramOptions();
             foreach (var arg in args)
@@ -125,6 +121,7 @@ namespace Server
         }
     }
 
+    [Initializer(Platform = InitializePlatform.Microsoft)]
     static class ConsoleHelper
     {
         [DllImport("kernel32")]

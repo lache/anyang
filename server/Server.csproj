@@ -54,6 +54,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Core\Initializer.cs" />
     <Compile Include="Core\MultiDictionary.cs" />
     <Compile Include="Logic\Commands.cs" />
     <Compile Include="Logic\InvisibleHands.cs" />

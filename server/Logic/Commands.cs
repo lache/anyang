@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace Server.Logic
 {
+    [Initializer(Phase = InitializePhase.Game)]
     class Commands
     {
         public const string CommandPrefix = ".";
