@@ -1,4 +1,4 @@
-#define _ASSERT(x)
+﻿#define _ASSERT(x)
 
 #include "HelloWorldScene.h"
 #include "AppMacros.h"
@@ -34,9 +34,11 @@ extern msg_session_ref session;
 
 static TextFieldTTF* GChatTextField;
 static const int MAX_CHAT_LOG = 5;
-static LabelTTF* GChatLogs[MAX_CHAT_LOG];
+static Label* GChatLogs[MAX_CHAT_LOG];
 static_assert(MAX_CHAT_LOG >= 2, "Should larger than 1");
 static int GCurrentLogPosition;
+
+extern const char* GFontPath;
 
 void AnSendChat()
 {
@@ -55,8 +57,8 @@ void AnCreateChatLogs(Node* parent)
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto origin = Director::getInstance()->getVisibleOrigin();
 
-	const auto CHAT_FONT_SIZE = 2.0f * TITLE_FONT_SIZE / 3;
-	// ä�� �ؽ�Ʈ �ʵ�
+	const auto CHAT_FONT_SIZE = 1.5f * TITLE_FONT_SIZE / 3;
+	// 채팅 텍스트 필드
 	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder(to_utf8(L"(Type here to chat)"), "Arial", CHAT_FONT_SIZE);
 	pTextField->setPosition(Point(origin.x + visibleSize.width / 2,
 		origin.y + pTextField->getContentSize().height));
@@ -67,8 +69,12 @@ void AnCreateChatLogs(Node* parent)
 
 	for (int i = 0; i < MAX_CHAT_LOG; ++i)
 	{
-		auto label = LabelTTF::create(to_utf8(L" "), "Arial", CHAT_FONT_SIZE);
-		label->setColor(Color3B::GREEN);
+		TTFConfig ttfConfig(GFontPath, CHAT_FONT_SIZE);
+		ttfConfig.distanceFieldEnabled = true;
+		auto label = Label::createWithTTF(ttfConfig, to_utf8(L"세계여 이것을 보아라"));
+		label->setLabelEffect(LabelEffect::GLOW, Color3B::YELLOW);
+		label->setColor(Color3B::BLACK);
+		label->setAnchorPoint(Point(0.5, 0.5));
 		label->setPosition(Point(origin.x + visibleSize.width / 2,
 			origin.y + (MAX_CHAT_LOG - i + 1) * label->getContentSize().height));
 
@@ -98,10 +104,12 @@ void AnAppendChat(int id, const char* speaker, const char* text)
 
 	if (auto s = (Sprite*)AnGetBaseLayer()->getChildByTag(id))
 	{
-		auto oneLineChat = LabelTTF::create(text, "Arial", TITLE_FONT_SIZE);
-		oneLineChat->setFontSize(TITLE_FONT_SIZE);
+		TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE * 1.75);
+		ttfConfig.distanceFieldEnabled = true;
+		auto oneLineChat = Label::createWithTTF(ttfConfig, text);
 		oneLineChat->setColor(Color3B::BLACK);
-		oneLineChat->setScale(1.75f);
+		oneLineChat->setAnchorPoint(Point(0.5, 0.5));
+		oneLineChat->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
 		oneLineChat->setAnchorPoint(Point(0, 1));
 		oneLineChat->setPosition(Point(0, 500));
 		oneLineChat->runAction(Sequence::create(

@@ -15,6 +15,8 @@ static GameObjectMap GGameObjectMap;
 static Layer* GBaseLayer;
 static int GPlayerObjectId;
 
+extern const char* GFontPath;
+
 void AnSetBaseLayer(Layer* baseLayer)
 {
 	GBaseLayer = baseLayer;
@@ -51,10 +53,13 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 			GBaseLayer->addChild(ghostSprite);
 		}
 
-		auto nameplate = LabelTTF::create(name, "Arial", TITLE_FONT_SIZE);
-		nameplate->setFontSize(TITLE_FONT_SIZE);
+		TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE*2);
+		ttfConfig.distanceFieldEnabled = true;
+		auto nameplate = Label::createWithTTF(ttfConfig, name);
 		nameplate->setColor(Color3B::BLACK);
-		nameplate->setScale(2);
+		//nameplate->setAnchorPoint(Point(0.5, 0.5));
+		nameplate->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
+		//nameplate->setScale(2);
 		nameplate->setAnchorPoint(Point(0, 1));
 		sprite->addChild(nameplate);
 

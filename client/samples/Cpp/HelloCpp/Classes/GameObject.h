@@ -13,7 +13,7 @@ public:
 	cocos2d::Sprite* sprite; // 클라이언트가 알고 있는 현재 위치
 	cocos2d::Sprite* ghostSprite; // 서버에서 알려준 현재 위치
 	cocos2d::Point targetPosition; // 움직여서 도달할 최종 위치
-	cocos2d::Sprite* nameplate; // 명패
+	cocos2d::Label* nameplate; // 명패
 	
 	void Update(float dt);
 	void MoveBy(double dx, double dy, bool instanceMove);
