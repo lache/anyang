@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" width="64" height="64" tilewidth="32" tileheight="32">
+ <properties>
+  <property name="world-id" value="0"/>
+ </properties>
  <tileset firstgid="1" name="tmw_desert_spacing" tilewidth="32" tileheight="32" spacing="1" margin="1">
   <image source="tmw_desert_spacing.png" width="265" height="199"/>
   <tile id="0">

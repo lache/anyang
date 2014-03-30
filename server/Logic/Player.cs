@@ -32,44 +32,15 @@ namespace Server.Logic
 
     partial class Player : NetworkActor
     {
-        private PlayerData _data = new PlayerData("nonamed");
+        private readonly PlayerData _data;
 
-        public Player(World world, Session session)
+        public Player(World world, Session session, PlayerData data)
             : base(world, session)
         {
-        }
-
-        void Initialize()
-        {
+            _data = data;
             Add<CharacterController>(_data.Character);
             Add<MoveController>(_data.Move);
             ObjectId = _data.ObjectId;
-        }
-
-        void OnEnterWorld(EnterWorldMsg msg)
-        {
-            _data = _world.Persist.Find<PlayerData>(e => e.Character.Name == msg.Name);
-            if (_data == null)
-            {
-                _data = new PlayerData(msg.Name);
-                _world.Persist.Store(_data);
-            }
-            Initialize();
-
-            _world.Actors.Add(this);
-            Get<MoveController>().Reset();
-
-            Logger.Write("{0} is logged.", msg.Name);
-
-            // WorldInfo의 Spawn 패킷에는 자기 자신에 대한 정보를 보내지 않는다.
-            var infoMsg = new WorldInfoMsg(ObjectId, _data.Move.WorldId, Realtime.Now,
-                _world.Actors.Get<CharacterController>().Select(e => e.MakeSpawnMsg()).ToList());
-            SendToNetwork(infoMsg);
-
-            // 시야에 의한 Spawn 패킷을 전파할 때에는 자기 자신까지 포함해서 전달한다.
-            Broadcast(Get<CharacterController>().MakeSpawnMsg());
-
-            _world.Coro.AddEntry(this, Get<MoveController>().CoroUpdatePos);
         }
 
         void OnChat(ChatMsg msg)
@@ -91,6 +62,31 @@ namespace Server.Logic
             {
                 // 일반 채팅 메시지 처리
                 Broadcast(msg);
+            }
+        }
+
+        protected override IEnumerable<int> CoroMainEntry()
+        {
+            // 처음 시작할 때 로그인에 대한 처리를 해준다.
+            _world.Actors.Add(this);
+            Get<MoveController>().Reset();
+
+            Logger.Write("{0} is logged.", _data.Character.Name);
+
+            // WorldInfo의 Spawn 패킷에는 자기 자신에 대한 정보를 보내지 않는다.
+            var infoMsg = new WorldInfoMsg(ObjectId, _data.Move.WorldId, Realtime.Now,
+                _world.Actors.Get<CharacterController>().Select(e => e.MakeSpawnMsg()).ToList());
+            SendToNetwork(infoMsg);
+
+            // 시야에 의한 Spawn 패킷을 전파할 때에는 자기 자신까지 포함해서 전달한다.
+            Broadcast(Get<CharacterController>().MakeSpawnMsg());
+
+            _world.Coro.AddEntry(this, Get<MoveController>().CoroUpdatePos);
+
+            // 현재는 Tick마다 할 일이 없다.
+            while (Connected)
+            {
+                yield return 1000;
             }
         }
 

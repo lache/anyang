@@ -21,11 +21,14 @@ namespace Server.Logic
 
         public readonly List<Actor> Actors = new List<Actor>();
 
-        public World(Coroutine coro, Persistence persistence)
+        public World(Persistence persistence, string mapFile)
         {
-            _coro = coro;
+            _coro = new Coroutine();
+            _coro.AddEntry(CoroEntry);
+
             _persistence = persistence;
-            _map = new TiledSharp.TmxMap(Path.Combine("Data", "default_1.tmx"));
+            _map = new TiledSharp.TmxMap(mapFile);
+            Id = int.Parse(_map.Properties["world-id"]);
 
             _obstacles = new bool[_map.Width, _map.Height];
             var obstacleGids = _map.Tilesets.First().Tiles.Where(e => e.Properties.ContainsKey("type") && (e.Properties["type"] == "wall" || e.Properties["type"] == "obstacle"))
@@ -36,6 +39,8 @@ namespace Server.Logic
                 _obstacles[tuple.Item1, tuple.Item2] = true;
             }
         }
+
+        public int Id { get; private set; }
 
         #region Actor getter
 
@@ -56,7 +61,12 @@ namespace Server.Logic
 
         #endregion
 
-        public IEnumerable<int> CoroEntry()
+        public void Start()
+        {
+            _coro.Start();
+        }
+
+        private IEnumerable<int> CoroEntry()
         {
             // TODO: MotherOfEarth, InvisibleHands, 및 TownMaker 를 소환!
 
