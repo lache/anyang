@@ -47,7 +47,7 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 			ghostSprite->setPosition(Point(x, y));
 			ghostSprite->setScale(0.25f);
 			ghostSprite->setColor(Color3B::GREEN);
-			ghostSprite->setLocalZOrder(10);
+			ghostSprite->setLocalZOrder(-1);
 			GBaseLayer->addChild(ghostSprite);
 		}
 
