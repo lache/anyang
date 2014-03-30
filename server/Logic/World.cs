@@ -71,17 +71,17 @@ namespace Server.Logic
             // TODO: MotherOfEarth, InvisibleHands, 및 TownMaker 를 소환!
 
             // MotherOfEarth 소환
-            var moe = new MotherOfEarth(this, new NpcData());
+            var moe = new MotherOfEarth(this, new NpcData { Character = new CharacterData { Name = "MotherOfEarth" }, });
             Actors.Add(moe);
             _coro.AddEntry(moe.CoroEntry);
 
             // InvisibleHands 소환
-            var invHands = new InvisibleHands(this, new NpcData());
+            var invHands = new InvisibleHands(this, new NpcData { Character = new CharacterData { Name = "InvisibleHands" }, });
             Actors.Add(invHands);
             _coro.AddEntry(invHands.CoroEntry);
 
             // TownMaker 소환
-            var townMaker = new TownMaker(this, new NpcData());
+            var townMaker = new TownMaker(this, new NpcData { Character = new CharacterData { Name = "TownMaker" }, });
             Actors.Add(townMaker);
             _coro.AddEntry(townMaker.CoroEntry);
 

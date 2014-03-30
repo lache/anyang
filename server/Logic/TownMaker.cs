@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Server.Logic
 {
+    // 마을 관리
     class TownMaker : Npc
     {
         public TownMaker(World world, NpcData data)
