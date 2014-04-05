@@ -52,6 +52,10 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 			ghostSprite->setLocalZOrder(-1);
 			GBaseLayer->addChild(ghostSprite);
 		}
+		else
+		{
+			GBaseLayer->runAction(Follow::create(sprite));
+		}
 
 		TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE*2);
 		ttfConfig.distanceFieldEnabled = true;
