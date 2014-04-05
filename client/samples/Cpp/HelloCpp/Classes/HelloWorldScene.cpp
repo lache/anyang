@@ -249,11 +249,6 @@ bool HelloWorld::init()
 	touchListener->onTouchEnded = std::bind(&DefaultOnTouchEnded, std::placeholders::_1, std::placeholders::_2);
 	//_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
-	auto draw = DrawNode::create();
-	addChild(draw, LZO_CIRCLE_AREA);
-
-	draw->drawDot(Point(0, 0), 100, Color4F(1,0,0,0.5));
-
     return true;
 }
 

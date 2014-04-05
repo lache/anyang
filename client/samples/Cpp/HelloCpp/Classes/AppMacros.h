@@ -64,4 +64,9 @@ enum LocalZOrder
 	LZO_CHAT,
 };
 
+enum ObjectTag
+{
+	OT_RADIUS,
+};
+
 #endif /* __APPMACROS_H__ */

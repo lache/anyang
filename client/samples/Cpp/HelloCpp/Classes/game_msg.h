@@ -146,13 +146,14 @@ struct character_resource_msg {
     
     int id;
     int resource_id;
+    int radius;
     
-    character_resource_msg(int _id, int _resource_id)
-        : id(_id), resource_id(_resource_id) {}
+    character_resource_msg(int _id, int _resource_id, int _radius)
+        : id(_id), resource_id(_resource_id), radius(_radius) {}
     
     #ifdef _DEBUG
     character_resource_msg()
-        : id(0), resource_id(0) {}
+        : id(0), resource_id(0), radius(0) {}
     #else
     character_resource_msg() {}
     #endif
@@ -401,6 +402,7 @@ inline msg_writer& msg_writer::operator << (const msg::character_resource_msg& m
     (*this) << msg_type::character_resource;
     (*this) << msg.id;
     (*this) << msg.resource_id;
+    (*this) << msg.radius;
     return (*this);
 }
 
@@ -409,6 +411,7 @@ inline msg_reader& msg_reader::operator >> (msg::character_resource_msg& msg)
 {
     (*this) >> msg.id;
     (*this) >> msg.resource_id;
+    (*this) >> msg.radius;
     return (*this);
 }
 

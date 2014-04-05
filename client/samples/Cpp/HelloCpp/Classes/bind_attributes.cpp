@@ -13,5 +13,5 @@ static struct __initializer1 {
     {
     
     }
-} ___init2;
+} ___init101;
 #pragma endregion

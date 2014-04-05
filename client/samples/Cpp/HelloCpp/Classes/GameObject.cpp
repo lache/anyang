@@ -4,6 +4,7 @@
 #include "NetworkCore.h"
 #include "GameObjectArray.h"
 #include "cocos2d.h"
+#include "AppMacros.h"
 
 USING_NS_CC;
 
@@ -81,4 +82,30 @@ void GameObject::SetTint(int rgba)
 	GLubyte b = (rgba & 0x00ff0000) >> 16;
 	//GLubyte a = (rgba & 0xff000000) >> 24;
 	sprite->setColor(Color3B(r, g, b));
+}
+
+void GameObject::SetRadius(float radius)
+{
+	if (auto existingNode = sprite->getChildByTag(OT_RADIUS))
+	{
+		if (radius <= 0)
+		{
+			existingNode->removeFromParent();
+			return;
+		}
+		else
+		{
+			DrawNode* dn = (DrawNode*)existingNode;
+
+			dn->clear();
+			dn->drawDot(Point(0, 0), radius, Color4F(1, 0, 0, 0.5));
+		}
+	}
+	else if (radius > 0)
+	{
+		auto dn = DrawNode::create();
+		dn->setTag(OT_RADIUS);
+		dn->drawDot(Point(0, 0), radius, Color4F(1, 0, 0, 0.5));
+		sprite->addChild(dn, LZO_CIRCLE_AREA);
+	}
 }

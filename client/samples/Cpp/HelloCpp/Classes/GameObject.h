@@ -19,6 +19,7 @@ public:
 	void MoveBy(double dx, double dy, bool instanceMove);
 	void ResetLastMoveSendTime();
 	void SetTint(int rgba);
+	void SetRadius(float radius);
 
 private:
 	GameObject();

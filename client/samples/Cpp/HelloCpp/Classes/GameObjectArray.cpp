@@ -74,6 +74,10 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 		o->ghostSprite = ghostSprite;
 		o->nameplate = nameplate;
 
+		/*auto draw = DrawNode::create();
+		sprite->addChild(draw, LZO_CIRCLE_AREA);
+		draw->drawDot(Point(0, 0), 100, Color4F(1, 0, 0, 0.5));*/
+
 		GGameObjectMap[objectId] = o;
 		return objectId;
 	}
@@ -189,6 +193,20 @@ int AnUpdateObjectTint(int objectId, int rgba)
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
 	{
 		GGameObjectMap[objectId]->SetTint(rgba);
+
+		return objectId;
+	}
+	else
+	{
+		return INVALID_GAME_OBJECT_ID;
+	}
+}
+
+int AnUpdateObjectRadius(int objectId, float radius)
+{
+	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
+	{
+		GGameObjectMap[objectId]->SetRadius(radius);
 
 		return objectId;
 	}

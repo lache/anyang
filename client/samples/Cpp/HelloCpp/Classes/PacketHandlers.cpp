@@ -114,6 +114,11 @@ MSG_HANDLER(character_resource)
 	{
 		AnDebugOutput("CHARACTER_RESOURCE: Object not found: %d", msg.id);
 	}
+
+	if (INVALID_GAME_OBJECT_ID == AnUpdateObjectRadius(msg.id, msg.radius))
+	{
+		AnDebugOutput("CHARACTER_RESOURCE: Object not found: %d", msg.id);
+	}
 }
 
 MSG_HANDLER(update_hp)

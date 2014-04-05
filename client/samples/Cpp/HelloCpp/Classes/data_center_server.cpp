@@ -15,6 +15,6 @@ static struct __initializer100 {
     {
         
     }
-} ___init101;
+} ___init102;
 
 #pragma warning( default : 4996 )
