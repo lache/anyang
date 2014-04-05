@@ -290,15 +290,17 @@ namespace Server.Message
         public const int TypeId = 1006;
         public int Id { get; set; }
         public int ResourceId { get; set; }
+        public int Radius { get; set; }
         
         public CharacterResourceMsg()
         {
         }
         
-        public CharacterResourceMsg(int id, int resourceId)
+        public CharacterResourceMsg(int id, int resourceId, int radius)
         {
             Id = id;
             ResourceId = resourceId;
+            Radius = radius;
         }
         
         public void WriteTo(BinaryWriter writer)
@@ -306,12 +308,14 @@ namespace Server.Message
             writer.Write(TypeId);
             writer.Write(Id);
             writer.Write(ResourceId);
+            writer.Write(Radius);
         }
         
         public void ReadFrom(BinaryReader reader)
         {
             Id = reader.ReadInt32();
             ResourceId = reader.ReadInt32();
+            Radius = reader.ReadInt32();
         }
     }
     

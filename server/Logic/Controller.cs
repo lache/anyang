@@ -39,6 +39,8 @@ namespace Server.Logic
         public int MaxHp { get; set; }
         [DataMember]
         public int Hp { get; set; }
+
+        public int Radius { get; set; }
     }
 
     class CharacterController : Controller<CharacterData>
@@ -51,7 +53,7 @@ namespace Server.Logic
         public SpawnMsg MakeSpawnMsg()
         {
             return new SpawnMsg(_actor.ObjectId, _data.Name,
-                new CharacterResourceMsg(_actor.ObjectId, _data.ResourceId),
+                new CharacterResourceMsg(_actor.ObjectId, _data.ResourceId, _data.Radius),
                 _actor.Get<MoveController>().MakeMoveMsg(),
                 new UpdateHpMsg(_actor.ObjectId, _data.MaxHp, _data.Hp));
         }

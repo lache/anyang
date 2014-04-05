@@ -23,18 +23,23 @@ namespace Server.Logic
         {
             Interlocked.Increment(ref FoodCount);
 
-            LifeTime = 10 - (int)Math.Log10(FoodCount);
-            if (LifeTime <= 0) LifeTime = 2;
-            while(true)
+            //LifeTime = 50 - (int)Math.Log10(FoodCount);
+            //if (LifeTime <= 0) LifeTime = 2;
+            while(IsAlive())
             {
-                LifeTime--;
-                if (LifeTime == 0) break;
+                //LifeTime--;
+                //if (LifeTime == 0) break;
 
                 yield return NextRandom(1000, 2000);
             }
             Broadcast(new DespawnMsg { Id = ObjectId });
 
             Interlocked.Decrement(ref FoodCount);
+        }
+
+        public void OnEaten(Npc npc)
+        {
+            _data.Character.Hp = 0;
         }
     }
 
@@ -46,29 +51,60 @@ namespace Server.Logic
         {
         }
 
+        private void GenerateFood()
+        {
+            var npcData = new NpcData
+            {
+                Character = new CharacterData
+                {
+                    Hp = 1,
+                    MaxHp = 1,
+                    ResourceId = Convert.ToInt32(Color.BlueViolet.ToArgb()),
+                },
+                Move = new MoveData
+                {
+                    X = NextRandom(10, 2000),
+                    Y = NextRandom(10, 2000),
+                    Dir = 0,
+                    Speed = 0,
+                },
+            };
+            var newFood = new Food(_world, npcData);
+            npcData.Character.Name = "Food " + newFood.ObjectId;
+            _world.Coro.AddEntry(newFood.CoroEntry);
+        }
+
+        private void GenerateHungryNpc()
+        {
+            if (NextRandom(0, 1) == 0) return;
+
+            var npcData = new NpcData
+            {
+                Character = new CharacterData
+                {
+                    Hp = 30,
+                    MaxHp = 100,
+                    ResourceId = Convert.ToInt32(Color.AliceBlue.ToArgb()),
+                },
+                Move = new MoveData
+                {
+                    X = NextRandom(10, 2000),
+                    Y = NextRandom(10, 2000),
+                    Dir = 0,
+                    Speed = 0,
+                },
+            };
+            var hungryNpc = new HungryNpc(_world, npcData);
+            npcData.Character.Name = "Hungry Npc" + hungryNpc.ObjectId;
+            _world.Coro.AddEntry(hungryNpc.CoroEntry);
+        }
+
         protected override IEnumerable<int> CoroMainEntry()
         {
             while(true)
             {
-                var npcData = new NpcData
-                {
-                    Character = new CharacterData
-                    {
-                        Hp = 1,
-                        MaxHp = 1,
-                        ResourceId = Convert.ToInt32(Color.BlueViolet.ToArgb()),
-                    },
-                    Move = new MoveData
-                    {
-                        X = NextRandom(10, 2000),
-                        Y = NextRandom(10, 2000),
-                        Dir = 0,
-                        Speed = 0,
-                    },
-                };
-                var newFood = new Food(_world, npcData);
-                npcData.Character.Name = "Food " + newFood.ObjectId;
-                _world.Coro.AddEntry(newFood.CoroEntry);
+                GenerateFood();
+                GenerateHungryNpc();
 
                 yield return NextRandom(1000, 3000);
             }
