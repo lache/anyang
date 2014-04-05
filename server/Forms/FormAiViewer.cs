@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -19,8 +20,7 @@ namespace Server.Forms
         private readonly Network _network = new Network();
         private Session _session;
 
-        private readonly Dictionary<int /* id */, PointF> _posMap = new Dictionary<int, PointF>();
-        private readonly List<int> _objectIds = new List<int>();
+        private readonly Dictionary<int /* id */, Tuple<PointF, Color>> _posMap = new Dictionary<int, Tuple<PointF, Color>>();
 
         public FormAiViewer()
         {
@@ -29,10 +29,11 @@ namespace Server.Forms
             DoubleBuffered = true;
         }
 
+        const string observerName = ":)";
         private void FormAiViewer_Load(object sender, EventArgs e)
         {
             _session = _network.Connect("localhost", 40004);
-            _session.Send(new EnterWorldMsg(":)"));
+            _session.Send(new EnterWorldMsg(observerName));
         }
 
         private void FormAiViewer_FormClosing(object sender, FormClosingEventArgs e)
@@ -40,14 +41,20 @@ namespace Server.Forms
             _session.Disconnect();
         }
 
+        const int worldWidth = 2048;
+        const int worldHeight = 2048;
         private void FormAiViewer_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
-            g.Clear(Color.White);
+            g.Clear(Color.Black);
+            g.SmoothingMode = SmoothingMode.HighQuality;
 
+            const int radius = 16;
             foreach (var pair in _posMap)
             {
-                g.FillRectangle(Brushes.Black, pair.Value.X, pair.Value.Y, 2, 2);
+                var x = pair.Value.Item1.X / worldWidth * ClientSize.Width - radius;
+                var y = pair.Value.Item1.Y / worldHeight * ClientSize.Height - radius;
+                g.FillEllipse(new SolidBrush(pair.Value.Item2), x, y, radius * 2, radius * 2);
             }
         }
 
@@ -58,21 +65,29 @@ namespace Server.Forms
 
         void OnSpawn(SpawnMsg msg)
         {
-            _objectIds.Add(msg.Id);
+            if (msg.Name == observerName)
+                return;
+
+            if (_posMap.ContainsKey(msg.Id))
+                return;
+
+            var color = Color.FromArgb(msg.CharacterResource.ResourceId);
+            _posMap.Add(msg.Id, 
+                Tuple.Create(new PointF((float)msg.Move.X, (float)msg.Move.Y), color));
         }
 
         void OnDespawn(DespawnMsg msg)
         {
+            _posMap.Remove(msg.Id);
         }
 
         void OnUpdatePosition(MoveMsg msg)
         {
-            if (!_objectIds.Contains(msg.Id))
+            if (!_posMap.ContainsKey(msg.Id))
                 return;
 
-            if (_posMap.ContainsKey(msg.Id))
-                _posMap.Remove(msg.Id);
-            _posMap.Add(msg.Id, new PointF((float)msg.X, (float)msg.Y));
+            _posMap[msg.Id] = Tuple.Create(
+                new PointF((float)msg.X, (float)msg.Y), _posMap[msg.Id].Item2);
         }
 
         private void sessionTimer_Tick(object sender, EventArgs e)
