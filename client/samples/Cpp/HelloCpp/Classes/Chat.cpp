@@ -57,9 +57,9 @@ void AnCreateChatLogs(Node* parent)
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	auto origin = Director::getInstance()->getVisibleOrigin();
 
-	const auto CHAT_FONT_SIZE = 1.5f * TITLE_FONT_SIZE / 3;
+	const auto CHAT_FONT_SIZE = TITLE_FONT_SIZE;
 	// 채팅 텍스트 필드
-	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder(to_utf8(L"(Type here to chat)"), "Arial", CHAT_FONT_SIZE);
+	auto pTextField = TextFieldTTF::textFieldWithPlaceHolder(to_utf8(L"(채팅 입력)"), "Arial", CHAT_FONT_SIZE);
 	pTextField->setPosition(Point(origin.x + visibleSize.width / 2,
 		origin.y + pTextField->getContentSize().height));
 	pTextField->setColor(Color3B::BLACK);
@@ -71,7 +71,7 @@ void AnCreateChatLogs(Node* parent)
 	{
 		TTFConfig ttfConfig(GFontPath, CHAT_FONT_SIZE);
 		ttfConfig.distanceFieldEnabled = true;
-		auto label = Label::createWithTTF(ttfConfig, to_utf8(L"세계여 이것을 보아라"));
+		auto label = Label::createWithTTF(ttfConfig, to_utf8(L" "));
 		label->setLabelEffect(LabelEffect::GLOW, Color3B::YELLOW);
 		label->setColor(Color3B::BLACK);
 		label->setAnchorPoint(Point(0.5, 0.5));
@@ -104,14 +104,13 @@ void AnAppendChat(int id, const char* speaker, const char* text)
 
 	if (auto s = (Sprite*)AnGetBaseLayer()->getChildByTag(id))
 	{
-		TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE * 1.75);
+		TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE * 5.0f);
 		ttfConfig.distanceFieldEnabled = true;
 		auto oneLineChat = Label::createWithTTF(ttfConfig, text);
 		oneLineChat->setColor(Color3B::BLACK);
-		oneLineChat->setAnchorPoint(Point(0.5, 0.5));
 		oneLineChat->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
 		oneLineChat->setAnchorPoint(Point(0, 1));
-		oneLineChat->setPosition(Point(0, 500));
+		oneLineChat->setPosition(Point(0, 350));
 		oneLineChat->runAction(Sequence::create(
 			DelayTime::create(1.0f),
 			MoveBy::create(1.5f, Point(0, 150)),
