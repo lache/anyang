@@ -220,7 +220,7 @@ bool HelloWorld::init()
 #else
 	TMXTiledMap *map = TMXTiledMap::create("map/default_1.tmx");
 #endif
-	addChild(map, -1);
+	addChild(map, LZO_GROUND);
 
 	/*auto gameObject = Sprite::create("images/player.png");
 	gameObject->setPosition(Point(visibleSize / 2) + origin);
@@ -248,6 +248,12 @@ bool HelloWorld::init()
 	auto touchListener = EventListenerTouchOneByOne::create();
 	touchListener->onTouchEnded = std::bind(&DefaultOnTouchEnded, std::placeholders::_1, std::placeholders::_2);
 	//_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+
+	auto draw = DrawNode::create();
+	addChild(draw, LZO_CIRCLE_AREA);
+
+	draw->drawDot(Point(0, 0), 100, Color4F(1,0,0,0.5));
+
     return true;
 }
 

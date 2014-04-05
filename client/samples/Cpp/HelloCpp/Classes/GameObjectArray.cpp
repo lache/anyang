@@ -40,7 +40,7 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 		sprite->setPosition(Point(x, y));
 		sprite->setScale(0.25f);
 		sprite->setTag(objectId);
-		GBaseLayer->addChild(sprite);
+		GBaseLayer->addChild(sprite, AnGetPlayerObjectId() != objectId ? LZO_USER : LZO_PLAYER);
 
 		Sprite* ghostSprite = nullptr;
 		if (AnGetPlayerObjectId() != objectId)
@@ -50,7 +50,7 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 			ghostSprite->setScale(0.25f);
 			ghostSprite->setColor(Color3B::GREEN);
 			ghostSprite->setLocalZOrder(-1);
-			GBaseLayer->addChild(ghostSprite);
+			GBaseLayer->addChild(ghostSprite, LZO_USER_GHOST);
 		}
 		else
 		{
@@ -65,7 +65,7 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 		nameplate->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
 		//nameplate->setScale(2);
 		nameplate->setAnchorPoint(Point(0, 1));
-		sprite->addChild(nameplate);
+		sprite->addChild(nameplate, AnGetPlayerObjectId() != objectId ? LZO_USER : LZO_PLAYER);
 
 		auto o = new GameObject(x, y);
 		o->objectId = objectId;
