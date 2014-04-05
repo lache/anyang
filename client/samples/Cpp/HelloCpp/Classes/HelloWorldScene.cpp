@@ -64,6 +64,9 @@ void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 	case EventKeyboard::KeyCode::KEY_KP_ENTER:
 		AnSendChat();
 		break;
+	case EventKeyboard::KeyCode::KEY_F:
+		AnTryInteract();
+		break;
 	}
 }
 

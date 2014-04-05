@@ -40,6 +40,12 @@ static int GCurrentLogPosition;
 
 extern const char* GFontPath;
 
+void AnTryInteract()
+{
+	msg::interact_msg msg(1);
+	session->write(msg);
+}
+
 void AnSendChat()
 {
 	auto text = GChatTextField->getString().c_str();
