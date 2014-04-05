@@ -86,30 +86,27 @@ void GameObject::SetTint(int rgba)
 
 void GameObject::SetRadius(float radius)
 {
-	if (auto existingNode = sprite->getChildByTag(OT_RADIUS))
+	auto existingNode = sprite->getChildByTag(OT_RADIUS);
+	if (radius <= 0 && existingNode)
 	{
-		if (radius <= 0)
-		{
-			existingNode->removeFromParent();
-			return;
-		}
-		else
-		{
-			DrawNode* dn = (DrawNode*)existingNode;
-
-			dn->clear();
-			//dn->setAnchorPoint(Point(0.5f, 0.5f));
-			dn->drawDot(Point(75, 100), radius, Color4F(1, 0, 0, 0.5));
-		}
+		existingNode->removeFromParent();
+		return;
 	}
-	else if (radius > 0)
+
+	if (!existingNode)
 	{
-		auto dn = DrawNode::create();
-		dn->setTag(OT_RADIUS);
-		//dn->setAnchorPoint(Point(0.5f, 0.5f)); 
-		dn->drawDot(Point(75,100), radius, Color4F(1, 0, 0, 0.5));
-		dn->setZOrder(LZO_CIRCLE_AREA);
-		
-		sprite->addChild(dn, LZO_CIRCLE_AREA);
+		auto newDrawNode = DrawNode::create();
+		newDrawNode->setTag(OT_RADIUS);
+		sprite->addChild(newDrawNode, -1);
+
+		existingNode = newDrawNode;
+	}
+
+	auto drawNode = (DrawNode*)existingNode;
+	assert(drawNode);
+	if (drawNode)
+	{
+		drawNode->clear();
+		drawNode->drawDot(Point(drawNode->getParent()->getContentSize()) / 2, radius / drawNode->getParent()->getScale(), Color4F(1, 0, 0, 0.5));
 	}
 }
