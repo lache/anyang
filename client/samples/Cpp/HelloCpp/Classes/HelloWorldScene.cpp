@@ -30,18 +30,18 @@ void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 {
 	switch (kc)
 	{
-	case EventKeyboard::KeyCode::KEY_A:
-		keyLayerMoveLeft = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_D:
-		keyLayerMoveRight = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_W:
-		keyLayerMoveUp = true;
-		break;
-	case EventKeyboard::KeyCode::KEY_S:
-		keyLayerMoveDown = true;
-		break;
+	//case EventKeyboard::KeyCode::KEY_A:
+	//	keyLayerMoveLeft = true;
+	//	break;
+	//case EventKeyboard::KeyCode::KEY_D:
+	//	keyLayerMoveRight = true;
+	//	break;
+	//case EventKeyboard::KeyCode::KEY_W:
+	//	keyLayerMoveUp = true;
+	//	break;
+	//case EventKeyboard::KeyCode::KEY_S:
+	//	keyLayerMoveDown = true;
+	//	break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		keyCharMoveLeft = true;
 		break;
