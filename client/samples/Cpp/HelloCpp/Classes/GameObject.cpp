@@ -98,14 +98,18 @@ void GameObject::SetRadius(float radius)
 			DrawNode* dn = (DrawNode*)existingNode;
 
 			dn->clear();
-			dn->drawDot(Point(0, 0), radius, Color4F(1, 0, 0, 0.5));
+			//dn->setAnchorPoint(Point(0.5f, 0.5f));
+			dn->drawDot(Point(75, 100), radius, Color4F(1, 0, 0, 0.5));
 		}
 	}
 	else if (radius > 0)
 	{
 		auto dn = DrawNode::create();
 		dn->setTag(OT_RADIUS);
-		dn->drawDot(Point(0, 0), radius, Color4F(1, 0, 0, 0.5));
+		//dn->setAnchorPoint(Point(0.5f, 0.5f)); 
+		dn->drawDot(Point(75,100), radius, Color4F(1, 0, 0, 0.5));
+		dn->setZOrder(LZO_CIRCLE_AREA);
+		
 		sprite->addChild(dn, LZO_CIRCLE_AREA);
 	}
 }
