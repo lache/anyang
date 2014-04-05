@@ -123,11 +123,14 @@ namespace Server.Logic
                 // 살아있으므로 HP를 깍고
                 _data.Character.Hp--;
 
-                var foods = _world.GetActors<Food>().Where(e => e.IsAlive());
+                var foods = _world.GetActors<Food>().Where(e => e.IsAlive()).ToList();
                 
                 // 음식이 없으면 한턴 쉬고
                 if (foods.Count() == 0)
+                {
                     yield return NextRandom(500, 800);
+                    continue;
+                }
 
                 var food = foods.OrderBy(e => e.Location.ManhattanDistance(this.Location)).First();
 

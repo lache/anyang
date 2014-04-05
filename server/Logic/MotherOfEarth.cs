@@ -76,7 +76,7 @@ namespace Server.Logic
 
         private void GenerateHungryNpc()
         {
-            if (NextRandom(0, 1) == 0) return;
+            if (NextRandom(0, 2) == 0) return;
 
             var npcData = new NpcData
             {
