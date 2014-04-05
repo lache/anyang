@@ -26,7 +26,6 @@ namespace Server
     {
         private readonly Persistence _persistence;
         private readonly Network _network = new Network();
-        private readonly Dictionary<int, World> _worlds = new Dictionary<int, World>();
         private readonly ProgramOptions _options;
 
         public Program(ProgramOptions options)
@@ -34,6 +33,8 @@ namespace Server
             _persistence = new Persistence(options.NonPersistenceWorld);
             _options = options;
         }
+
+        const int timerCoroInterval = 32;
 
         public void Run()
         {
@@ -49,24 +50,17 @@ namespace Server
             // 서버 로직의 시작점은 World이다.
             Logger.Write("start logic");
 
-            var coro = new Coroutine();
-            coro.AddEntry(CoroUpdateRealtime);
+            var timerCoro = new Coroutine(timerCoroInterval);
+            timerCoro.AddEntry(CoroUpdateRealtime);
 
             // 각 대륙에 대한 World을 만들어준다.
-            foreach (var mapFile in Directory.GetFiles("Data", "*.tmx"))
-            {
-                var world = new World(_persistence, mapFile);
-                _worlds.Add(world.Id, world);
-            }
-
-            foreach (var world in _worlds.Values)
-                world.Start();
+            Worlds.Initialize(_persistence);
 
             if (!_options.Debug)
-                coro.Run();
+                timerCoro.Run();
             else
             {
-                coro.Start();
+                timerCoro.Start();
                 Application.Run(new FormAiViewer());
             }
         }
@@ -77,7 +71,7 @@ namespace Server
             {
                 // 매 32ms마다 Realtime을 갱신해준다.
                 Realtime.Update();
-                yield return 32;
+                yield return timerCoroInterval;
             }
         }
 
@@ -107,9 +101,12 @@ namespace Server
                 _persistence.Store(data);
             }
 
-            World world;
-            if (!_worlds.TryGetValue(data.Move.WorldId, out world))
+            var world = Worlds.Get(data.Move.WorldId);
+            if (world == null)
+            {
+                session.Disconnect();
                 return;
+            }
 
             // 네트워크로 연결된 Actor는 Player이므로 User 객체를 만들어준다.
             var actor = new Player(world, session, data);

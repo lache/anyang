@@ -12,23 +12,8 @@ using System.Threading.Tasks;
 
 namespace Server.Core
 {
-    public class FlushableMessageQueue
+    public class FlushableMessageQueue : FlushableArray<IMessage>
     {
-        private ConcurrentBag<IMessage> _messageBag = new ConcurrentBag<IMessage>();
-
-        public void Add(IMessage message)
-        {
-            _messageBag.Add(message);
-        }
-
-        public IEnumerable<IMessage> Flush()
-        {
-            if (_messageBag.IsEmpty)
-                return Enumerable.Empty<IMessage>();
-
-            var oldBag = Interlocked.Exchange(ref _messageBag, new ConcurrentBag<IMessage>());
-            return oldBag.ToArray();
-        }
     }
 
     public class Session

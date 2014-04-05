@@ -95,14 +95,41 @@ namespace Server.Logic
             yield return 1000;
             _world.Persist.Store(_data);
             _world.Actors.Remove(this);
-            Logger.Write("{0} is logout.", _data.Character.Name);
 
             Broadcast(new DespawnMsg { Id = _data.ObjectId });
+            if (_world.Id == _data.Move.WorldId)
+            {
+                // logout
+                Logger.Write("{0} is logout.", _data.Character.Name);
+            }
+            else
+            {
+                // Logout이 아니라 새로운 world에 대한 Player 객체를 새로 만들어서 진행하도록 해준다.
+                var world = Worlds.Get(_data.Move.WorldId);
+                var actor = new Player(world, _session, _data);
+                actor.Connected = true;
+                _session.Source = actor;
+
+                world.Coro.AddEntry(actor.CoroEntry);
+                world.Coro.AddEntry(actor.CoroDispatchEntry);
+                Logger.Write("{0} is change world from {1} to {2}.", _data.Character.Name, _world.Id, world.Id);
+            }
         }
 
         void OnMove(MoveMsg msg)
         {
             Get<MoveController>().ProcessPacket(msg);
+        }
+
+        void ChangeWorld(int destWorldId)
+        {
+            if (Worlds.Get(destWorldId) == null)
+                return;
+
+            // world를 변경하기 위해 새 worldId를 기록해주고,
+            // Connected를 false로 만들어 새로운 world의 Player 객체가 만들어지도록 한다.
+            _data.Move.WorldId = destWorldId;
+            Connected = false;
         }
     }
 

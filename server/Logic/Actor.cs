@@ -47,8 +47,8 @@ namespace Server.Logic
     // Coroutine을 통해 추가 작업을 수행하거나, World를 통해 정보를 질의할 수 있다.
     class Actor
     {
-        protected readonly World _world;
         protected readonly Dictionary<Type, IController> _controllers = new Dictionary<Type, IController>();
+        protected readonly World _world;
 
         public Position Location = new Position { X = 0, Y = 0 };
 

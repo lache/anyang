@@ -12,8 +12,10 @@ namespace Server.Core
         public delegate IEnumerable<int> LogicEntryDelegate();
 
         private readonly List<LogicEntry> _logicEntries = new List<LogicEntry>();
-        private readonly List<NewLogicEntry> _newLogicEntries = new List<NewLogicEntry>();
-        private readonly List<object> _registersToDelete = new List<object>();
+        private readonly FlushableArray<NewLogicEntry> _newLogicEntries = new FlushableArray<NewLogicEntry>();
+        private readonly FlushableArray<object> _registersToDelete = new FlushableArray<object>();
+        private readonly FlushableArray<TransferEntry> _registersToTransfer = new FlushableArray<TransferEntry>();
+        private readonly FlushableArray<LogicEntry> _logicEntriesToTransfer = new FlushableArray<LogicEntry>();
 
         private readonly ManualResetEvent _resetEvent = new ManualResetEvent(false);
         private DateTime _previousTime;
@@ -47,6 +49,11 @@ namespace Server.Core
             _registersToDelete.Add(register);
         }
 
+        public void Transfer(Coroutine destination, object register)
+        {
+            _registersToTransfer.Add(new TransferEntry { Destination = destination, Register = register });
+        }
+
         public void Start()
         {
             var thread = new Thread(Run) { IsBackground = true };
@@ -67,12 +74,16 @@ namespace Server.Core
             var now = DateTime.Now;
             var delta = (now - _previousTime).Milliseconds;
 
-            _newLogicEntries.RemoveAll(e => _registersToDelete.Contains(e.Register));
-            _logicEntries.RemoveAll(e => _registersToDelete.Contains(e.Register));
-            _registersToDelete.Clear();
+            var registersToDelete = _registersToDelete.Flush();
+            _logicEntries.RemoveAll(e => registersToDelete.Contains(e.Register));
 
-            foreach (var entry in _newLogicEntries)
+            var registersToTransfer = _registersToTransfer.Flush();
+            var newLogicEntries = _newLogicEntries.Flush().Where(e => !registersToDelete.Contains(e.Register));
+            foreach (var entry in newLogicEntries)
             {
+                if (CheckAndTransferNewEntry(registersToTransfer, entry))
+                    continue;
+
                 var newEntry = new LogicEntry
                 {
                     Enumerator = entry.Delegate().GetEnumerator(),
@@ -81,11 +92,17 @@ namespace Server.Core
                 };
                 _logicEntries.Add(newEntry);
             }
-            _newLogicEntries.Clear();
 
             var removals = new List<LogicEntry>();
+            _logicEntries.AddRange(_logicEntriesToTransfer.Flush());
             foreach (var each in _logicEntries)
             {
+                if (CheckAndTransferEntry(registersToTransfer, each))
+                {
+                    removals.Add(each);
+                    continue;
+                }
+
                 each.SleepTime -= delta;
                 if (each.SleepTime >= 0)
                     continue;
@@ -100,6 +117,34 @@ namespace Server.Core
             _previousTime = now;
         }
 
+        private static bool CheckAndTransferNewEntry(IEnumerable<TransferEntry> registersToTransfer, NewLogicEntry entry)
+        {
+            var transfer = false;
+            foreach (var transferEntry in registersToTransfer)
+            {
+                if (transferEntry.Register != entry.Register)
+                    continue;
+
+                transferEntry.Destination.AddEntry(entry.Register, entry.Delegate);
+                transfer = true;
+            }
+            return transfer;
+        }
+
+        private static bool CheckAndTransferEntry(IEnumerable<TransferEntry> registersToTransfer, LogicEntry entry)
+        {
+            var transfer = false;
+            foreach (var transferEntry in registersToTransfer)
+            {
+                if (transferEntry.Register != entry.Register)
+                    continue;
+
+                transferEntry.Destination._logicEntriesToTransfer.Add(entry);
+                transfer = true;
+            }
+            return transfer;
+        }
+
         private class LogicEntry
         {
             public IEnumerator<int> Enumerator;
@@ -111,6 +156,12 @@ namespace Server.Core
         {
             public LogicEntryDelegate Delegate;
             public object Register;
+        }
+
+        private class TransferEntry
+        {
+            public object Register;
+            public Coroutine Destination;
         }
     }
 }
