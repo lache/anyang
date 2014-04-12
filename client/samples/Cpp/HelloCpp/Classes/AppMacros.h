@@ -43,7 +43,7 @@ static Resource largeResource  =  { cocos2d::Size(2048, 1536), "ipadhd" };
 #if (TARGET_DESIGN_RESOLUTION_SIZE == DESIGN_RESOLUTION_480X320)
 static cocos2d::Size designResolutionSize = cocos2d::Size(480, 320);
 #elif (TARGET_DESIGN_RESOLUTION_SIZE == DESIGN_RESOLUTION_1024X768)
-static cocos2d::Size designResolutionSize = cocos2d::Size(640, 480);
+static cocos2d::Size designResolutionSize = cocos2d::Size(1200, 800);
 #elif (TARGET_DESIGN_RESOLUTION_SIZE == DESIGN_RESOLUTION_2048X1536)
 static cocos2d::Size designResolutionSize = cocos2d::Size(2048, 1536);
 #else
