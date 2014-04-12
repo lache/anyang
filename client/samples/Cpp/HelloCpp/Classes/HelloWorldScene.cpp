@@ -222,6 +222,33 @@ bool HelloWorld::init()
 #endif
 	addChild(map, LZO_GROUND);
 
+	auto pChildrenArray = map->getChildren();
+
+	CCSpriteBatchNode* child = NULL;
+
+	CCObject* pObject = NULL;
+
+	for (auto pObject : pChildrenArray)
+	{
+		child = (CCSpriteBatchNode*)pObject;
+
+		if (!child)
+			break;
+
+		child->getTexture()->setAntiAliasTexParameters();
+	}
+
+	auto layer = map->layerNamed("Land");
+	Sprite *tile0 = layer->tileAt(Point(0, 0));
+
+	for (int i = 0; i < 10; ++i)
+	{
+		for (int j = 0; j < 10; ++j)
+		{
+			layer->setTileGID(31, Point(3+i, 3+j));
+		}
+	}
+	
 	/*auto gameObject = Sprite::create("images/player.png");
 	gameObject->setPosition(Point(visibleSize / 2) + origin);
 	gameObject->setScale(0.25f);
