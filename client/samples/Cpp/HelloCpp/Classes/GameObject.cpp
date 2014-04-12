@@ -144,7 +144,7 @@ void GameObject::SetHp(float hp, float maxHp)
 				Point(hp, hpGaugeHeight + hpOffsetY),
 				Point(hp, 0 + hpOffsetY),
 			};
-			drawNode->drawPolygon(corners, _countof(corners), Color4F::GREEN, 1, Color4F::BLACK);
+			drawNode->drawPolygon(corners, 4, Color4F::GREEN, 1, Color4F::BLACK);
 
 		}
 		
@@ -155,7 +155,7 @@ void GameObject::SetHp(float hp, float maxHp)
 				Point(maxHp, hpGaugeHeight + hpOffsetY),
 				Point(maxHp, 0 + hpOffsetY),
 			};
-			drawNode->drawPolygon(corners, _countof(corners), Color4F::RED, 1, Color4F::BLACK);
+			drawNode->drawPolygon(corners, 4, Color4F::RED, 1, Color4F::BLACK);
 		}
 	}
 }

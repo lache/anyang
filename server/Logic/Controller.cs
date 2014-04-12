@@ -143,4 +143,16 @@ namespace Server.Logic
             }
         }
     }
+
+    static class MoveDataHelper
+    {
+        public static Position ToPosition(this MoveData data)
+        {
+            return new Position
+            {
+                X = (int)data.X,
+                Y = (int)data.Y,
+            };
+        }
+    }
 }
