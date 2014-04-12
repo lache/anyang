@@ -12,7 +12,6 @@ namespace Server.Logic
     class Food : Npc
     {
         private int FoodCount = 0;
-        private int LifeTime = 10;
 
         public Food(World world, NpcData data)
             : base(world, data)
