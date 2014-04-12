@@ -66,6 +66,7 @@ enum LocalZOrder
 enum ObjectTag
 {
 	OT_RADIUS,
+	OT_HP_GAUGE,
 };
 
 #endif /* __APPMACROS_H__ */

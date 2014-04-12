@@ -1,4 +1,4 @@
-#include "HelloWorldScene.h"
+﻿#include "HelloWorldScene.h"
 #include "AppMacros.h"
 #include "GameObjectArray.h"
 #include "GameObject.h"
@@ -27,6 +27,8 @@ Layer* AnGetBaseLayer()
 	return GBaseLayer;
 }
 
+// GameObject 스폰 요청 처리
+// 스프라이트, 범위 표시, 이름표, HP 게이지를 생성한다.
 int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 {
 	if (objectId <= 0)
@@ -77,6 +79,8 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 		/*auto draw = DrawNode::create();
 		sprite->addChild(draw, LZO_CIRCLE_AREA);
 		draw->drawDot(Point(0, 0), 100, Color4F(1, 0, 0, 0.5));*/
+
+		o->SetHp(100, 150);
 
 		GGameObjectMap[objectId] = o;
 		return objectId;

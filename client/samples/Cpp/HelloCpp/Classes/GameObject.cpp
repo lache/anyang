@@ -110,3 +110,52 @@ void GameObject::SetRadius(float radius)
 		drawNode->drawDot(Point(drawNode->getParent()->getContentSize()) / 2, radius / drawNode->getParent()->getScale(), Color4F(1, 0, 0, 0.5));
 	}
 }
+
+void GameObject::SetHp(float hp, float maxHp)
+{
+	auto existingNode = sprite->getChildByTag(OT_HP_GAUGE);
+	if (hp <= 0 && existingNode)
+	{
+		existingNode->removeFromParent();
+		return;
+	}
+
+	if (!existingNode)
+	{
+		auto newDrawNode = DrawNode::create();
+		newDrawNode->setTag(OT_HP_GAUGE);
+		sprite->addChild(newDrawNode, 1);
+
+		existingNode = newDrawNode;
+	}
+
+	auto drawNode = (DrawNode*)existingNode;
+	assert(drawNode);
+	if (drawNode)
+	{
+		drawNode->clear();
+		static const float hpGaugeHeight = 40;
+		static const float hpOffsetY = -hpGaugeHeight;
+
+		{
+			Point corners[4] = {
+				Point(0, 0 + hpOffsetY),
+				Point(0, hpGaugeHeight + hpOffsetY),
+				Point(hp, hpGaugeHeight + hpOffsetY),
+				Point(hp, 0 + hpOffsetY),
+			};
+			drawNode->drawPolygon(corners, _countof(corners), Color4F::GREEN, 1, Color4F::BLACK);
+
+		}
+		
+		{
+			Point corners[4] = {
+				Point(hp + 0, 0 + hpOffsetY),
+				Point(hp + 0, hpGaugeHeight + hpOffsetY),
+				Point(maxHp, hpGaugeHeight + hpOffsetY),
+				Point(maxHp, 0 + hpOffsetY),
+			};
+			drawNode->drawPolygon(corners, _countof(corners), Color4F::RED, 1, Color4F::BLACK);
+		}
+	}
+}

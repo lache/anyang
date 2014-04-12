@@ -20,6 +20,7 @@ public:
 	void ResetLastMoveSendTime();
 	void SetTint(int rgba);
 	void SetRadius(float radius);
+	void SetHp(float hp, float maxHp);
 
 private:
 	GameObject();
