@@ -63,8 +63,8 @@ namespace Server.Logic
                 },
                 Move = new MoveData
                 {
-                    X = NextRandom(10, 2000),
-                    Y = NextRandom(10, 2000),
+                    X = NextRandom(10, 1000),
+                    Y = NextRandom(10, 1000),
                     Dir = 0,
                     Speed = 0,
                 },
@@ -76,7 +76,7 @@ namespace Server.Logic
 
         private void GenerateHungryNpc()
         {
-            if (NextRandom(0, 2) == 0) return;
+            //if (NextRandom(0, 2) == 0) return;
 
             var npcData = new NpcData
             {
@@ -88,8 +88,8 @@ namespace Server.Logic
                 },
                 Move = new MoveData
                 {
-                    X = NextRandom(10, 2000),
-                    Y = NextRandom(10, 2000),
+                    X = NextRandom(100, 1000),
+                    Y = NextRandom(100, 1000),
                     Dir = 0,
                     Speed = 0,
                 },
@@ -106,7 +106,7 @@ namespace Server.Logic
                 GenerateFood();
                 GenerateHungryNpc();
 
-                yield return NextRandom(1000, 3000);
+                yield return NextRandom(1000, 5000);
             }
         }
     }

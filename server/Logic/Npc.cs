@@ -33,6 +33,8 @@ namespace Server.Logic
             Add<CharacterController>(_data.Character);
             Add<MoveController>(_data.Move);
 
+            Location = _data.Move.ToPosition();
+
             ObjectId = Interlocked.Increment(ref NpcIssued);
 
             _world.Actors.Add(this);
@@ -137,7 +139,7 @@ namespace Server.Logic
                 // 가까운 음식이 거리가 0일 경우 먹는당 'ㅅ'
                 // 그게 아니라면 가장 가까운 음식을 향해 이동 ㄱㄱ
                 var dist = food.Location.ManhattanDistance(this.Location);
-                if (dist == 0)
+                if (dist <= 15)
                 {
                     _data.Character.Hp += 10;
                     food.OnEaten(this);
@@ -146,7 +148,8 @@ namespace Server.Logic
                 {
                     var moveCtrl = Get<MoveController>();
                     var pos = this.FindWay(food.Location);
-                    moveCtrl.Move(pos.X, pos.Y, Location.ToDirection(pos).ToClientDirection(), 1);
+                    if (moveCtrl.Move(pos.X, pos.Y, Location.ToDirection(pos).ToClientDirection(), 1))
+                        Location = pos;
                 }
  
                 yield return NextRandom(500, 800);

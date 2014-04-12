@@ -158,81 +158,91 @@ namespace Server.Logic
 
         public static IEnumerable<Position> FindWays(this Actor actor, Position dest, PathFinderMethod method = PathFinderMethod.PFM_ASTAR)
         {
-            // currently, just A* is implemented
-            switch(method)
-            {
-                case PathFinderMethod.PFM_ASTAR:
+            //if (actor.Location == dest)
+                //yield return dest.Clone();
 
-                    var closedSet = new HashSet<Position>();
-                    var openSet = new List<Position>();
-                    var navigated = new Dictionary<Position, Position>();
+            var moveList = actor.Location
+                .PossibleMoves()
+                .OrderBy(e => e.ManhattanDistance(dest));
 
-                    var pathScore = new Dictionary<Position, int>();
-                    var heuriScore = new Dictionary<Position, int>();
+            yield return moveList.First();
 
-                    var actorLoc = actor.Location.Clone();
-                    actorLoc.W = dest.ManhattanDistance(actorLoc);
-                    heuriScore.Add(actorLoc, actorLoc.W);
-                    openSet.Add(actorLoc);
-                    pathScore.Add(actorLoc, 0);
-                    while (openSet.Count > 0)
-                    {
-                        openSet = openSet.OrderBy(e => e.W).ToList();
-                        var current = openSet.ElementAt(0);
-                        openSet.RemoveAt(0);
-                        if (current == dest)
-                        {
-                            // construct way to dest
-                            var wayStack = new Stack<Position>();
-                            var curPos = dest;
-                            while (navigated.ContainsKey(curPos))
-                            {
-                                wayStack.Push(curPos);
-                                curPos = navigated[curPos];
-                            }
+            //// currently, just A* is implemented
+            //switch(method)
+            //{
+            //    case PathFinderMethod.PFM_ASTAR:
 
-                            while (wayStack.Count > 0)
-                                yield return wayStack.Pop();
-                            yield break;
-                        }
+            //        var closedSet = new HashSet<Position>();
+            //        var openSet = new HashSet<Position>();
+            //        var navigated = new Dictionary<Position, Position>();
 
-                        closedSet.Add(current);
-                        foreach (var newLoc in current.PossibleMoves(true))
-                        {
-                            //if (closedSet.Contains(newLoc) || (!actor.CanMove(newLoc)))
-                            if (closedSet.Contains(newLoc))
-                                continue;
+            //        var pathScore = new Dictionary<Position, int>();
+            //        var heuriScore = new Dictionary<Position, int>();
 
-                            var trueScore = pathScore[current] + 1;
-                            var estHeuriScroe = heuriScore[current] + current.ManhattanDistance(newLoc);
-                            var newToDestScore = newLoc.ManhattanDistance(dest);
-                            if (!openSet.Contains(newLoc) || estHeuriScroe < newToDestScore)
-                            {
-                                navigated.Remove(newLoc);
-                                navigated.Add(newLoc, current);
+            //        var actorLoc = actor.Location.Clone();
+            //        actorLoc.W = dest.ManhattanDistance(actorLoc);
+            //        heuriScore.Add(actorLoc, actorLoc.W);
+            //        openSet.Add(actorLoc);
+            //        pathScore.Add(actorLoc, 0);
+            //        while (openSet.Count > 0)
+            //        {
+            //            var current = openSet.OrderBy(e => e.W).First();
+            //            openSet.Remove(current);
+            //            if (current == dest)
+            //            {
+            //                // construct way to dest
+            //                var wayStack = new Stack<Position>();
+            //                var curPos = dest;
+            //                while (navigated.ContainsKey(curPos))
+            //                {
+            //                    wayStack.Push(curPos);
+            //                    curPos = navigated[curPos];
+            //                }
 
-                                pathScore.Remove(newLoc);
-                                pathScore.Add(newLoc, trueScore);
+            //                while (wayStack.Count > 0)
+            //                    yield return wayStack.Pop();
+            //                yield break;
+            //            }
 
-                                heuriScore.Remove(newLoc);
-                                heuriScore.Add(newLoc, pathScore[newLoc] + dest.ManhattanDistance(newLoc));
+            //            closedSet.Add(current);
+            //            foreach (var newLoc in current.PossibleMoves(true))
+            //            {
+            //                //if (closedSet.Contains(newLoc) || (!actor.CanMove(newLoc)))
+            //                    //continue;
+            //                if (closedSet.Contains(newLoc))
+            //                    continue;
 
-                                openSet.Remove(newLoc);
-                                newLoc.W = heuriScore[newLoc];
-                                openSet.Add(newLoc);
-                            }
-                        }
-                    }
+            //                var trueScore = pathScore[current] + 1;
+            //                //var estHeuriScroe = heuriScore[current] + current.ManhattanDistance(newLoc);
+            //                var estHeuriScroe = current.ManhattanDistance(newLoc);
+            //                var newToDestScore = newLoc.ManhattanDistance(dest);
+            //                if (!openSet.Contains(newLoc) || estHeuriScroe < newToDestScore)
+            //                {
+            //                    navigated.Remove(newLoc);
+            //                    navigated.Add(newLoc, current);
 
-                    break;
+            //                    pathScore.Remove(newLoc);
+            //                    pathScore.Add(newLoc, trueScore);
 
-                case PathFinderMethod.PFM_BFS:
-                case PathFinderMethod.PFM_DFS:
-                case PathFinderMethod.PFM_DIJKSTRA:
+            //                    heuriScore.Remove(newLoc);
+            //                    heuriScore.Add(newLoc, pathScore[newLoc] + dest.ManhattanDistance(newLoc));
 
-                    break;
-            }
-            yield return actor.Location.Clone();
+            //                    openSet.Remove(newLoc);
+            //                    newLoc.W = heuriScore[newLoc];
+            //                    openSet.Add(newLoc);
+            //                }
+            //            }
+            //        }
+
+            //        break;
+
+            //    case PathFinderMethod.PFM_BFS:
+            //    case PathFinderMethod.PFM_DFS:
+            //    case PathFinderMethod.PFM_DIJKSTRA:
+
+            //        break;
+            //}
+            //yield return actor.Location.Clone();
         }
     }
 }
