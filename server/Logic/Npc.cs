@@ -124,6 +124,7 @@ namespace Server.Logic
             {
                 // 살아있으므로 HP를 깍고
                 _data.Character.Hp--;
+                Broadcast(new UpdateHpMsg { Id = ObjectId, Hp = _data.Character.Hp, MaxHp = _data.Character.MaxHp, });
 
                 var foods = _world.GetActors<Food>().Where(e => e.IsAlive()).ToList();
                 
