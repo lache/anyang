@@ -54,7 +54,7 @@ namespace Server.Logic
         {
             return new SpawnMsg(_actor.ObjectId, _data.Name,
                 //new CharacterResourceMsg(_actor.ObjectId, _data.ResourceId, _data.Radius),
-                new CharacterResourceMsg(_actor.ObjectId, _data.ResourceId, 50),
+                new CharacterResourceMsg(_actor.ObjectId, _data.ResourceId, _data.ResourceId, 50),
                 _actor.Get<MoveController>().MakeMoveMsg(),
                 new UpdateHpMsg(_actor.ObjectId, _data.MaxHp, _data.Hp));
         }
