@@ -2,9 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml.Serialization;
 using System.Runtime.Serialization;
 using System.IO;
 using System.Xml;
@@ -101,11 +98,7 @@ namespace Server.Logic
 
         public IEnumerable<T> FindAll<T>(Func<T, bool> predicate) where T : PersistenceData
         {
-            foreach (var value in _dataMap.Values.Where(e => e.GetType() == typeof(T)))
-            {
-                if (predicate((T)value))
-                    yield return (T)value;
-            }
+            return _dataMap.Values.Where(e => e.GetType() == typeof(T) && predicate((T)e)).Cast<T>();
         }
 
         public void Store(PersistenceData obj)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Runtime.InteropServices;
 
 namespace Server.Core
 {
@@ -14,41 +9,31 @@ namespace Server.Core
         [DllImport("kernel32.dll")]
         extern static short QueryPerformanceFrequency(ref long x);
 
-        private static readonly double _tickMultiply;
-        private static readonly long _maxDelta;
-
-        private static long _baseReading;
-        private static long _lastRead;
+        private static readonly double TickMultiply;
+        private static readonly long BaseReading;
 
         static Realtime()
         {
             long tps = 0;
             QueryPerformanceFrequency(ref tps);
-            _tickMultiply = 1.0 / (double)tps;
-            _maxDelta = (long)(tps * 0.1);
+            TickMultiply = 1.0 / tps;
 
-            QueryPerformanceCounter(ref _baseReading);
-            _lastRead = _baseReading;
+            QueryPerformanceCounter(ref BaseReading);
         }
 
-        private static double _now;
         public static void Update()
         {
-            _now = Get();
+            Now = Get();
         }
 
-        public static double Now
-        {
-            get { return _now; }
-        }
+        public static double Now { get; private set; }
 
         private static double Get()
         {
             long now = 0;
             QueryPerformanceCounter(ref now);
 
-            _lastRead = now;
-            return (now - _baseReading) * _tickMultiply;
+            return (now - BaseReading) * TickMultiply;
         }
     }
 }

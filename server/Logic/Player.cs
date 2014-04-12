@@ -1,11 +1,9 @@
 ﻿using Server.Core;
 using Server.Message;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.Logic
 {
@@ -43,7 +41,7 @@ namespace Server.Logic
             ObjectId = _data.ObjectId;
         }
 
-        void OnChat(ChatMsg msg)
+        internal void OnChat(ChatMsg msg)
         {
             msg.Name = _data.Character.Name;
 
@@ -106,8 +104,7 @@ namespace Server.Logic
             {
                 // Logout이 아니라 새로운 world에 대한 Player 객체를 새로 만들어서 진행하도록 해준다.
                 var world = Worlds.Get(_data.Move.WorldId);
-                var actor = new Player(world, _session, _data);
-                actor.Connected = true;
+                var actor = new Player(world, _session, _data) {Connected = true};
                 _session.Source = actor;
 
                 world.Coro.AddEntry(actor.CoroEntry);
@@ -116,12 +113,12 @@ namespace Server.Logic
             }
         }
 
-        void OnMove(MoveMsg msg)
+        internal void OnMove(MoveMsg msg)
         {
             Get<MoveController>().ProcessPacket(msg);
         }
 
-        void ChangeWorld(int destWorldId)
+        internal void ChangeWorld(int destWorldId)
         {
             if (Worlds.Get(destWorldId) == null)
                 return;

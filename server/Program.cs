@@ -4,15 +4,8 @@ using Server.Logic;
 using Server.Message;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using System.Runtime.InteropServices;
-using System.Threading;
-using System.IO;
 
 namespace Server
 {
@@ -34,7 +27,7 @@ namespace Server
             _options = options;
         }
 
-        const int timerCoroInterval = 32;
+        const int TimerCoroInterval = 32;
 
         public void Run()
         {
@@ -50,7 +43,7 @@ namespace Server
             // 서버 로직의 시작점은 World이다.
             Logger.Write("start logic");
 
-            var timerCoro = new Coroutine(timerCoroInterval);
+            var timerCoro = new Coroutine(TimerCoroInterval);
             timerCoro.AddEntry(CoroUpdateRealtime);
 
             // 각 대륙에 대한 World을 만들어준다.
@@ -71,7 +64,7 @@ namespace Server
             {
                 // 매 32ms마다 Realtime을 갱신해준다.
                 Realtime.Update();
-                yield return timerCoroInterval;
+                yield return TimerCoroInterval;
             }
         }
 
@@ -109,8 +102,7 @@ namespace Server
             }
 
             // 네트워크로 연결된 Actor는 Player이므로 User 객체를 만들어준다.
-            var actor = new Player(world, session, data);
-            actor.Connected = true;
+            var actor = new Player(world, session, data) {Connected = true};
             session.Source = actor;
 
             world.Coro.AddEntry(actor.CoroEntry);

@@ -1,17 +1,14 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
-using System.Net;
 using System.Text.RegularExpressions;
+using System.Xml;
 
-namespace Tool
+namespace Server.Tool
 {
     public abstract class Deploy
     {
@@ -109,14 +106,8 @@ namespace Tool
 
         protected static void MakeHash(string targetPath)
         {
-            var result = new List<string>();
-            foreach (var each in Directory.GetFiles(targetPath, "*.*", SearchOption.AllDirectories))
-            {
-                var filePath = each.Substring(targetPath.Length + 1);
-                var length = new FileInfo(each).Length;
-                var hashValue = Hash(each);
-                result.Add(string.Join(",", filePath, length, hashValue));
-            }
+            var result = Directory.GetFiles(targetPath, "*.*", SearchOption.AllDirectories).Select(e =>
+                string.Join(",", e.Substring(targetPath.Length + 1), new FileInfo(e).Length, Hash(e))).ToList();
             File.WriteAllLines(Path.Combine(targetPath, "files"), result.ToArray(), Encoding.UTF8);
         }
 
@@ -222,8 +213,7 @@ namespace Tool
             using (var memStream = new MemoryStream())
             {
                 var boundaryBytes = Encoding.ASCII.GetBytes("\r\n--" + boundary + "\r\n");
-                var formdataTemplate = "\r\n--" + boundary + "\r\nContent-Disposition:  form-data; name=\"{0}\";\r\n\r\n{1}";
-                var headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\n Content-Type: application/octet-stream\r\n\r\n";
+                const string headerTemplate = "Content-Disposition: form-data; name=\"{0}\"; filename=\"{1}\"\r\n Content-Type: application/octet-stream\r\n\r\n";
                 memStream.Write(boundaryBytes, 0, boundaryBytes.Length);
 
                 var header = string.Format(headerTemplate, "target", file);
@@ -233,7 +223,7 @@ namespace Tool
                 using (var fileStream = new FileStream(file, FileMode.Open, FileAccess.Read))
                 {
                     var buffer = new byte[4096];
-                    var bytesRead = 0;
+                    int bytesRead;
                     while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) != 0)
                     {
                         memStream.Write(buffer, 0, bytesRead);
@@ -279,7 +269,7 @@ namespace Tool
     {
         protected override void ExecuteInternal()
         {
-            var deployList = @"./*.dll,server/
+            const string deployList = @"./*.dll,server/
                                ./Server.exe,server/
                                ./Data/*,server/Data/";
             foreach (var pair in deployList.Split('\r', '\n').Where(e => !string.IsNullOrWhiteSpace(e))

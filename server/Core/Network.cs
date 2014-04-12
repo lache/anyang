@@ -3,10 +3,8 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -19,18 +17,18 @@ namespace Server.Core
     public class Session
     {
         public readonly FlushableMessageQueue MessageQueue = new FlushableMessageQueue();
-        internal readonly Socket _socket;
+        internal readonly Socket Socket;
 
         internal Session(Socket socket)
         {
-            _socket = socket;
+            Socket = socket;
         }
 
         public void Disconnect()
         {
             try
             {
-                _socket.Close();
+                Socket.Close();
             }
             catch
             { }
@@ -55,7 +53,7 @@ namespace Server.Core
             Array.Copy(lengthBytes, bytes, lengthBytes.Length);
             try
             {
-                _socket.Send(bytes);
+                Socket.Send(bytes);
             }
             catch (Exception e)
             {
@@ -66,10 +64,10 @@ namespace Server.Core
 
         public async Task<IMessage> Receive()
         {
-            var sizeBytes = await _socket.ReceiveAsync(sizeof(int)).ConfigureAwait(false);
+            var sizeBytes = await Socket.ReceiveAsync(sizeof(int)).ConfigureAwait(false);
             var size = BitConverter.ToInt32(sizeBytes, 0);
 
-            var bytes = await _socket.ReceiveAsync(size - sizeof(int)).ConfigureAwait(false);
+            var bytes = await Socket.ReceiveAsync(size - sizeof(int)).ConfigureAwait(false);
             using (var reader = new BinaryReader(new MemoryStream(bytes)))
             {
                 var typeId = reader.ReadInt32();
@@ -121,7 +119,7 @@ namespace Server.Core
 
             var task = Task.Run(() =>
             {
-                Session outSession = null;
+                Session outSession;
                 _debugConnectedSessions.TryDequeue(out outSession);
                 return outSession;
             });
@@ -174,7 +172,7 @@ namespace Server.Core
         {
             lock (_sockets)
             {
-                _sockets.Add(session._socket);
+                _sockets.Add(session.Socket);
             }
 
             if (OnConnect != null)
@@ -222,7 +220,7 @@ namespace Server.Core
 
             lock (_sockets)
             {
-                _sockets.Remove(session._socket);
+                _sockets.Remove(session.Socket);
             }
         }
 

@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Server.Logic
 {
@@ -30,10 +26,10 @@ namespace Server.Logic
 
     public class Extrapolator
     {
-        private Vector2 _snapPos = new Vector2();
-        private Vector2 _snapVel = new Vector2();
-        private Vector2 _aimPos = new Vector2();
-        private Vector2 _lastPacketPos = new Vector2();     //  only used when re-constituting velocity
+        private Vector2 _snapPos;
+        private Vector2 _snapVel;
+        private Vector2 _aimPos;
+        private Vector2 _lastPacketPos;         //  only used when re-constituting velocity
         private double _snapTime;               //  related to snapPos_
         private double _aimTime;                //  related to aimPos_
         private double _lastPacketTime;         //  related to lastPacketPos_
@@ -104,7 +100,7 @@ namespace Server.Logic
 
         public bool ReadPosition(double forTime, out Vector2 oPos)
         {
-            var vel = new Vector2();
+            Vector2 vel;
             return ReadPosition(forTime, out oPos, out vel);
         }
 
