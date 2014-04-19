@@ -15,6 +15,8 @@ const char* GFontPath = R"(fonts/H2GTRE.TTF)";
 
 USING_NS_CC;
 
+TMXTiledMap* GMap = nullptr;
+
 static bool keyCharMoveLeft;
 static bool keyCharMoveRight;
 static bool keyCharMoveUp;
@@ -153,9 +155,6 @@ Scene* HelloWorld::scene()
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
-    //////////////////////////////
-    // 1. super init first
-    //if ( !LayerColor::initWithColor(Color4B::WHITE) )
 	if (!Layer::init())
     {
         return false;
@@ -164,11 +163,6 @@ bool HelloWorld::init()
 	auto visibleSize = Director::getInstance()->getVisibleSize();
     auto origin = Director::getInstance()->getVisibleOrigin();
 
-    /////////////////////////////
-    // 2. add a menu item with "X" image, which is clicked to quit the program
-    //    you may modify it.
-
-    // add a "close" icon to exit the progress. it's an autorelease object
     auto closeItem = MenuItemImage::create(
                                         "CloseNormal.png",
                                         "CloseSelected.png",
@@ -181,31 +175,12 @@ bool HelloWorld::init()
     menu->setPosition(Point::ZERO);
     //this->addChild(menu, 1);
     
-    /////////////////////////////
-    // 3. add your codes below...
-
-    // add a label shows "Hello World"
-    // create and initialize a label
-    
-    //auto label = LabelTTF::create("안녕하세요 세계여", "Arial", TITLE_FONT_SIZE);
-
-
 	TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE * 2);
 	ttfConfig.distanceFieldEnabled = true;
 	auto label = Label::createWithTTF(ttfConfig, to_utf8(L"클라이언트의 세계여!"));
 	label->setColor(Color3B::BLACK);
 	label->setAnchorPoint(Point(0.5, 0.5));
 	label->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
-	
-	//label->setString(to_utf8(L"크크크크킄"));
-
-	//label->setLabelEffect()
-	//label->getTexture()->setTexParameters()
-	//label->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
-	//label->setBlendFunc(BlendFunc::ALPHA_PREMULTIPLIED);
-	//BlendFunc bf = { GL_ONE, GL_ONE_MINUS_SRC_ALPHA };
-	//label->setBlendFunc(bf); // <-- CORRECT BLENDING MODE
-    // position the label on the center of the screen
     label->setPosition(Point(origin.x + visibleSize.width/2,
                             origin.y + visibleSize.height - label->getContentSize().height));
 
@@ -221,13 +196,11 @@ bool HelloWorld::init()
 	TMXTiledMap *map = TMXTiledMap::create("map/default_1.tmx");
 #endif
 	addChild(map, LZO_GROUND);
+	GMap = map;
 
-	auto pChildrenArray = map->getChildren();
-
+	/*auto pChildrenArray = map->getChildren();
 	CCSpriteBatchNode* child = NULL;
-
 	CCObject* pObject = NULL;
-
 	for (auto pObject : pChildrenArray)
 	{
 		child = (CCSpriteBatchNode*)pObject;
@@ -236,18 +209,9 @@ bool HelloWorld::init()
 			break;
 
 		child->getTexture()->setAntiAliasTexParameters();
-	}
+	}*/
 
-	auto layer = map->layerNamed("Land");
-	Sprite *tile0 = layer->tileAt(Point(0, 0));
-
-	for (int i = 0; i < 10; ++i)
-	{
-		for (int j = 0; j < 10; ++j)
-		{
-			layer->setTileGID(31, Point(3+i, 3+j));
-		}
-	}
+	AnSpawnResource(99, 400, 400);
 	
 	/*auto gameObject = Sprite::create("images/player.png");
 	gameObject->setPosition(Point(visibleSize / 2) + origin);
