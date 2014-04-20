@@ -140,8 +140,10 @@ namespace MmoTools.Generator.Data
                     break;
                 case TypeEnum.DATA_ID:
                 case TypeEnum.INT:
+                    code.Append("ptr->{0} = each_node->IntAttribute(\"{0}\");", CanonicalName);
+                    break;
                 case TypeEnum.DOUBLE:
-                    code.Append("each_node->Attribute(\"{0}\", &ptr->{0});", CanonicalName);
+                    code.Append("ptr->{0} = each_node->DoubleAttribute(\"{0}\");", CanonicalName);
                     break;
                 case TypeEnum.DATA_POS:
                     code.Append("parse_data_xyz(each_node->Attribute(\"{0}\"), &ptr->{0});", CanonicalName);
@@ -169,7 +171,7 @@ namespace MmoTools.Generator.Data
             var nodeName = Name.Replace('_', '-');
             var varName = nodeName.Replace('-', '_');
             code.Append("id_t {0};", varName);
-            code.Append("each_node->Attribute(\"{0}\", &{1});", nodeName, varName);
+            code.Append("{1} = each_node->IntAttribute(\"{0}\");", nodeName, varName);
             code.Append("{0}_data::linker.add<{1}>(&ptr->{2}, {3});", OwnedClass.Ancestor.SimpleName, ReferenceTypeName, CanonicalName, varName);
             return code;
         }

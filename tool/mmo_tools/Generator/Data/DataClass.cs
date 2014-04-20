@@ -220,7 +220,7 @@ namespace MmoTools.Generator.Data
 
         public string GenerateParsePrototypeCode()
         {
-            var declaration = string.Format("static void parse_{0}(TiXmlElement* root_node", ParserName);
+            var declaration = string.Format("static void parse_{0}(tinyxml2::XMLElement* root_node", ParserName);
             if (IsTopMost) declaration += ")";
             else declaration += string.Format(", {0}* parent)", ParentClassType);
             return declaration;
@@ -247,7 +247,7 @@ namespace MmoTools.Generator.Data
             code.BracketStart();
             {
                 code.Append("if (root_node == nullptr) return;");
-                code.BracketStart("for (TiXmlElement* each_node = root_node->FirstChildElement(); each_node != nullptr; each_node = each_node->NextSiblingElement())");
+                code.BracketStart("for (tinyxml2::XMLElement* each_node = root_node->FirstChildElement(); each_node != nullptr; each_node = each_node->NextSiblingElement())");
                 {
                     code.Append("{0}* ptr = new {0};", QualifiedTypeName);
 

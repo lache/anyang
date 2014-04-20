@@ -8,6 +8,7 @@
 #include "PacketHandlers.h"
 #include "UICore.h"
 #include "Resource.h"
+#include "sprite_data.h"
 
 #ifdef _DEBUG
 const char* GFontPath = R"(..\..\..\..\..\Resources\fonts\H2GTRE.TTF)";
@@ -34,18 +35,18 @@ void DefaultOnKeyPressed(EventKeyboard::KeyCode kc, Event* evt)
 {
 	switch (kc)
 	{
-	//case EventKeyboard::KeyCode::KEY_A:
-	//	keyLayerMoveLeft = true;
-	//	break;
-	//case EventKeyboard::KeyCode::KEY_D:
-	//	keyLayerMoveRight = true;
-	//	break;
-	//case EventKeyboard::KeyCode::KEY_W:
-	//	keyLayerMoveUp = true;
-	//	break;
-	//case EventKeyboard::KeyCode::KEY_S:
-	//	keyLayerMoveDown = true;
-	//	break;
+		//case EventKeyboard::KeyCode::KEY_A:
+		//	keyLayerMoveLeft = true;
+		//	break;
+		//case EventKeyboard::KeyCode::KEY_D:
+		//	keyLayerMoveRight = true;
+		//	break;
+		//case EventKeyboard::KeyCode::KEY_W:
+		//	keyLayerMoveUp = true;
+		//	break;
+		//case EventKeyboard::KeyCode::KEY_S:
+		//	keyLayerMoveDown = true;
+		//	break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		keyCharMoveLeft = true;
 		break;
@@ -166,47 +167,54 @@ void DefaultOnTouchEnded(Touch* t, Event* evt)
 
 Scene* HelloWorld::scene()
 {
-    // 'scene' is an autorelease object
-    auto scene = Scene::create();
+	// 'scene' is an autorelease object
+	auto scene = Scene::create();
 
 	AnSetScene(scene);
 
-    // 'layer' is an autorelease object
-    HelloWorld *layer = HelloWorld::create();
+	// 'layer' is an autorelease object
+	HelloWorld *layer = HelloWorld::create();
 
 
-    // add layer as a child to scene
-    scene->addChild(layer);
+	// add layer as a child to scene
+	scene->addChild(layer);
 
 	AnInitializeUICore();
 
 	// return the scene
-    return scene;
+	return scene;
 }
 
 // on "init" you need to initialize your instance
 bool HelloWorld::init()
 {
 	if (!Layer::init())
-    {
-        return false;
-    }
+	{
+		return false;
+	}
+
+	size_t c = 0;
+	data::sprite_data d;
+	d.for_each([&](data::sprite_t* item)
+	{
+		++c;
+	});
 
 	AnInitializeResourcePath();
 
 	auto visibleSize = Director::getInstance()->getVisibleSize();
-    auto origin = Director::getInstance()->getVisibleOrigin();
-    
+	auto origin = Director::getInstance()->getVisibleOrigin();
+
 	TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE * 2);
 	ttfConfig.distanceFieldEnabled = true;
 	auto label = Label::createWithTTF(ttfConfig, to_utf8(L"클라이언트의 세계여!"));
 	label->setColor(Color3B::BLACK);
 	label->setAnchorPoint(Point(0.5, 0.5));
 	label->setLabelEffect(LabelEffect::GLOW, Color3B::WHITE);
-    label->setPosition(Point(origin.x + visibleSize.width/2,
-                            origin.y + visibleSize.height - label->getContentSize().height));
+	label->setPosition(Point(origin.x + visibleSize.width / 2,
+		origin.y + visibleSize.height - label->getContentSize().height));
 
-    // add the label as a child to this layer
+	// add the label as a child to this layer
 	this->addChild(label, 100);
 
 	// 채팅 로그
@@ -224,16 +232,16 @@ bool HelloWorld::init()
 	CCObject* pObject = NULL;
 	for (auto pObject : pChildrenArray)
 	{
-		child = (CCSpriteBatchNode*)pObject;
+	child = (CCSpriteBatchNode*)pObject;
 
-		if (!child)
-			break;
+	if (!child)
+	break;
 
-		child->getTexture()->setAntiAliasTexParameters();
+	child->getTexture()->setAntiAliasTexParameters();
 	}*/
 
 	AnSpawnResource(99, 400, 400);
-	
+
 	/*auto gameObject = Sprite::create("images/player.png");
 	gameObject->setPosition(Point(visibleSize / 2) + origin);
 	gameObject->setScale(0.25f);
@@ -247,7 +255,7 @@ bool HelloWorld::init()
 
 	//setTouchMode(Touch::DispatchMode::ONE_BY_ONE);// 싱글터치
 	//setTouchEnabled(true); // getter : isTouchEnabled()
-	
+
 	auto listener = EventListenerKeyboard::create();
 	listener->onKeyPressed = std::bind(&DefaultOnKeyPressed, std::placeholders::_1, std::placeholders::_2);
 	listener->onKeyReleased = std::bind(&DefaultOnKeyReleased, std::placeholders::_1, std::placeholders::_2);
@@ -265,15 +273,15 @@ bool HelloWorld::init()
 	touchListener->onTouchEnded = std::bind(&DefaultOnTouchEnded, std::placeholders::_1, std::placeholders::_2);
 	//_eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
 
-    return true;
+	return true;
 }
 
 void HelloWorld::menuCloseCallback(Object* sender)
 {
-    Director::getInstance()->end();
+	Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
-    exit(0);
+	exit(0);
 #endif
 }
 
@@ -336,7 +344,7 @@ void HelloWorld::update(float dt)
 			AnDebugOutput("Stopped [edge-trigger]\n");
 			AnResetLastMoveSendTime(AnGetPlayerObjectId());
 		}
-		
+
 		playerPosDZeroed = true;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, true);
 	}
@@ -353,7 +361,7 @@ void HelloWorld::update(float dt)
 		playerPosD = playerPosD.normalize() * charMoveAmount;
 		AnMoveObjectBy(AnGetPlayerObjectId(), playerPosD.x, playerPosD.y, false);
 	}
-	
+
 	static float scaleSpeed = 0.01f;
 	float layerScale = getScale();
 	if (keyZoomIn)

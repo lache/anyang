@@ -9,6 +9,9 @@
       <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
       <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
+    <Filter Include="Static Data">
+      <UniqueIdentifier>{5fdef6f6-22ba-4800-a49b-789d6e8c4957}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp">
@@ -46,6 +49,9 @@
     </ClCompile>
     <ClCompile Include="..\Classes\Resource.cpp">
       <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Classes\data_center_client.cpp">
+      <Filter>Static Data</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -106,6 +112,51 @@
     <ClInclude Include="..\Classes\Resource.h">
       <Filter>Classes</Filter>
     </ClInclude>
+    <ClInclude Include="..\Classes\data_type_id.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\entity_template_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\interact_template_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\npc_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\npc_name_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\ps_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\sprite_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\static_object_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\world_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\world_name_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\anim_state_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\attribute_template_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\character_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\config_data.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Classes\clientpch.h">
+      <Filter>Static Data</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Classes\Extrapolator.inl">
@@ -114,5 +165,6 @@
   </ItemGroup>
   <ItemGroup>
     <Xml Include="..\..\..\..\..\resources\data\msg.xml" />
+    <Xml Include="..\..\..\..\..\resources\data\mmo-data.xml" />
   </ItemGroup>
 </Project>

@@ -159,9 +159,9 @@ namespace MmoTools.Generator.Data
                 parser.Append("void data::__data_load(data_type_t<{0}>)", clazz.TypeName);
                 parser.BracketStart();
 
-                parser.Append("TiXmlDocument document;");
+                parser.Append("tinyxml2::XMLDocument document;");
                 parser.Append("document.LoadFile(user_defined_path_resolver(\"{0}\"));", clazz.XmlFileName.Replace("\\", "\\\\"));
-                parser.Append("TiXmlElement* root_node = document.FirstChildElement(\"{0}\");", clazz.XmlRootName);
+                parser.Append("tinyxml2::XMLElement* root_node = document.FirstChildElement(\"{0}\");", clazz.XmlRootName);
                 parser.Append("parse_{0}(root_node->FirstChildElement(\"{1}-list\"));", clazz.ParserName, clazz.XmlNodeName);
 
                 parser.BracketEnd();

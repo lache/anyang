@@ -60,6 +60,11 @@ void AnGetResourceFullPath(char* resourceName)
 {
 	char ret[FILENAME_MAX];
 
+	if (strlen(GResourcePath) == 0)
+	{
+		AnInitializeResourcePath();
+	}
+
 	strcpy(ret, GResourcePath);
 	strcat(ret, resourceName);
 	strcpy(resourceName, ret);
@@ -69,9 +74,29 @@ void AnGetResourceFullPathSlash(char* resourceNameSlash)
 {
 	char ret[FILENAME_MAX];
 
+	if (strlen(GResourcePath) == 0)
+	{
+		AnInitializeResourcePath();
+	}
+
 	strcpy(ret, GResourcePathSlash);
 	strcat(ret, resourceNameSlash);
 	strcpy(resourceNameSlash, ret);
+}
+
+resource_path_resolver::resource_path_resolver(const char* name)
+{
+	for (int i = strlen(name) - 1; i >= 0; --i)
+	{
+		if (name[i] == '\\')
+		{
+			if (memcmp(name + i, "\\resources\\", strlen("\\resources\\")) == 0)
+			{
+				strcpy(resource_path_buf, name + i + strlen("\\resources\\") - 1);
+				AnGetResourceFullPath(resource_path_buf);
+			}
+		}
+	}
 }
 
 #else // #ifdef WIN32
@@ -80,5 +105,7 @@ void AnInitializeResourcePath() {}
 void AnGetResourceFullPath(const char* resourceName) {}
 void AnGetResourceFullPath(char* resourceName) {}
 void AnGetResourceFullPathSlash(char* resourceNameSlash) {}
+
+resource_path_resolver::resource_path_resolver(const char* name) {}
 
 #endif // #ifdef WIN32

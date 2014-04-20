@@ -133,7 +133,7 @@ namespace MmoTools.Generator.Attribute
             code.Append(SourceCode.Parse(@"
 virtual void from_bson(bson_iterator*);
 virtual void to_bson(bson*);
-virtual void from_xml(TiXmlElement*);
+virtual void from_xml(tinyxml2::XMLElement*);
 virtual void to_xml(std::ostream&);".Trim()));
 
             if (attributeClass.CustomCode != null)
@@ -238,13 +238,13 @@ virtual void to_xml(std::ostream&);".Trim()));
 
                     if (!primitives.Any() && !nonPrimitives.Any())
                     {
-                        _cppCode.Append("void {0}::from_xml(TiXmlElement*)", attributeClass.StructName);
+                        _cppCode.Append("void {0}::from_xml(tinyxml2::XMLElement*)", attributeClass.StructName);
                         _cppCode.Append("{");
                         _cppCode.Append("}");
                     }
                     else
                     {
-                        _cppCode.Append("void {0}::from_xml(TiXmlElement* node)", attributeClass.StructName);
+                        _cppCode.Append("void {0}::from_xml(tinyxml2::XMLElement* node)", attributeClass.StructName);
                         _cppCode.BracketStart();
                         // primitive type은 attribute로 값을 넣어준다.
                         _cppCode.Append("const char* attr_value = nullptr;");
@@ -265,7 +265,7 @@ virtual void to_xml(std::ostream&);".Trim()));
                         // non-primitive type은 child element로 값을 넣어준다.
                         if (nonPrimitives.Any())
                         {
-                            _cppCode.BracketStart("for (TiXmlElement* each_node = node->FirstChildElement(); each_node != nullptr; each_node = each_node->NextSiblingElement())");
+                            _cppCode.BracketStart("for (tinyxml2::XMLElement* each_node = node->FirstChildElement(); each_node != nullptr; each_node = each_node->NextSiblingElement())");
                             _cppCode.Append("const char* node_name = each_node->Value();");
                             foreach (var attributeField in nonPrimitives)
                             {
