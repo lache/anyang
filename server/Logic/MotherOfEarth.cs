@@ -88,7 +88,7 @@ namespace Server.Logic
                     Hp = 1,
                     MaxHp = 1,
                     ResourceId = Convert.ToInt32(Color.Azure.ToArgb()),
-                    Radius = 1000,
+                    Radius = 300,
                 },
                 Move = new MoveData
                 {
