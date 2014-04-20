@@ -59,7 +59,7 @@ bool TMXLayer::initWithTilesetInfo(TMXTilesetInfo *tilesetInfo, TMXLayerInfo *la
     Texture2D *texture = nullptr;
     if( tilesetInfo )
     {
-		char tmxFilePath[_MAX_PATH];
+		char tmxFilePath[FILENAME_MAX];
 		strcpy(tmxFilePath, mapInfo->getTMXFileName().c_str());
 		for (int i = strlen(tmxFilePath) - 1; i >= 0; --i)
 		{
@@ -70,7 +70,7 @@ bool TMXLayer::initWithTilesetInfo(TMXTilesetInfo *tilesetInfo, TMXLayerInfo *la
 			}
 		}
 
-		char sourceImagePath[_MAX_PATH];
+		char sourceImagePath[FILENAME_MAX];
 		strcpy(sourceImagePath, tmxFilePath);
 		strcat(sourceImagePath, "\\");
 		strcat(sourceImagePath, tilesetInfo->_sourceImage.c_str());
