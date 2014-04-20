@@ -108,9 +108,9 @@ MSG_HANDLER(move)
 
 MSG_HANDLER(character_resource)
 {
-	AnDebugOutput("CHARACTER_RESOURCE: objectId=%d, resourceid=%d\n", msg.id, msg.resource_id);
+	AnDebugOutput("CHARACTER_RESOURCE: objectId=%d, resourceid=%d, color=%d\n", msg.id, msg.resource_id, msg.color);
 
-	if (INVALID_GAME_OBJECT_ID == AnUpdateObjectTint(msg.id, msg.resource_id))
+	if (INVALID_GAME_OBJECT_ID == AnUpdateObjectTint(msg.id, msg.color))
 	{
 		AnDebugOutput("CHARACTER_RESOURCE: Object not found: %d", msg.id);
 	}
