@@ -62,9 +62,10 @@ namespace Server.Logic
             {
                 Character = new CharacterData
                 {
-                    Hp = 1,
-                    MaxHp = 1,
-                    ResourceId = Convert.ToInt32(Color.BlueViolet.ToArgb()),
+                    Hp = 100,
+                    MaxHp = 100,
+                    ResourceId = 1,
+                    Color = Convert.ToInt32(Color.BlueViolet.ToArgb()),
                 },
                 Move = new MoveData
                 {
@@ -85,10 +86,11 @@ namespace Server.Logic
             {
                 Character = new CharacterData
                 {
-                    Hp = 1,
-                    MaxHp = 1,
-                    ResourceId = Convert.ToInt32(Color.Azure.ToArgb()),
+                    Hp = 10000,
+                    MaxHp = 10000,
+                    ResourceId = 3,
                     Radius = 300,
+                    Color = Convert.ToInt32(Color.Azure.ToArgb()),
                 },
                 Move = new MoveData
                 {

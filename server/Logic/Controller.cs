@@ -2,6 +2,7 @@
 using Server.Message;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -41,6 +42,7 @@ namespace Server.Logic
         public int Hp { get; set; }
 
         public int Radius { get; set; }
+        public int Color { get; set; }
     }
 
     class CharacterController : Controller<CharacterData>

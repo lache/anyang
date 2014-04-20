@@ -40,7 +40,8 @@ namespace Server.Logic
                 {
                     Hp = 30,
                     MaxHp = 100,
-                    ResourceId = Convert.ToInt32(Color.AliceBlue.ToArgb()),
+                    ResourceId = 3,
+                    Color = Convert.ToInt32(Color.AliceBlue.ToArgb()),
                 },
                 Move = new MoveData
                 {
