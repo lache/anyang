@@ -10,7 +10,6 @@ namespace Server.Logic
 {
     class Town : Npc
     {
-        protected NpcData _npcData;
         protected HashSet<Npc> _people = new HashSet<Npc>();
 
         public Town(World world, NpcData data)
@@ -28,8 +27,6 @@ namespace Server.Logic
 
                 yield return NextRandom(4000, 5000);
             }
-            
-            Broadcast(new DespawnMsg { Id = ObjectId });
         }
 
         protected override IEnumerable<int> CoroDispose()
@@ -46,15 +43,16 @@ namespace Server.Logic
                     Hp = 30,
                     MaxHp = 100,
                     ResourceId = 3,
-                    Color = Convert.ToInt32(Color.AliceBlue.ToArgb()),
+                    Color = _data.Character.Color,
                 },
                 Move = new MoveData
                 {
-                    X = NextRandom(100, 1000),
-                    Y = NextRandom(100, 1000),
+                    X = _data.Move.X + NextRandom(-100, 100),
+                    Y = _data.Move.Y + NextRandom(-100, 100),
                     Dir = 0,
                     Speed = 0,
                 },
+                GroupId = _data.GroupId,
             };
             var hungryNpc = new HungryNpc(_world, npcData);
             npcData.Character.Name = "Hungry Npc" + hungryNpc.ObjectId;

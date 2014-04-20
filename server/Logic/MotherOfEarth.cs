@@ -31,6 +31,8 @@ namespace Server.Logic
             while(IsAlive())
             {
                 charData.Hp--;
+                Broadcast(new UpdateHpMsg { Id = ObjectId, Hp = _data.Character.Hp, MaxHp = _data.Character.MaxHp, });
+                
                 yield return NextRandom(700, 1200);
             }
 
@@ -92,7 +94,13 @@ namespace Server.Logic
                     MaxHp = 10000,
                     ResourceId = 3,
                     Radius = 300,
-                    Color = Convert.ToInt32(Color.Azure.ToArgb()),
+                    Color = Convert.ToInt32(
+                        Color.FromArgb(
+                            NextRandom(0, 255),
+                            NextRandom(0, 255),
+                            NextRandom(0, 255),
+                            NextRandom(0, 255))
+                            .ToArgb()),
                 },
                 Move = new MoveData
                 {
