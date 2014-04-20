@@ -13,6 +13,7 @@ namespace Server.Logic
     {
         public CharacterData Character { get; set; }
         public MoveData Move { get; set; }
+        public int GroupId { get; set; }
         public NpcData()
         {
             Character = new CharacterData();
@@ -25,7 +26,7 @@ namespace Server.Logic
         private static int NpcIssued = 9999;
         protected NpcData _data;
         protected Random _random = new Random(DateTime.Now.Millisecond);
-       
+
         public Npc(World world, NpcData data)
             : base(world)
         {

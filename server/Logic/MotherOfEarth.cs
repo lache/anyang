@@ -11,7 +11,9 @@ namespace Server.Logic
 {
     class Food : Npc
     {
-        private int FoodCount = 0;
+        private static int FoodCount = 0;
+
+        private HashSet<Npc> _huntingSet = new HashSet<Npc>();
 
         public Food(World world, NpcData data)
             : base(world, data)
@@ -22,15 +24,17 @@ namespace Server.Logic
         {
             Interlocked.Increment(ref FoodCount);
 
-            //LifeTime = 50 - (int)Math.Log10(FoodCount);
-            //if (LifeTime <= 0) LifeTime = 2;
+            var charData = _data.Character;
+            charData.Hp = Math.Max(10, 50 - (int)Math.Log10(FoodCount));
             while(IsAlive())
             {
-                //LifeTime--;
-                //if (LifeTime == 0) break;
-
-                yield return NextRandom(1000, 2000);
+                charData.Hp--;
+                yield return NextRandom(700, 1200);
             }
+
+            // 누구를 도와줄지 결정해야 한다
+            // _huntingSet.OrderBy(_huntingSet.OrderBy(e => e....)
+            
             Broadcast(new DespawnMsg { Id = ObjectId });
 
             Interlocked.Decrement(ref FoodCount);
@@ -38,13 +42,15 @@ namespace Server.Logic
 
         public void OnEaten(Npc npc)
         {
-            _data.Character.Hp = 0;
+            _huntingSet.Add(npc);
         }
     }
 
     // 게임 전체의 자원과 환경을 관리
     class MotherOfEarth : Npc
     {
+        private static int TownCount = 0;
+        
         public MotherOfEarth(World world, NpcData data)
             : base(world, data)
         {
@@ -73,29 +79,29 @@ namespace Server.Logic
             _world.Coro.AddEntry(newFood.CoroEntry);
         }
 
-        private void GenerateHungryNpc()
+        private void GenerateTown()
         {
-            //if (NextRandom(0, 2) == 0) return;
-
             var npcData = new NpcData
             {
                 Character = new CharacterData
                 {
-                    Hp = 30,
-                    MaxHp = 100,
-                    ResourceId = Convert.ToInt32(Color.AliceBlue.ToArgb()),
+                    Hp = 1,
+                    MaxHp = 1,
+                    ResourceId = Convert.ToInt32(Color.Azure.ToArgb()),
+                    Radius = 1000,
                 },
                 Move = new MoveData
                 {
-                    X = NextRandom(100, 1000),
-                    Y = NextRandom(100, 1000),
+                    X = NextRandom(10, 1000),
+                    Y = NextRandom(10, 1000),
                     Dir = 0,
                     Speed = 0,
                 },
+                GroupId = TownCount++,
             };
-            var hungryNpc = new HungryNpc(_world, npcData);
-            npcData.Character.Name = "Hungry Npc" + hungryNpc.ObjectId;
-            _world.Coro.AddEntry(hungryNpc.CoroEntry);
+            var newTown = new Town(_world, npcData);
+            npcData.Character.Name = "Town " + newTown.ObjectId;
+            _world.Coro.AddEntry(newTown.CoroEntry);
         }
 
         protected override IEnumerable<int> CoroMainEntry()
@@ -103,7 +109,12 @@ namespace Server.Logic
             while(true)
             {
                 GenerateFood();
-                GenerateHungryNpc();
+               
+                if(TownCount < 10)
+                {
+                    Interlocked.Increment(ref TownCount);
+                    GenerateTown();
+                }
 
                 yield return NextRandom(1000, 5000);
             }

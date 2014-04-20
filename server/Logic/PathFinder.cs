@@ -161,8 +161,10 @@ namespace Server.Logic
             //if (actor.Location == dest)
                 //yield return dest.Clone();
 
+            var rand = new Random(DateTime.Now.Millisecond);
             var moveList = actor.Location
                 .PossibleMoves()
+                .OrderBy(e => rand.Next())
                 .OrderBy(e => e.ManhattanDistance(dest));
 
             yield return moveList.First();

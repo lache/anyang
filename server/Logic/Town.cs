@@ -1,37 +1,58 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Server.Logic
 {
-    class TownData
+    class Town : Npc
     {
-        public CharacterData Character { get; set; }
-        public TownData()
-        {
-            Character = new CharacterData();
-        }
-    }
+        protected NpcData _npcData;
+        protected HashSet<Npc> _people = new HashSet<Npc>();
 
-    class Town : Actor
-    {
-        private List<Actor> nobody = new List<Actor>();
-
-        public Town(World world)
-            : base(world)
+        public Town(World world, NpcData data)
+           : base(world, data)
         {
         }
 
         protected override IEnumerable<int> CoroMainEntry()
         {
-            return base.CoroMainEntry();
+            while (true)
+            {
+                GenerateHungryNpc();
+
+                yield return NextRandom(4000, 5000);
+            }
         }
 
         protected override IEnumerable<int> CoroDispose()
         {
             return base.CoroDispose();
+        }
+
+        private void GenerateHungryNpc()
+        {
+            var npcData = new NpcData
+            {
+                Character = new CharacterData
+                {
+                    Hp = 30,
+                    MaxHp = 100,
+                    ResourceId = Convert.ToInt32(Color.AliceBlue.ToArgb()),
+                },
+                Move = new MoveData
+                {
+                    X = NextRandom(100, 1000),
+                    Y = NextRandom(100, 1000),
+                    Dir = 0,
+                    Speed = 0,
+                },
+            };
+            var hungryNpc = new HungryNpc(_world, npcData);
+            npcData.Character.Name = "Hungry Npc" + hungryNpc.ObjectId;
+            _world.Coro.AddEntry(hungryNpc.CoroEntry);
         }
     }
 }
