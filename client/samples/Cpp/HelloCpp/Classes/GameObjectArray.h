@@ -7,9 +7,12 @@ typedef std::unordered_map<int, GameObject*> GameObjectMap;
 
 namespace cocos2d
 {
+	class Scene;
 	class Layer;
 }
 
+void AnSetScene(cocos2d::Scene* scene);
+cocos2d::Scene* AnGetScene();
 void AnSetBaseLayer(cocos2d::Layer* baseLayer);
 cocos2d::Layer* AnGetBaseLayer();
 int AnSpawnGameObject(int objectId, double x, double y, const char* name);

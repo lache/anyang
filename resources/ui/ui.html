@@ -1,0 +1,80 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Anyang Main UI</title>
+    <script src="jquery.min.js">
+    </script>
+    <script>
+        $(document).ready(function () {
+            $("#btn1").click(function () {
+                $("#test1").text("Hello world!");
+            });
+            $("#btn2").click(function () {
+                $("#test2").html("<b>Hello world!</b>");
+            });
+            $("#btn3").click(function () {
+                $("#test3").val("Dolly Duck");
+            });
+
+            $("#gold").text("100");
+            $("#silver").text("200");
+
+            AnEngine.OnDocumentReady();
+        });
+
+        function SetInitialValue(gold, silver) {
+            $("#gold").text(gold);
+            $("#silver").text(silver);
+        }
+    </script>
+    <style>
+        body {
+            background-color: transparent;
+            margin: 0;
+        }
+
+        #footer {
+            position: fixed;
+            height: 20px;
+            color: white;
+            background-color: navy;
+            bottom: 0px;
+            left: 0px;
+            right: 0px;
+            margin-bottom: 0px;
+            text-align: right;
+        }
+
+        #toolbar {
+            background-color: lightgray;
+            font-size: 20pt;
+        }
+
+        #logwindow {
+            background-color: rgba(0,0,0,0.8);
+            float: right;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="toolbar">
+        Gold: <span id="gold"></span> Silver: <span id="silver"></span>
+    </div>
+
+    <div id="logwindow">
+        하하하하~~~
+        <p id="test1">This is a paragraph.</p>
+        <p id="test2">This is another paragraph.</p>
+        <p>Input field: <input type="text" id="test3" value="Mickey Mouse"></p>
+        <button id="btn1">Set Text</button>
+        <button id="btn2">Set HTML</button>
+        <button id="btn3">Set Value</button>
+    </div>
+
+    <div id="footer">
+        Status bar
+    </div>
+
+</body>
+</html>

@@ -1,4 +1,4 @@
-#include "HelloWorldScene.h"
+ï»¿#include "HelloWorldScene.h"
 #include "GameObject.h"
 #include "EPIC.h"
 #include "NetworkCore.h"
@@ -52,19 +52,23 @@ void GameObject::MoveBy(double dx, double dy, bool instanceMove)
 {
 	if (sprite)
 	{
-		Point p = sprite->getPosition();
+		position.x += dx;
+		position.y += dy;
 
-		p.x += dx;
-		p.y += dy;
+		Point truncatedPosition = position;
+		//sprite->getPosition();
 
-		// Å¬¶ó À§Ä¡´Â ¿©±â¼­ ¹Ù·Î ¾÷µ¥ÀÌÆ®
-		sprite->setPosition(p);
+		//truncatedPosition.x = static_cast<int>(truncatedPosition.x);
+		//truncatedPosition.y = static_cast<int>(truncatedPosition.y);
 
-		// ¼­¹ö·Î ÅëÁöÇÏ´Â °ÍÀº ÀÏÁ¤ ½Ã°£¸¶´Ù ÇØ ÁÜ
+		// í´ë¼ ìœ„ì¹˜ëŠ” ì—¬ê¸°ì„œ ë°”ë¡œ ì—…ë°ì´íŠ¸
+		sprite->setPosition(truncatedPosition);
+
+		// ì„œë²„ë¡œ í†µì§€í•˜ëŠ” ê²ƒì€ ì¼ì • ì‹œê°„ë§ˆë‹¤ í•´ ì¤Œ
 		const auto currentTime = age;
 		if (currentTime - lastMoveSendTime > moveSendInterval)
 		{
-			AnSendMove(objectId, p.x, p.y, instanceMove);
+			AnSendMove(objectId, position.x, position.y, instanceMove);
 			lastMoveSendTime = currentTime;
 		}
 	}

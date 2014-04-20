@@ -6,6 +6,8 @@
 #include "GameObjectArray.h"
 #include "Chat.h"
 #include "PacketHandlers.h"
+#include "UICore.h"
+#include "Resource.h"
 
 #ifdef _DEBUG
 const char* GFontPath = R"(..\..\..\..\..\Resources\fonts\H2GTRE.TTF)";
@@ -109,6 +111,27 @@ void DefaultOnKeyReleased(EventKeyboard::KeyCode kc, Event* evt)
 	}
 }
 
+void DefaultOnMouseMove(Event* evt)
+{
+	auto e = (EventMouse*)evt;
+	auto p = Point(e->getCursorX(), e->getCursorY());
+	auto pYInverted = Point(p.x, designResolutionSize.height - p.y);
+	AnInjectMouseMoveToUI(pYInverted);
+}
+
+void DefaultOnMouseDown(Event* evt)
+{
+	auto e = (EventMouse*)evt;
+	if (e->getMouseButton() == 0)
+	{
+		auto p = Point(e->getCursorX(), e->getCursorY());
+		auto pYInverted = Point(p.x, designResolutionSize.height - p.y);
+		AnInjectMouseDownToUI(pYInverted);
+	}
+}
+
+static bool GDebugTeleport = false;
+
 void DefaultOnMouseUp(Event* evt)
 {
 	auto e = (EventMouse*)evt;
@@ -116,18 +139,23 @@ void DefaultOnMouseUp(Event* evt)
 	if (e->getMouseButton() == 0)
 	{
 		auto p = Point(e->getCursorX(), e->getCursorY());
+		auto pYInverted = Point(p.x, designResolutionSize.height - p.y);
+		AnInjectMouseUpToUI(pYInverted);
 
-		auto visibleSize = Director::getInstance()->getVisibleSize();
-		auto origin = Director::getInstance()->getVisibleOrigin();
+		if (GDebugTeleport)
+		{
+			auto visibleSize = Director::getInstance()->getVisibleSize();
+			auto origin = Director::getInstance()->getVisibleOrigin();
 
-		auto glView = EGLView::getInstance();
+			auto glView = EGLView::getInstance();
 
-		assert(glView->getScaleX() == 1);
-		assert(glView->getScaleY() == 1);
+			assert(glView->getScaleX() == 1);
+			assert(glView->getScaleY() == 1);
 
-		// 클라 위치는 여기서 바로 업데이트
-		AnMoveObject(AnGetPlayerObjectId(), p.x, p.y);
-		AnSendMove(AnGetPlayerObjectId(), p.x, p.y, true);
+			// 클라 위치는 여기서 바로 업데이트
+			AnMoveObject(AnGetPlayerObjectId(), p.x, p.y);
+			AnSendMove(AnGetPlayerObjectId(), p.x, p.y, true);
+		}
 	}
 }
 
@@ -141,12 +169,16 @@ Scene* HelloWorld::scene()
     // 'scene' is an autorelease object
     auto scene = Scene::create();
 
+	AnSetScene(scene);
+
     // 'layer' is an autorelease object
     HelloWorld *layer = HelloWorld::create();
 
 
     // add layer as a child to scene
     scene->addChild(layer);
+
+	AnInitializeUICore();
 
 	// return the scene
     return scene;
@@ -160,20 +192,10 @@ bool HelloWorld::init()
         return false;
     }
 
+	AnInitializeResourcePath();
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
     auto origin = Director::getInstance()->getVisibleOrigin();
-
-    auto closeItem = MenuItemImage::create(
-                                        "CloseNormal.png",
-                                        "CloseSelected.png",
-                                        CC_CALLBACK_1(HelloWorld::menuCloseCallback,this));
-    
-    closeItem->setPosition(origin + Point(visibleSize) - Point(closeItem->getContentSize() / 2));
-
-    // create menu, it's an autorelease object
-    auto menu = Menu::create(closeItem, NULL);
-    menu->setPosition(Point::ZERO);
-    //this->addChild(menu, 1);
     
 	TTFConfig ttfConfig(GFontPath, TITLE_FONT_SIZE * 2);
 	ttfConfig.distanceFieldEnabled = true;
@@ -190,11 +212,10 @@ bool HelloWorld::init()
 	// 채팅 로그
 	AnCreateChatLogs(this);
 
-#ifdef _DEBUG
-	TMXTiledMap *map = TMXTiledMap::create("..\\..\\..\\..\\..\\resources\\map\\default_1.tmx");
-#else
-	TMXTiledMap *map = TMXTiledMap::create("map/default_1.tmx");
-#endif
+	char mapPath[FILENAME_MAX];
+	strcpy(mapPath, "\\map\\default_1.tmx");
+	AnGetResourceFullPath(mapPath);
+	TMXTiledMap *map = TMXTiledMap::create(mapPath);
 	addChild(map, LZO_GROUND);
 	GMap = map;
 
@@ -233,8 +254,12 @@ bool HelloWorld::init()
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
 	auto mouseListener = EventListenerMouse::create();
+	mouseListener->onMouseMove = std::bind(&DefaultOnMouseMove, std::placeholders::_1);
 	mouseListener->onMouseUp = std::bind(&DefaultOnMouseUp, std::placeholders::_1);
+	mouseListener->onMouseDown = std::bind(&DefaultOnMouseDown, std::placeholders::_1);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(mouseListener, this);
+
+
 
 	auto touchListener = EventListenerTouchOneByOne::create();
 	touchListener->onTouchEnded = std::bind(&DefaultOnTouchEnded, std::placeholders::_1, std::placeholders::_2);
@@ -340,4 +365,6 @@ void HelloWorld::update(float dt)
 		layerScale -= scaleSpeed;
 	}
 	setScale(layerScale);
+
+	AnUpdateUICore();
 }

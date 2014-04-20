@@ -44,6 +44,8 @@ set(SAMPLE_SRC
   Classes/GameObjectArray.cpp
   Classes/NetworkCore.cpp
   Classes/PacketHandlers.cpp
+  Classes/Resource.cpp
+  Classes/UICore.cpp
 )
 
 # add the executable

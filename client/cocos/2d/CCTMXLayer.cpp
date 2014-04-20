@@ -59,7 +59,23 @@ bool TMXLayer::initWithTilesetInfo(TMXTilesetInfo *tilesetInfo, TMXLayerInfo *la
     Texture2D *texture = nullptr;
     if( tilesetInfo )
     {
-        texture = Director::getInstance()->getTextureCache()->addImage(tilesetInfo->_sourceImage.c_str());
+		char tmxFilePath[_MAX_PATH];
+		strcpy(tmxFilePath, mapInfo->getTMXFileName().c_str());
+		for (int i = strlen(tmxFilePath) - 1; i >= 0; --i)
+		{
+			if (tmxFilePath[i] == '\\')
+			{
+				tmxFilePath[i] = '\0';
+				break;
+			}
+		}
+
+		char sourceImagePath[_MAX_PATH];
+		strcpy(sourceImagePath, tmxFilePath);
+		strcat(sourceImagePath, "\\");
+		strcat(sourceImagePath, tilesetInfo->_sourceImage.c_str());
+
+		texture = Director::getInstance()->getTextureCache()->addImage(sourceImagePath);
     }
 
     if (SpriteBatchNode::initWithTexture(texture, static_cast<ssize_t>(capacity)))

@@ -70,7 +70,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\Classes;..\..\..\..\msg;..\..\..\..\msg\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Classes;..\..\..\..\msg;..\..\..\..\msg\include;$(EngineRoot)external\Awesomium\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;COCOS2D_DEBUG=1;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -83,11 +83,11 @@
     </ClCompile>
     <Link>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(EngineRoot)external\Awesomium\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
-      <AdditionalDependencies>libcocos2d.lib;libchipmunk.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcocos2d.lib;awesomium.lib;libchipmunk.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -96,12 +96,17 @@
     <PreBuildEvent>
       <Command>..\..\..\..\..\tool\mmo_tools\bin\$(Configuration)\mmo_tools.exe "..\..\..\..\..\resources\data" ..\Classes</Command>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>if not exist "$(OutDir)" mkdir "$(OutDir)"
+xcopy /Y /Q "$(ProjectDir)..\..\..\..\external\win32-specific\awesomium\prebuilt\*.*" "$(OutDir)"
+</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
       <Optimization>MaxSpeed</Optimization>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <AdditionalIncludeDirectories>..\Classes;..\..\..\..\msg;..\..\..\..\msg\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\Classes;..\..\..\..\msg;..\..\..\..\msg\include;$(EngineRoot)external\Awesomium\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_CRT_SECURE_NO_WARNINGS;_SCL_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <FunctionLevelLinking>true</FunctionLevelLinking>
@@ -112,9 +117,9 @@
       <DisableSpecificWarnings>4267;4251;4244;%(DisableSpecificWarnings)</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>libcocos2d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>libcocos2d.lib;awesomium.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(ProjectName).exe</OutputFile>
-      <AdditionalLibraryDirectories>$(OutDir);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(OutDir);$(EngineRoot)external\Awesomium\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Windows</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -128,9 +133,15 @@
     <PreBuildEvent>
       <Command>..\..\..\..\..\tool\mmo_tools\bin\$(Configuration)\mmo_tools.exe "..\..\..\..\..\resources\data" ..\Classes</Command>
     </PreBuildEvent>
+    <PreLinkEvent>
+      <Command>if not exist "$(OutDir)" mkdir "$(OutDir)"
+xcopy /Y /Q "$(ProjectDir)..\..\..\..\external\win32-specific\awesomium\prebuilt\*.*" "$(OutDir)"
+</Command>
+    </PreLinkEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Classes\AppDelegate.cpp" />
+    <ClCompile Include="..\Classes\CCTexture2DMutable.cpp" />
     <ClCompile Include="..\Classes\Chat.cpp" />
     <ClCompile Include="..\Classes\EPIC.cpp" />
     <ClCompile Include="..\Classes\GameObject.cpp" />
@@ -138,11 +149,14 @@
     <ClCompile Include="..\Classes\HelloWorldScene.cpp" />
     <ClCompile Include="..\Classes\NetworkCore.cpp" />
     <ClCompile Include="..\Classes\PacketHandlers.cpp" />
+    <ClCompile Include="..\Classes\Resource.cpp" />
+    <ClCompile Include="..\Classes\UICore.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Classes\AppDelegate.h" />
     <ClInclude Include="..\Classes\AppMacros.h" />
+    <ClInclude Include="..\Classes\CCTexture2DMutable.h" />
     <ClInclude Include="..\Classes\Chat.h" />
     <ClInclude Include="..\Classes\EPIC.h" />
     <ClInclude Include="..\Classes\Extrapolator.h" />
@@ -153,8 +167,10 @@
     <ClInclude Include="..\Classes\NetworkCore.h" />
     <ClInclude Include="..\Classes\PacketHandlers.h" />
     <ClInclude Include="..\Classes\pylon_msg.h" />
+    <ClInclude Include="..\Classes\Resource.h" />
     <ClInclude Include="..\Classes\resource_msg.h" />
     <ClInclude Include="..\Classes\system_msg.h" />
+    <ClInclude Include="..\Classes\UICore.h" />
     <ClInclude Include="..\Classes\utf8.h" />
     <ClInclude Include="main.h" />
   </ItemGroup>

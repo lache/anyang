@@ -12,10 +12,21 @@
 USING_NS_CC;
 
 static GameObjectMap GGameObjectMap;
+static Scene* GScene;
 static Layer* GBaseLayer;
 static int GPlayerObjectId;
 
 extern const char* GFontPath;
+
+void AnSetScene(Scene* scene)
+{
+	GScene = scene;
+}
+
+Scene* AnGetScene()
+{
+	return GScene;
+}
 
 void AnSetBaseLayer(Layer* baseLayer)
 {
@@ -38,8 +49,11 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 
 	if (GGameObjectMap.find(objectId) == GGameObjectMap.end())
 	{
+		auto position = Point(x, y);
+		auto truncatedPosition = position; // Point(static_cast<int>(x), static_cast<int>(y));
+
 		auto sprite = Sprite::create("images/player.png");
-		sprite->setPosition(Point(x, y));
+		sprite->setPosition(truncatedPosition);
 		sprite->setScale(0.25f);
 		sprite->setTag(objectId);
 		GBaseLayer->addChild(sprite, AnGetPlayerObjectId() != objectId ? LZO_USER : LZO_PLAYER);
@@ -75,6 +89,7 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 		o->sprite = sprite;
 		o->ghostSprite = ghostSprite;
 		o->nameplate = nameplate;
+		o->position = position;
 
 		/*auto draw = DrawNode::create();
 		sprite->addChild(draw, LZO_CIRCLE_AREA);
