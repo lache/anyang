@@ -20,6 +20,8 @@ namespace msg_type {
     const msg_type_t interact = 1007;
     const msg_type_t update_hp = 1008;
     const msg_type_t alert = 1009;
+    const msg_type_t dash_board = 1010;
+    const msg_type_t dash_board_item = 1011;
 }
 
 
@@ -254,6 +256,34 @@ struct alert_msg {
     static void broadcast(const type& msg);
 };
 
+struct dash_board_item_msg {
+    static const msg_type_t __type = msg_type::dash_board_item;
+    
+    std::string name;
+    std::string value;
+    
+    dash_board_item_msg(std::string _name, std::string _value)
+        : name(_name), value(_value) {}
+    
+    #ifdef _DEBUG
+    dash_board_item_msg()
+        : name(), value() {}
+    #else
+    dash_board_item_msg() {}
+    #endif
+    
+    typedef dash_board_item_msg type;
+    typedef std::function<void (msg_session_ref, const type&)> handler_t;
+    typedef void (*listener_t)(const type&);
+    typedef std::vector<listener_t> listener_list;
+    
+    static handler_t _handler;
+    static listener_list _listeners;
+    static void handle(msg_session_ref session, const type& msg);
+    static void handle(msg_session_ref session, msg_reader reader);
+    static void broadcast(const type& msg);
+};
+
 struct spawn_msg {
     static const msg_type_t __type = msg_type::spawn;
     
@@ -305,6 +335,26 @@ struct world_info_msg {
     #endif
     
     typedef world_info_msg type;
+    typedef std::function<void (msg_session_ref, const type&)> handler_t;
+    typedef void (*listener_t)(const type&);
+    typedef std::vector<listener_t> listener_list;
+    
+    static handler_t _handler;
+    static listener_list _listeners;
+    static void handle(msg_session_ref session, const type& msg);
+    static void handle(msg_session_ref session, msg_reader reader);
+    static void broadcast(const type& msg);
+};
+
+struct dash_board_msg {
+    static const msg_type_t __type = msg_type::dash_board;
+    
+    typedef std::vector<msg::dash_board_item_msg> dash_board_item_list;
+    dash_board_item_list dash_board_items;
+    
+    dash_board_msg() {}
+    
+    typedef dash_board_msg type;
     typedef std::function<void (msg_session_ref, const type&)> handler_t;
     typedef void (*listener_t)(const type&);
     typedef std::vector<listener_t> listener_list;
@@ -468,6 +518,23 @@ inline msg_reader& msg_reader::operator >> (msg::alert_msg& msg)
 }
 
 template <>
+inline msg_writer& msg_writer::operator << (const msg::dash_board_item_msg& msg)
+{
+    (*this) << msg_type::dash_board_item;
+    (*this) << msg.name;
+    (*this) << msg.value;
+    return (*this);
+}
+
+template <>
+inline msg_reader& msg_reader::operator >> (msg::dash_board_item_msg& msg)
+{
+    (*this) >> msg.name;
+    (*this) >> msg.value;
+    return (*this);
+}
+
+template <>
 inline msg_writer& msg_writer::operator << (const msg::spawn_msg& msg)
 {
     (*this) << msg_type::spawn;
@@ -520,6 +587,31 @@ inline msg_reader& msg_reader::operator >> (msg::world_info_msg& msg)
         this->skip(static_cast<msg_size_t>(sizeof(msg_type_t)));
         (*this) >> each;
         msg.spawns.push_back(each);
+    }
+    return (*this);
+}
+
+template <>
+inline msg_writer& msg_writer::operator << (const msg::dash_board_msg& msg)
+{
+    (*this) << msg_type::dash_board;
+    (*this) << static_cast<uint32_t>(msg.dash_board_items.size());
+    for (msg::dash_board_msg::dash_board_item_list::const_iterator iter = msg.dash_board_items.begin(); iter != msg.dash_board_items.end(); ++iter) {
+        (*this) << (*iter);
+    }
+    return (*this);
+}
+
+template <>
+inline msg_reader& msg_reader::operator >> (msg::dash_board_msg& msg)
+{
+    uint32_t dash_board_item_count;
+    (*this) >> dash_board_item_count;
+    for (uint32_t index = 0; index < dash_board_item_count; ++index) {
+        msg::dash_board_item_msg each;
+        this->skip(static_cast<msg_size_t>(sizeof(msg_type_t)));
+        (*this) >> each;
+        msg.dash_board_items.push_back(each);
     }
     return (*this);
 }
@@ -688,6 +780,26 @@ inline void msg::alert_msg::broadcast(const type& msg)
     }
 }
 
+inline void msg::dash_board_item_msg::handle(msg_session_ref session, const type& msg)
+{
+    _ASSERT(_handler != NULL);
+    _handler(session, msg);
+}
+
+inline void msg::dash_board_item_msg::handle(msg_session_ref session, msg_reader reader)
+{
+    dash_board_item_msg msg;
+    reader >> msg;
+    handle(session, msg);
+}
+
+inline void msg::dash_board_item_msg::broadcast(const type& msg)
+{
+    for (listener_list::iterator iter = _listeners.begin(); iter != _listeners.end(); ++iter) {
+        (*iter)(msg);
+    }
+}
+
 inline void msg::spawn_msg::handle(msg_session_ref session, const type& msg)
 {
     _ASSERT(_handler != NULL);
@@ -728,6 +840,29 @@ inline void msg::world_info_msg::handle(msg_session_ref session, msg_reader read
 }
 
 inline void msg::world_info_msg::broadcast(const type& msg)
+{
+    for (listener_list::iterator iter = _listeners.begin(); iter != _listeners.end(); ++iter) {
+        (*iter)(msg);
+    }
+}
+
+inline void msg::dash_board_msg::handle(msg_session_ref session, const type& msg)
+{
+    _ASSERT(_handler != NULL);
+    _handler(session, msg);
+    for (dash_board_item_list::const_iterator iter = msg.dash_board_items.begin(); iter != msg.dash_board_items.end(); ++iter) {
+        msg::dash_board_item_msg::handle(session, *iter);
+    }
+}
+
+inline void msg::dash_board_msg::handle(msg_session_ref session, msg_reader reader)
+{
+    dash_board_msg msg;
+    reader >> msg;
+    handle(session, msg);
+}
+
+inline void msg::dash_board_msg::broadcast(const type& msg)
 {
     for (listener_list::iterator iter = _listeners.begin(); iter != _listeners.end(); ++iter) {
         (*iter)(msg);

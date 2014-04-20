@@ -4,6 +4,7 @@
 #include "GameObject.h"
 #include "NetworkCore.h"
 #include "utf8.h"
+#include "Resource.h"
 
 #ifndef WIN32
 #define strcpy_s strcpy
@@ -52,7 +53,10 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 		auto position = Point(x, y);
 		auto truncatedPosition = position; // Point(static_cast<int>(x), static_cast<int>(y));
 
-		auto sprite = Sprite::create("images/player.png");
+		char playerResourcePath[FILENAME_MAX];
+		strcpy(playerResourcePath, "/images/player.png");
+		AnGetResourceFullPathSlash(playerResourcePath);
+		auto sprite = Sprite::create(playerResourcePath);
 		sprite->setPosition(truncatedPosition);
 		sprite->setScale(0.25f);
 		sprite->setTag(objectId);
@@ -61,7 +65,7 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 		Sprite* ghostSprite = nullptr;
 		if (AnGetPlayerObjectId() != objectId)
 		{
-			ghostSprite = Sprite::create("images/player.png");
+			ghostSprite = Sprite::create(playerResourcePath);
 			ghostSprite->setPosition(Point(x, y));
 			ghostSprite->setScale(0.25f);
 			ghostSprite->setColor(Color3B::GREEN);
