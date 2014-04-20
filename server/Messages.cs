@@ -290,16 +290,18 @@ namespace Server.Message
         public const int TypeId = 1006;
         public int Id { get; set; }
         public int ResourceId { get; set; }
+        public int Color { get; set; }
         public int Radius { get; set; }
         
         public CharacterResourceMsg()
         {
         }
         
-        public CharacterResourceMsg(int id, int resourceId, int radius)
+        public CharacterResourceMsg(int id, int resourceId, int color, int radius)
         {
             Id = id;
             ResourceId = resourceId;
+            Color = color;
             Radius = radius;
         }
         
@@ -308,6 +310,7 @@ namespace Server.Message
             writer.Write(TypeId);
             writer.Write(Id);
             writer.Write(ResourceId);
+            writer.Write(Color);
             writer.Write(Radius);
         }
         
@@ -315,6 +318,7 @@ namespace Server.Message
         {
             Id = reader.ReadInt32();
             ResourceId = reader.ReadInt32();
+            Color = reader.ReadInt32();
             Radius = reader.ReadInt32();
         }
     }

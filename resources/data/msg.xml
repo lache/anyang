@@ -44,6 +44,7 @@
     <msg name="character_resource" from="server" to="client">
       <field type="int" name="id"/>
       <field type="int" name="resource_id" attribute="displayable.resource_id"/>
+      <field type="int" name="color"/>
       <field type="int" name="radius"/>
     </msg>
     <!-- 클라이언트가 어떠한 서버 대상에게 interaction을 요청할 때 -->

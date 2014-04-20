@@ -89,6 +89,46 @@ int AnSpawnGameObject(int objectId, double x, double y, const char* name)
 	return objectId;
 }
 
+inline Point GetTileIndexFromWorld(double x, double y)
+{
+	extern TMXTiledMap* GMap;
+
+	Point ret;
+	if (GMap)
+	{
+		auto mapSize = GMap->getMapSize();
+		auto tileSize = GMap->getTileSize();
+
+		x += tileSize.width / 2;
+		y += tileSize.height / 2;
+
+		ret.x = static_cast<int>(x / tileSize.width);
+		ret.y = static_cast<int>((mapSize.height * tileSize.height - y) / tileSize.height);
+	}
+
+	return ret;
+}
+
+int AnSpawnResource(int objectId, double x, double y)
+{
+	extern TMXTiledMap* GMap;
+
+	if (GMap)
+	{
+		auto tileIndex = GetTileIndexFromWorld(x, y);
+
+		auto layer = GMap->layerNamed("Land");
+		if (layer)
+		{
+			static const int WOOD_RESOURCE_GID = 31;
+			layer->setTileGID(WOOD_RESOURCE_GID, tileIndex);
+			return objectId;
+		}
+	}
+
+	return INVALID_GAME_OBJECT_ID;
+}
+
 int AnDespawnGameObject(int objectId)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())

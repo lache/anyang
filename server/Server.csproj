@@ -62,6 +62,7 @@
     <Compile Include="Logic\Dashboard.cs" />
     <Compile Include="Logic\InvisibleHands.cs" />
     <Compile Include="Logic\MotherOfEarth.cs" />
+    <Compile Include="Logic\Town.cs" />
     <Compile Include="Logic\TownMaker.cs" />
     <Compile Include="Test\CoreTest.cs" />
     <Compile Include="Tool\Deploy.cs" />

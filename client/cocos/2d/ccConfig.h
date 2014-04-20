@@ -89,7 +89,7 @@ To enabled set it to 1. Disabled by default.
 @since v0.99.5
 */
 #ifndef CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL
-#define CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL 1
+#define CC_FIX_ARTIFACTS_BY_STRECHING_TEXEL 0
 #endif
 
 /** @def CC_DIRECTOR_FPS_INTERVAL
