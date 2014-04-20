@@ -111,7 +111,7 @@ void GameObject::SetRadius(float radius)
 	if (drawNode)
 	{
 		drawNode->clear();
-		drawNode->drawDot(Point(drawNode->getParent()->getContentSize()) / 2, radius / drawNode->getParent()->getScale(), Color4F(1, 0, 0, 0.5));
+		drawNode->drawDot(Point(drawNode->getParent()->getContentSize()) / 2, radius / drawNode->getParent()->getScale(), Color4F(1, 0, 0, 0.1));
 	}
 }
 
