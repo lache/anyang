@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Server.Message;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -19,12 +20,16 @@ namespace Server.Logic
 
         protected override IEnumerable<int> CoroMainEntry()
         {
+            Broadcast(Get<CharacterController>().MakeSpawnMsg());
+            
             while (true)
             {
                 GenerateHungryNpc();
 
                 yield return NextRandom(4000, 5000);
             }
+            
+            Broadcast(new DespawnMsg { Id = ObjectId });
         }
 
         protected override IEnumerable<int> CoroDispose()

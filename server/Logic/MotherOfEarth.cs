@@ -22,6 +22,8 @@ namespace Server.Logic
 
         protected override IEnumerable<int> CoroMainEntry()
         {
+            Broadcast(Get<CharacterController>().MakeSpawnMsg());
+            
             Interlocked.Increment(ref FoodCount);
 
             var charData = _data.Character;
