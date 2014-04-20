@@ -415,6 +415,92 @@ namespace Server.Message
         }
     }
     
+    public class DashBoardMsg : IMessage
+    {
+        public const int TypeId = 1010;
+        public List<DashBoardItemMsg> DashBoardItemList { get; private set; }
+        
+        public DashBoardMsg()
+        {
+            DashBoardItemList = new List<DashBoardItemMsg>();
+        }
+        
+        public DashBoardMsg(List<DashBoardItemMsg> dashBoardItemList)
+        {
+            DashBoardItemList = dashBoardItemList;
+        }
+        
+        public void WriteTo(BinaryWriter writer)
+        {
+            writer.Write(TypeId);
+            writer.Write(DashBoardItemList.Count);
+            foreach (var each in DashBoardItemList) each.WriteTo(writer);
+        }
+        
+        public void ReadFrom(BinaryReader reader)
+        {
+            {
+                var count = reader.ReadInt32();
+                DashBoardItemList.AddRange(Enumerable.Range(0, count).Select(_ => new DashBoardItemMsg()));
+                foreach (var each in DashBoardItemList)
+                {
+                    reader.ReadInt32(); // throw type-id
+                    each.ReadFrom(reader);
+                }
+            }
+        }
+    }
+    
+    public class DashBoardItemMsg : IMessage
+    {
+        public const int TypeId = 1011;
+        public string Name { get; set; }
+        public string Value { get; set; }
+        
+        public DashBoardItemMsg()
+        {
+        }
+        
+        public DashBoardItemMsg(string name, string value)
+        {
+            Name = name;
+            Value = value;
+        }
+        
+        public void WriteTo(BinaryWriter writer)
+        {
+            writer.Write(TypeId);
+            if (string.IsNullOrEmpty(Name)) writer.Write(0);
+            else
+            {
+                var bytes = Encoding.UTF8.GetBytes(Name);
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
+            }
+            if (string.IsNullOrEmpty(Value)) writer.Write(0);
+            else
+            {
+                var bytes = Encoding.UTF8.GetBytes(Value);
+                writer.Write(bytes.Length);
+                writer.Write(bytes);
+            }
+        }
+        
+        public void ReadFrom(BinaryReader reader)
+        {
+            {
+                var length = reader.ReadInt32();
+                var bytes = reader.ReadBytes(length);
+                Name = Encoding.UTF8.GetString(bytes);
+            }
+            {
+                var length = reader.ReadInt32();
+                var bytes = reader.ReadBytes(length);
+                Value = Encoding.UTF8.GetString(bytes);
+            }
+        }
+    }
+    
     public class VoiceMsg : IMessage
     {
         public const int TypeId = 3000;
@@ -739,6 +825,8 @@ namespace Server.Message
                 case 1007: return new InteractMsg();
                 case 1008: return new UpdateHpMsg();
                 case 1009: return new AlertMsg();
+                case 1010: return new DashBoardMsg();
+                case 1011: return new DashBoardItemMsg();
                 case 3000: return new VoiceMsg();
                 case 4000: return new ServerMsg();
                 case 4001: return new RequestServerMsg();

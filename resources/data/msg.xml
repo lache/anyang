@@ -60,6 +60,14 @@
     <msg name="alert" from="server" to="client">
       <field type="string" name="message"/>
     </msg>
+    <!-- 플레이어의 상황 정보를 전달해줄 때 -->
+    <msg name="dash_board" from="server" to="client">
+      <ref msg="dash_board_item"/>
+    </msg>
+    <msg name="dash_board_item" from="server" to="client">
+      <field type="string" name="name"/>
+      <field type="string" name="value"/>
+    </msg>
   </group>
   <group name="system">
     <!-- 네트워크가 끊어질 때 전파되는 메시지 (주의: 삭제 시 빌드 안됨) -->
