@@ -28,3 +28,4 @@ void AnUpdateGameObjects(float dt);
 int AnResetLastMoveSendTime(int objectId);
 int AnUpdateObjectTint(int objectId, int rgba);
 int AnUpdateObjectRadius(int objectId, float radius);
+int AnUpdateObjectHp(int objectId, float hp, float maxHp);

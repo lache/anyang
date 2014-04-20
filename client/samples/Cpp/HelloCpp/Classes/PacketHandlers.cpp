@@ -124,6 +124,11 @@ MSG_HANDLER(character_resource)
 MSG_HANDLER(update_hp)
 {
 	AnDebugOutput("UPDATE_HP: objectId=%d, %d/%d\n", msg.id, msg.hp, msg.max_hp);
+
+	if (INVALID_GAME_OBJECT_ID == AnUpdateObjectHp(msg.id, msg.hp, msg.max_hp))
+	{
+		AnDebugOutput("UPDATE_HP: Object not found: %d", msg.id);
+	}
 }
 
 MSG_HANDLER(session_error)

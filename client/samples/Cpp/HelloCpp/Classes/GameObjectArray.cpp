@@ -279,6 +279,20 @@ int AnUpdateObjectRadius(int objectId, float radius)
 	}
 }
 
+int AnUpdateObjectHp(int objectId, float hp, float maxHp)
+{
+	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
+	{
+		GGameObjectMap[objectId]->SetHp(hp, maxHp);
+
+		return objectId;
+	}
+	else
+	{
+		return INVALID_GAME_OBJECT_ID;
+	}
+}
+
 int AnMoveObject(int objectId, double x, double y)
 {
 	if (GGameObjectMap.find(objectId) != GGameObjectMap.end())
