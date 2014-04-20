@@ -31,6 +31,7 @@ namespace Server.Logic
     partial class Player : NetworkActor
     {
         private readonly PlayerData _data;
+        private readonly Dashboard _board = new Dashboard(false);
 
         public Player(World world, Session session, PlayerData data)
             : base(world, session)
@@ -81,9 +82,12 @@ namespace Server.Logic
 
             _world.Coro.AddEntry(this, Get<MoveController>().CoroUpdatePos);
 
-            // 현재는 Tick마다 할 일이 없다.
             while (Connected)
             {
+                // Dashboard 항목을 검사하고, 클라이언트에 전달한다.
+                _board.SynchronizeWithWorld();
+                _board.Notify(this);
+
                 yield return 1000;
             }
         }
