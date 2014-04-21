@@ -36,7 +36,6 @@ else()
 
   endif()
 
-  
 set(SAMPLE_SRC
   ${PLATFORM_SRC}
   Classes/AppDelegate.cpp
