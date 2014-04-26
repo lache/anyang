@@ -2,8 +2,13 @@
 #include <vector>
 #include "data_def.h"
 #include "data_center.h"
-
+#if DATA_RELOADABLE
+#include "data_reloader.h"
+#endif
 namespace data { ;
+
+template <typename _Ty>
+class data_center;
 
 class data_linker_t
 {
