@@ -85,7 +85,7 @@ inline bool data_center<_Ty>::add(pointer_type model)
 template <typename _Ty>
 inline void data_center<_Ty>::load()
 {
-    data::__data_load(data_type_t<_Ty>());
+    __data_load(data_type_t<_Ty>());
 }
 
 template <typename _Ty>
