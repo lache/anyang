@@ -49,6 +49,7 @@ set(SAMPLE_SRC
   Classes/PacketHandlers.cpp
   Classes/Resource.cpp
   Classes/UICore.cpp
+  Classes/data_center_client.cpp
 )
 
 # add the executable

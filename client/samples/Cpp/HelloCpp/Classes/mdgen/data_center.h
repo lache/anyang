@@ -78,7 +78,7 @@ inline bool data_center<_Ty>::add(pointer_type model)
     if (storage == nullptr)
         storage = new storage_t;
     
-    std::pair<data_map_t::iterator, bool> result = storage->data_map.insert(std::make_pair(model->id, model));
+    auto result = storage->data_map.insert(std::make_pair(model->id, model));
     return result.second;
 }
 
