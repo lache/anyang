@@ -4,10 +4,7 @@
 #define x_stricmp _stricmp
 #else
 #define x_stricmp strcasecmp
-#define __must_be_array(a) \
-	BUILD_BUG_ON_ZERO(__builtin_types_compatible_p(typeof(a), typeof(&a[0])))
-#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof((arr)[0]) + __must_be_array(arr))
-#define _countof(x) ARRAY_SIZE(x)
+#define _countof(x) (sizeof(arr) / sizeof((arr)[0])
 #endif
 
 namespace data { ;
