@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mmo-data>
+
+  <game-object-list>
+    <game-object id="1" tile-resource-id="31" />
+    <game-object id="2" tile-resource-id="0" />
+    <game-object id="3" tile-resource-id="0" />
+  </game-object-list>
   
   <!-- anim-state.xml -->
   <anim-state-list>

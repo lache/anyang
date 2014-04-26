@@ -2,6 +2,7 @@
 #include <clientpch.h>
 #include <data_expression.h>
 #include <data_center.h>
+#include "game_object_data.h"
 #include "anim_state_data.h"
 #include "sprite_data.h"
 #include "static_object_data.h"
@@ -20,6 +21,7 @@
 
 using namespace data;
 
+template <> typename data_center<game_object_t>::storage_t* data_center<game_object_t>::storage = nullptr;
 template <> typename data_center<anim_state_t>::storage_t* data_center<anim_state_t>::storage = nullptr;
 template <> typename data_center<sprite_t>::storage_t* data_center<sprite_t>::storage = nullptr;
 template <> typename data_center<static_object_t>::storage_t* data_center<static_object_t>::storage = nullptr;
@@ -33,6 +35,7 @@ template <> typename data_center<config_t>::storage_t* data_center<config_t>::st
 template <> typename data_center<entity_template_t>::storage_t* data_center<entity_template_t>::storage = nullptr;
 template <> typename data_center<attribute_template_t>::storage_t* data_center<attribute_template_t>::storage = nullptr;
 template <> typename data_center<interact_template_t>::storage_t* data_center<interact_template_t>::storage = nullptr;
+template <> data_linker_t data_center<game_object_t>::linker;
 template <> data_linker_t data_center<anim_state_t>::linker;
 template <> data_linker_t data_center<sprite_t>::linker;
 template <> data_linker_t data_center<static_object_t>::linker;
@@ -47,6 +50,7 @@ template <> data_linker_t data_center<entity_template_t>::linker;
 template <> data_linker_t data_center<attribute_template_t>::linker;
 template <> data_linker_t data_center<interact_template_t>::linker;
 
+static void parse_game_object(tinyxml2::XMLElement* root_node);
 static void parse_anim_state(tinyxml2::XMLElement* root_node);
 static void parse_anim_state_state(tinyxml2::XMLElement* root_node, anim_state_t* parent);
 static void parse_sprite(tinyxml2::XMLElement* root_node);
@@ -65,6 +69,18 @@ static void parse_attribute_template(tinyxml2::XMLElement* root_node);
 static void parse_attribute_template_field(tinyxml2::XMLElement* root_node, attribute_template_t* parent);
 static void parse_interact_template(tinyxml2::XMLElement* root_node);
 static void parse_interact_template_effect(tinyxml2::XMLElement* root_node, interact_template_t* parent);
+
+static void parse_game_object(tinyxml2::XMLElement* root_node)
+{
+    if (root_node == nullptr) return;
+    for (tinyxml2::XMLElement* each_node = root_node->FirstChildElement(); each_node != nullptr; each_node = each_node->NextSiblingElement()) {
+        game_object_t* ptr = new game_object_t;
+        ptr->id = each_node->IntAttribute("id");
+        ptr->tile_resource_id = each_node->IntAttribute("tile_resource_id");
+        
+        game_object_data::add(ptr);
+    }
+}
 
 static void parse_anim_state(tinyxml2::XMLElement* root_node)
 {
@@ -345,6 +361,14 @@ static void parse_interact_template_effect(tinyxml2::XMLElement* root_node, inte
 }
 
 
+void data::__data_load(data_type_t<game_object_t>)
+{
+    tinyxml2::XMLDocument document;
+    document.LoadFile(user_defined_path_resolver("C:\\Users\\Administrator\\Documents\\anyang\\resources\\data\\mmo-data.xml"));
+    tinyxml2::XMLElement* root_node = document.FirstChildElement("mmo-data");
+    parse_game_object(root_node->FirstChildElement("game-object-list"));
+}
+
 void data::__data_load(data_type_t<anim_state_t>)
 {
     tinyxml2::XMLDocument document;
@@ -452,6 +476,7 @@ void data::__data_load(data_type_t<interact_template_t>)
 static struct __initializer100 {
     __initializer100()
     {
+        data::__data_load(data_type_t<game_object_t>());
         data::__data_load(data_type_t<anim_state_t>());
         data::__data_load(data_type_t<sprite_t>());
         data::__data_load(data_type_t<static_object_t>());
@@ -466,6 +491,7 @@ static struct __initializer100 {
         data::__data_load(data_type_t<attribute_template_t>());
         data::__data_load(data_type_t<interact_template_t>());
         
+        game_object_data::linker.link();
         anim_state_data::linker.link();
         sprite_data::linker.link();
         static_object_data::linker.link();

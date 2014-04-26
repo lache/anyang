@@ -4,6 +4,7 @@
 #define x_stricmp _stricmp
 #else
 #define x_stricmp strcasecmp
+#define _countof(x) ARRAY_SIZE(x)
 #endif
 
 namespace data { ;
