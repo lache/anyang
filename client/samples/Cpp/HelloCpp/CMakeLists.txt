@@ -31,6 +31,7 @@ else()
 
   include_directories(../../../msg/include)
   include_directories(Classes/mdgen)
+  include_directories(Classes)
   include_directories(../../../external/webp/include/linux)
   link_directories(../../../external/webp/prebuilt/linux/64-bit)
 
